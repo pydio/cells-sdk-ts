@@ -1,0 +1,79 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "properties": {
+        "activities": {
+            "type": "{Array<ActivityObject>}"
+        },
+        "contentLock": {
+            "type": "{RestLockInfo}"
+        },
+        "contentType": {
+            "type": "{string}"
+        },
+        "contentsHash": {
+            "type": "{string}"
+        },
+        "contextWorkspace": {
+            "type": "{RestContextWorkspace}"
+        },
+        "dataSourceFeatures": {
+            "type": "{RestDataSourceFeatures}"
+        },
+        "folderMeta": {
+            "type": "{Array<RestCountMeta>}"
+        },
+        "hashingMethod": {
+            "type": "{string}"
+        },
+        "imageMeta": {
+            "type": "{RestImageMeta}"
+        },
+        "isBookmarked": {
+            "type": "{boolean}"
+        },
+        "isRecycleBin": {
+            "type": "{boolean}"
+        },
+        "isRecycled": {
+            "type": "{boolean}"
+        },
+        "metadata": {
+            "type": "{Array<RestJsonMeta>}"
+        },
+        "mode": {
+            "type": "{RestMode}"
+        },
+        "modified": {
+            "type": "{string}"
+        },
+        "path": {
+            "type": "{string}"
+        },
+        "previews": {
+            "type": "{Array<RestFilePreview>}"
+        },
+        "shares": {
+            "type": "{Array<RestShareLink>}"
+        },
+        "size": {
+            "type": "{string}"
+        },
+        "storageETag": {
+            "type": "{string}"
+        },
+        "subscriptions": {
+            "type": "{Array<ActivitySubscription>}"
+        },
+        "type": {
+            "type": "{TreeNodeType}"
+        },
+        "userMetadata": {
+            "type": "{Array<RestJsonMeta>}"
+        },
+        "uuid": {
+            "type": "{string}"
+        }
+    },
+    "type": "object"
+}
+
