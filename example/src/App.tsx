@@ -9,6 +9,7 @@ function App() {
     const [current, setCurrent] = useState<RestNode>({path:'/', type:'COLLECTION'})
     const [coll, setColl] = useState<RestNodeCollection|null>(null)
     const [selection, setSelection] = useState<string|''>('')
+    const [showSettings, setShowSettings] = useState<boolean>(true)
 
     const [basePath, setBasePath] = useState<string>(localStorage.getItem('basePath')||'')
     const [apiKey, setApiKey] = useState<string>(localStorage.getItem('apiKey')||'')
@@ -70,14 +71,17 @@ function App() {
 
     return (
         <>
-            <h2>Api Settings</h2>
-            <div>
-                <input style={{width:300}} type={"text"} placeholder={"enter full URL with base (must allow CORS)"} value={basePath}
-                       onChange={(e) => setBasePath(e.target.value)}/>
-            </div>
-            <div>
-                <input style={{width:300}}  type={"text"} placeholder={"enter api key"} value={apiKey}
-                       onChange={(e) => setApiKey(e.target.value)}/>
+            <h2>Api Settings <a onClick={() => setShowSettings(!showSettings)}>+</a></h2>
+            <div style={{display: showSettings ? 'block' : 'none'}}>
+                <div>
+                    <input style={{width: 300}} type={"text"} placeholder={"enter full URL with base (must allow CORS)"}
+                           value={basePath}
+                           onChange={(e) => setBasePath(e.target.value)}/>
+                </div>
+                <div>
+                    <input style={{width: 300}} type={"text"} placeholder={"enter api key"} value={apiKey}
+                           onChange={(e) => setApiKey(e.target.value)}/>
+                </div>
             </div>
             <h2>Folder {current.path}</h2>
             <div style={{display: 'flex'}}>
@@ -91,7 +95,8 @@ function App() {
                     <div style={{overflowX: 'auto'}}>
                         <div onClick={() => setCurrent(getParent(current))}>📂..</div>
                         {children.map((n) =>
-                            <Node key={n.path} n={n} api={api} setCurrent={setCurrent} selected={selection === n.path}
+                            <Node key={n.path} n={n} api={api} setCurrent={setCurrent}
+                                  selected={selection === n.path}
                                   setSelection={setSelection}/>
                         )}
                     </div>

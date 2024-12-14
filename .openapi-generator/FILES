@@ -10,12 +10,12 @@ models/IdmUserMetaNamespace.ts
 models/IdmWorkspaceScope.ts
 models/JobsCommand.ts
 models/JobsCtrlCommand.ts
+models/JobsTaskStatus.ts
 models/MetaUpdateOp.ts
 models/ProtobufAny.ts
 models/RestActionParameters.ts
-models/RestActionResponse.ts
 models/RestActionStatus.ts
-models/RestBackgroundJobResult.ts
+models/RestBackgroundAction.ts
 models/RestBatchUpdateMetaList.ts
 models/RestContextWorkspace.ts
 models/RestCountMeta.ts
@@ -41,6 +41,7 @@ models/RestNodeLocators.ts
 models/RestNodeUpdates.ts
 models/RestNsOp.ts
 models/RestPagination.ts
+models/RestPerformActionResponse.ts
 models/RestPublicLinkDeleteSuccess.ts
 models/RestPublicLinkRequest.ts
 models/RestSelection.ts

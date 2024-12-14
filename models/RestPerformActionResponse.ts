@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { RestBackgroundJobResult } from './RestBackgroundJobResult';
+import type { RestBackgroundAction } from './RestBackgroundAction';
 import {
-    RestBackgroundJobResultFromJSON,
-    RestBackgroundJobResultFromJSONTyped,
-    RestBackgroundJobResultToJSON,
-    RestBackgroundJobResultToJSONTyped,
-} from './RestBackgroundJobResult';
+    RestBackgroundActionFromJSON,
+    RestBackgroundActionFromJSONTyped,
+    RestBackgroundActionToJSON,
+    RestBackgroundActionToJSONTyped,
+} from './RestBackgroundAction';
 import type { RestNode } from './RestNode';
 import {
     RestNodeFromJSON,
@@ -38,59 +38,59 @@ import {
 /**
  * 
  * @export
- * @interface RestActionResponse
+ * @interface RestPerformActionResponse
  */
-export interface RestActionResponse {
+export interface RestPerformActionResponse {
     /**
      * 
      * @type {Array<RestNode>}
-     * @memberof RestActionResponse
+     * @memberof RestPerformActionResponse
      */
     affectedNodes?: Array<RestNode>;
     /**
      * 
-     * @type {Array<RestBackgroundJobResult>}
-     * @memberof RestActionResponse
-     */
-    jobs?: Array<RestBackgroundJobResult>;
-    /**
-     * 
      * @type {RestActionStatus}
-     * @memberof RestActionResponse
+     * @memberof RestPerformActionResponse
      */
     status?: RestActionStatus;
+    /**
+     * 
+     * @type {Array<RestBackgroundAction>}
+     * @memberof RestPerformActionResponse
+     */
+    tasks?: Array<RestBackgroundAction>;
 }
 
 
 
 /**
- * Check if a given object implements the RestActionResponse interface.
+ * Check if a given object implements the RestPerformActionResponse interface.
  */
-export function instanceOfRestActionResponse(value: object): value is RestActionResponse {
+export function instanceOfRestPerformActionResponse(value: object): value is RestPerformActionResponse {
     return true;
 }
 
-export function RestActionResponseFromJSON(json: any): RestActionResponse {
-    return RestActionResponseFromJSONTyped(json, false);
+export function RestPerformActionResponseFromJSON(json: any): RestPerformActionResponse {
+    return RestPerformActionResponseFromJSONTyped(json, false);
 }
 
-export function RestActionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): RestActionResponse {
+export function RestPerformActionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): RestPerformActionResponse {
     if (json == null) {
         return json;
     }
     return {
         
         'affectedNodes': json['AffectedNodes'] == null ? undefined : ((json['AffectedNodes'] as Array<any>).map(RestNodeFromJSON)),
-        'jobs': json['Jobs'] == null ? undefined : ((json['Jobs'] as Array<any>).map(RestBackgroundJobResultFromJSON)),
         'status': json['Status'] == null ? undefined : RestActionStatusFromJSON(json['Status']),
+        'tasks': json['Tasks'] == null ? undefined : ((json['Tasks'] as Array<any>).map(RestBackgroundActionFromJSON)),
     };
 }
 
-export function RestActionResponseToJSON(json: any): RestActionResponse {
-    return RestActionResponseToJSONTyped(json, false);
+export function RestPerformActionResponseToJSON(json: any): RestPerformActionResponse {
+    return RestPerformActionResponseToJSONTyped(json, false);
 }
 
-export function RestActionResponseToJSONTyped(value?: RestActionResponse | null, ignoreDiscriminator: boolean = false): any {
+export function RestPerformActionResponseToJSONTyped(value?: RestPerformActionResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -98,8 +98,8 @@ export function RestActionResponseToJSONTyped(value?: RestActionResponse | null,
     return {
         
         'AffectedNodes': value['affectedNodes'] == null ? undefined : ((value['affectedNodes'] as Array<any>).map(RestNodeToJSON)),
-        'Jobs': value['jobs'] == null ? undefined : ((value['jobs'] as Array<any>).map(RestBackgroundJobResultToJSON)),
         'Status': RestActionStatusToJSON(value['status']),
+        'Tasks': value['tasks'] == null ? undefined : ((value['tasks'] as Array<any>).map(RestBackgroundActionToJSON)),
     };
 }
 

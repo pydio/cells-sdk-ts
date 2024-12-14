@@ -20,6 +20,13 @@ import {
     RestNodeLocatorToJSON,
     RestNodeLocatorToJSONTyped,
 } from './RestNodeLocator';
+import type { JobsTaskStatus } from './JobsTaskStatus';
+import {
+    JobsTaskStatusFromJSON,
+    JobsTaskStatusFromJSONTyped,
+    JobsTaskStatusToJSON,
+    JobsTaskStatusToJSONTyped,
+} from './JobsTaskStatus';
 
 /**
  * 
@@ -29,10 +36,16 @@ import {
 export interface RestActionParameters {
     /**
      * 
-     * @type {boolean}
+     * @type {JobsTaskStatus}
      * @memberof RestActionParameters
      */
-    _await?: boolean;
+    awaitStatus?: JobsTaskStatus;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestActionParameters
+     */
+    awaitTimeout?: string;
     /**
      * 
      * @type {string}
@@ -59,6 +72,8 @@ export interface RestActionParameters {
     targetNode?: RestNodeLocator;
 }
 
+
+
 /**
  * Check if a given object implements the RestActionParameters interface.
  */
@@ -76,7 +91,8 @@ export function RestActionParametersFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
         
-        '_await': json['Await'] == null ? undefined : json['Await'],
+        'awaitStatus': json['AwaitStatus'] == null ? undefined : JobsTaskStatusFromJSON(json['AwaitStatus']),
+        'awaitTimeout': json['AwaitTimeout'] == null ? undefined : json['AwaitTimeout'],
         'jsonParameters': json['JsonParameters'] == null ? undefined : json['JsonParameters'],
         'nodes': json['Nodes'] == null ? undefined : ((json['Nodes'] as Array<any>).map(RestNodeLocatorFromJSON)),
         'selectionUuid': json['SelectionUuid'] == null ? undefined : json['SelectionUuid'],
@@ -95,7 +111,8 @@ export function RestActionParametersToJSONTyped(value?: RestActionParameters | n
 
     return {
         
-        'Await': value['_await'],
+        'AwaitStatus': JobsTaskStatusToJSON(value['awaitStatus']),
+        'AwaitTimeout': value['awaitTimeout'],
         'JsonParameters': value['jsonParameters'],
         'Nodes': value['nodes'] == null ? undefined : ((value['nodes'] as Array<any>).map(RestNodeLocatorToJSON)),
         'SelectionUuid': value['selectionUuid'],

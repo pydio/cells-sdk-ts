@@ -1,4 +1,5 @@
 import {NodeServiceApi, RestNode} from "../../index.ts";
+import {getBase} from "./tools.tsx";
 
 interface props {
     n:RestNode,
@@ -8,20 +9,6 @@ interface props {
     api: NodeServiceApi
 }
 const Node = (props:props)=> {
-
-    const getBase = (n:RestNode):string => {
-        if(n.isRecycleBin) {
-            return 'Recycle'
-        } else if(n.contextWorkspace && n.contextWorkspace.label) {
-            return n.contextWorkspace.label;
-        }
-        const pp = n.path!.split('/')
-        if (!pp.length) {
-            return n.path||''
-        }
-        return pp.pop()||''
-    }
-
 
     const {n, setCurrent, selected, setSelection} = props;
 
