@@ -44,6 +44,7 @@ models/RestPagination.ts
 models/RestPerformActionResponse.ts
 models/RestPublicLinkDeleteSuccess.ts
 models/RestPublicLinkRequest.ts
+models/RestRevisionMeta.ts
 models/RestSelection.ts
 models/RestShareLink.ts
 models/RestShareLinkAccessType.ts

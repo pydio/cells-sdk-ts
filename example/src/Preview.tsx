@@ -10,10 +10,18 @@ interface props {
 
 const Preview = (props:props) => {
     const [link, setLink] = useState<RestShareLink|null>(null)
+    const [versions, setVersions] = useState<RestNode[]>([])
+    const [byUuid, setByUuid] = useState<RestNode|null>(null)
     const {api,n, loadCurrent} = props;
     const del = () => {
         api.performAction('delete', {Nodes:[{Path:n.Path}]}).then(()=>{
             setTimeout(loadCurrent, 1500)
+        })
+    }
+
+    const loadByUuid = () => {
+        api.getByUuid(n.Uuid!).then(res=>{
+            setByUuid(res.data)
         })
     }
 
@@ -101,6 +109,19 @@ const Preview = (props:props) => {
         }
     }, [n]);
 
+    useEffect(() => {
+        setVersions([])
+        if(n.DataSourceFeatures && n.DataSourceFeatures.Versioned) {
+            api.listVersions(n.Uuid!).then(res => {
+                setVersions(res.data.Nodes||[])
+            })
+        }
+    }, [n]);
+
+    useEffect(() => {
+        setByUuid(null);
+    }, [n]);
+
     return (
         <div style={{
             backgroundColor:'rgba(255,255,255,0.2)',
@@ -119,12 +140,25 @@ const Preview = (props:props) => {
                 <button onClick={()=> bookmark()}>Bookmark</button>
                 <button onClick={()=> tagUntag()}>Toggle Tag</button>
                 <button onClick={()=> publicLink()}>Public Link</button>
+                <button onClick={()=> loadByUuid()}>By UUID</button>
             </div>
             <pre>{JSON.stringify(props.n, null, '  ')}</pre>
             {link &&
                 <>
                     <h3>Public Link</h3>
                     <pre>{JSON.stringify(link, null, '  ')}</pre>
+                </>
+            }
+            {versions && versions.length > 0 &&
+                <>
+                    <h3>Versions</h3>
+                    <pre>{JSON.stringify(versions.map(v => v.RevisionMeta), null, '  ')}</pre>
+                </>
+            }
+            {byUuid &&
+                <>
+                    <h3>Loaded By Uuid</h3>
+                    <pre>{JSON.stringify(byUuid, null, '  ')}</pre>
                 </>
             }
         </div>

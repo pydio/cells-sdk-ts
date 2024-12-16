@@ -104,6 +104,13 @@ import {
     RestContextWorkspaceToJSON,
     RestContextWorkspaceToJSONTyped,
 } from './RestContextWorkspace';
+import type { RestRevisionMeta } from './RestRevisionMeta';
+import {
+    RestRevisionMetaFromJSON,
+    RestRevisionMetaFromJSONTyped,
+    RestRevisionMetaToJSON,
+    RestRevisionMetaToJSONTyped,
+} from './RestRevisionMeta';
 
 /**
  * 
@@ -215,6 +222,12 @@ export interface RestNode {
     previews?: Array<RestFilePreview>;
     /**
      * 
+     * @type {RestRevisionMeta}
+     * @memberof RestNode
+     */
+    revisionMeta?: RestRevisionMeta;
+    /**
+     * 
      * @type {Array<RestShareLink>}
      * @memberof RestNode
      */
@@ -293,6 +306,7 @@ export function RestNodeFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'modified': json['Modified'] == null ? undefined : json['Modified'],
         'path': json['Path'] == null ? undefined : json['Path'],
         'previews': json['Previews'] == null ? undefined : ((json['Previews'] as Array<any>).map(RestFilePreviewFromJSON)),
+        'revisionMeta': json['RevisionMeta'] == null ? undefined : RestRevisionMetaFromJSON(json['RevisionMeta']),
         'shares': json['Shares'] == null ? undefined : ((json['Shares'] as Array<any>).map(RestShareLinkFromJSON)),
         'size': json['Size'] == null ? undefined : json['Size'],
         'storageETag': json['StorageETag'] == null ? undefined : json['StorageETag'],
@@ -331,6 +345,7 @@ export function RestNodeToJSONTyped(value?: RestNode | null, ignoreDiscriminator
         'Modified': value['modified'],
         'Path': value['path'],
         'Previews': value['previews'] == null ? undefined : ((value['previews'] as Array<any>).map(RestFilePreviewToJSON)),
+        'RevisionMeta': RestRevisionMetaToJSON(value['revisionMeta']),
         'Shares': value['shares'] == null ? undefined : ((value['shares'] as Array<any>).map(RestShareLinkToJSON)),
         'Size': value['size'],
         'StorageETag': value['storageETag'],

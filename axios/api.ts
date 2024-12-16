@@ -1445,6 +1445,12 @@ export interface RestNode {
     'Previews'?: Array<RestFilePreview>;
     /**
      * 
+     * @type {RestRevisionMeta}
+     * @memberof RestNode
+     */
+    'RevisionMeta'?: RestRevisionMeta;
+    /**
+     * 
      * @type {Array<RestShareLink>}
      * @memberof RestNode
      */
@@ -1715,6 +1721,25 @@ export interface RestPublicLinkRequest {
      * @memberof RestPublicLinkRequest
      */
     'UpdatePassword'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface RestRevisionMeta
+ */
+export interface RestRevisionMeta {
+    /**
+     * 
+     * @type {string}
+     * @memberof RestRevisionMeta
+     */
+    'Description'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestRevisionMeta
+     */
+    'Uuid'?: string;
 }
 /**
  * Request to create a selection from a list of nodes.

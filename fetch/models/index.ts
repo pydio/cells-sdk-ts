@@ -43,6 +43,7 @@ export * from './RestPagination';
 export * from './RestPerformActionResponse';
 export * from './RestPublicLinkDeleteSuccess';
 export * from './RestPublicLinkRequest';
+export * from './RestRevisionMeta';
 export * from './RestSelection';
 export * from './RestShareLink';
 export * from './RestShareLinkAccessType';
