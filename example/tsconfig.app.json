@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "../models", "../apis"]
+  "include": ["src", "../fetch", "../axios"]
 }

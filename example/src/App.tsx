@@ -1,12 +1,13 @@
 import {useEffect, useState} from 'react'
 import './App.css'
 import Node from './Node'
+import axios from "axios";
 
-import {Configuration, NodeServiceApi, RestNode, RestNodeCollection} from "../../index.ts";
+import {RestNode, RestNodeCollection, NodeServiceApi} from "../../axios";
 import Preview from "./Preview.tsx";
 
 function App() {
-    const [current, setCurrent] = useState<RestNode>({path:'/', type:'COLLECTION'})
+    const [current, setCurrent] = useState<RestNode>({Path:'/', Type:'COLLECTION'})
     const [coll, setColl] = useState<RestNodeCollection|null>(null)
     const [selection, setSelection] = useState<string|''>('')
     const [showSettings, setShowSettings] = useState<boolean>(true)
@@ -14,24 +15,26 @@ function App() {
     const [basePath, setBasePath] = useState<string>(localStorage.getItem('basePath')||'')
     const [apiKey, setApiKey] = useState<string>(localStorage.getItem('apiKey')||'')
 
-    const apiConfig = new Configuration({
-        basePath:basePath,
-        headers:{
-            'Authorization':'Bearer ' + apiKey
-        }
-    })
+
     const getParent   = (n:RestNode):RestNode => {
-        const pp = n.path!.split('/')
+        const pp = n.Path!.split('/')
         pp.pop()
         const parentPath = pp.join('/')
-        return {path: '/' + parentPath, type:'COLLECTION'}
+        return {Path: '/' + parentPath, Type:'COLLECTION'}
     }
 
-    const api = new NodeServiceApi(apiConfig)
+    const instance = axios.create({
+        baseURL: basePath,
+        timeout: 1000,
+        headers: {'Authorization': 'Bearer ' + apiKey}
+    });
+    const api= new NodeServiceApi(undefined, undefined, instance)
+
 
     const loadCurrent = ():void => {
-        api.lookup({body: {locators:{many:[{path:current.path+'/*'}]}}}).then(res => {
-            setColl(res)
+        api.lookup({Locators:{Many:[{Path:current.Path+'/*'}]}}).then(res => {
+            console.log('RESULTS', res)
+            setColl(res.data)
         })
     }
 
@@ -40,7 +43,7 @@ function App() {
         if(!name) {
             return
         }
-        api.create({body: {inputs:[{type:type=='folder'?'COLLECTION':'LEAF', locator:{path:current.path+'/'+name}}]}}).then((res)=>{
+        api.create({Inputs:[{Type:type=='folder'?'COLLECTION':'LEAF', Locator:{Path:current.Path+'/'+name}}]}).then((res)=>{
             console.log(res)
             loadCurrent()
         }).catch((e) => {window.alert(e.message)})
@@ -52,21 +55,21 @@ function App() {
         localStorage.setItem('basePath', basePath)
     }, [apiKey, basePath])
 
-    const children = (coll && coll.nodes) || []
+    const children = (coll && coll.Nodes) || []
     children.sort((a,b) => {
-        if(a.isRecycleBin) {
+        if(a.IsRecycleBin) {
             return 1
-        } else if (b.isRecycleBin) {
+        } else if (b.IsRecycleBin) {
             return -1
         }
-        const kA = a.type+'_'+a.path
-        const kB = b.type+'_'+b.path
+        const kA = a.Type+'_'+a.Path
+        const kB = b.Type+'_'+b.Path
         return kA.localeCompare(kB)
     })
 
     let file;
     if(selection) {
-        file = children.find((child) => child.path === selection)
+        file = children.find((child) => child.Path === selection)
     }
 
     return (
@@ -83,7 +86,7 @@ function App() {
                            onChange={(e) => setApiKey(e.target.value)}/>
                 </div>
             </div>
-            <h2>Folder {current.path}</h2>
+            <h2>Folder {current.Path}</h2>
             <div style={{display: 'flex'}}>
                 <button onClick={() => createNode('folder')}>Create Folder</button>
                 <button onClick={() => createNode('file')}>Create File</button>
@@ -95,8 +98,8 @@ function App() {
                     <div style={{overflowX: 'auto'}}>
                         <div onClick={() => setCurrent(getParent(current))}>📂..</div>
                         {children.map((n) =>
-                            <Node key={n.path} n={n} api={api} setCurrent={setCurrent}
-                                  selected={selection === n.path}
+                            <Node key={n.Path} n={n} api={api} setCurrent={setCurrent}
+                                  selected={selection === n.Path}
                                   setSelection={setSelection}/>
                         )}
                     </div>

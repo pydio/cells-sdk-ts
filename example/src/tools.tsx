@@ -1,14 +1,14 @@
-import {RestNode} from "../../models";
+import {RestNode} from "../../axios";
 
 const getBase = (n:RestNode):string => {
-    if(n.isRecycleBin) {
+    if(n.IsRecycleBin) {
         return 'Recycle'
-    } else if(n.contextWorkspace && n.contextWorkspace.label) {
-        return n.contextWorkspace.label;
+    } else if(n.ContextWorkspace && n.ContextWorkspace.Label) {
+        return n.ContextWorkspace.Label;
     }
-    const pp = n.path!.split('/')
+    const pp = n.Path!.split('/')
     if (!pp.length) {
-        return n.path||''
+        return n.Path||''
     }
     return pp.pop()||''
 }

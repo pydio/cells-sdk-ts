@@ -1,4 +1,4 @@
-import {NodeServiceApi, RestNode} from "../../index.ts";
+import {NodeServiceApi, RestNode} from "../../axios";
 import {getBase} from "./tools.tsx";
 
 interface props {
@@ -12,8 +12,8 @@ const Node = (props:props)=> {
 
     const {n, setCurrent, selected, setSelection} = props;
 
-    let icon = n.type == 'COLLECTION' ? '📂' : '📄'
-    if(n.isRecycleBin){
+    let icon = n.Type == 'COLLECTION' ? '📂' : '📄'
+    if(n.IsRecycleBin){
         icon = '🗑️'
     }
 
@@ -25,15 +25,15 @@ const Node = (props:props)=> {
                 padding:'2px 10px',
                 borderRadius:5
             }}
-            onClick={() => (n.type == 'COLLECTION' ? setCurrent(n) : setSelection(n.path))}
-            onContextMenu={(e) => {e.preventDefault(); setSelection(n.path)}}
+            onClick={() => (n.Type == 'COLLECTION' ? setCurrent(n) : setSelection(n.Path))}
+            onContextMenu={(e) => {e.preventDefault(); setSelection(n.Path)}}
         >
             {icon} {getBase(n)}
-            {n.isBookmarked && ' ⭐'}
-            {n.subscriptions && ' 🔔'}
-            {n.userMetadata && ' 🏷️'}
-            {n.contentLock && ' 🔒'}
-            {n.shares && ' 🔗'}
+            {n.IsBookmarked && ' ⭐'}
+            {n.Subscriptions && ' 🔔'}
+            {n.UserMetadata && ' 🏷️'}
+            {n.ContentLock && ' 🔒'}
+            {n.Shares && ' 🔗'}
         </div>
     )
 
