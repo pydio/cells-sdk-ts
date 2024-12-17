@@ -110,12 +110,6 @@ export interface ActivityObject {
      * @type {ActivityObject}
      * @memberof ActivityObject
      */
-    context?: ActivityObject;
-    /**
-     * 
-     * @type {ActivityObject}
-     * @memberof ActivityObject
-     */
     current?: ActivityObject;
     /**
      * 
@@ -433,7 +427,6 @@ export function ActivityObjectFromJSONTyped(json: any, ignoreDiscriminator: bool
         'cc': json['cc'] == null ? undefined : ActivityObjectFromJSON(json['cc']),
         'closed': json['closed'] == null ? undefined : (new Date(json['closed'])),
         'content': json['content'] == null ? undefined : ActivityObjectFromJSON(json['content']),
-        'context': json['context'] == null ? undefined : ActivityObjectFromJSON(json['context']),
         'current': json['current'] == null ? undefined : ActivityObjectFromJSON(json['current']),
         'deleted': json['deleted'] == null ? undefined : (new Date(json['deleted'])),
         'duration': json['duration'] == null ? undefined : (new Date(json['duration'])),
@@ -509,7 +502,6 @@ export function ActivityObjectToJSONTyped(value?: ActivityObject | null, ignoreD
         'cc': ActivityObjectToJSON(value['cc']),
         'closed': value['closed'] == null ? undefined : ((value['closed']).toISOString()),
         'content': ActivityObjectToJSON(value['content']),
-        'context': ActivityObjectToJSON(value['context']),
         'current': ActivityObjectToJSON(value['current']),
         'deleted': value['deleted'] == null ? undefined : ((value['deleted']).toISOString()),
         'duration': value['duration'] == null ? undefined : ((value['duration']).toISOString()),

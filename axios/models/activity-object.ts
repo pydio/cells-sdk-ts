@@ -106,12 +106,6 @@ export interface ActivityObject {
      * @type {ActivityObject}
      * @memberof ActivityObject
      */
-    'context'?: ActivityObject;
-    /**
-     * 
-     * @type {ActivityObject}
-     * @memberof ActivityObject
-     */
     'current'?: ActivityObject;
     /**
      * 
