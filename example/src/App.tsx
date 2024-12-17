@@ -7,7 +7,7 @@ import {RestNode, RestNodeCollection, NodeServiceApi} from "../../axios";
 import Preview from "./Preview.tsx";
 
 function App() {
-    const [current, setCurrent] = useState<RestNode>({Path:'/', Type:'COLLECTION'})
+    const [current, setCurrent] = useState<RestNode>({Uuid:'', Path:'/', Type:'COLLECTION'})
     const [coll, setColl] = useState<RestNodeCollection|null>(null)
     const [selection, setSelection] = useState<string|''>('')
     const [showSettings, setShowSettings] = useState<boolean>(true)
@@ -20,7 +20,7 @@ function App() {
         const pp = n.Path!.split('/')
         pp.pop()
         const parentPath = pp.join('/')
-        return {Path: '/' + parentPath, Type:'COLLECTION'}
+        return {Uuid: '', Path: '/' + parentPath, Type:'COLLECTION'}
     }
 
     const instance = axios.create({
@@ -33,7 +33,6 @@ function App() {
 
     const loadCurrent = ():void => {
         api.lookup({Locators:{Many:[{Path:current.Path+'/*'}]}}).then(res => {
-            console.log('RESULTS', res)
             setColl(res.data)
         })
     }
@@ -43,8 +42,7 @@ function App() {
         if(!name) {
             return
         }
-        api.create({Inputs:[{Type:type=='folder'?'COLLECTION':'LEAF', Locator:{Path:current.Path+'/'+name}}]}).then((res)=>{
-            console.log(res)
+        api.create({Inputs:[{Type:type=='folder'?'COLLECTION':'LEAF', Locator:{Path:current.Path+'/'+name}}]}).then(()=>{
             loadCurrent()
         }).catch((e) => {window.alert(e.message)})
     }

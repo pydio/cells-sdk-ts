@@ -32,13 +32,13 @@ export interface RestNamespaceValuesOperation {
      * @type {RestNsOp}
      * @memberof RestNamespaceValuesOperation
      */
-    operation?: RestNsOp;
+    operation: RestNsOp;
     /**
      * 
      * @type {Array<string>}
      * @memberof RestNamespaceValuesOperation
      */
-    values?: Array<string>;
+    values: Array<string>;
 }
 
 
@@ -47,6 +47,8 @@ export interface RestNamespaceValuesOperation {
  * Check if a given object implements the RestNamespaceValuesOperation interface.
  */
 export function instanceOfRestNamespaceValuesOperation(value: object): value is RestNamespaceValuesOperation {
+    if (!('operation' in value) || value['operation'] === undefined) return false;
+    if (!('values' in value) || value['values'] === undefined) return false;
     return true;
 }
 
@@ -60,8 +62,8 @@ export function RestNamespaceValuesOperationFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'operation': json['Operation'] == null ? undefined : RestNsOpFromJSON(json['Operation']),
-        'values': json['Values'] == null ? undefined : json['Values'],
+        'operation': RestNsOpFromJSON(json['Operation']),
+        'values': json['Values'],
     };
 }
 

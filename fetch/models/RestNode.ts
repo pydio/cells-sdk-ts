@@ -113,7 +113,7 @@ import {
 } from './RestRevisionMeta';
 
 /**
- * 
+ * Representation of a file or folder
  * @export
  * @interface RestNode
  */
@@ -203,7 +203,7 @@ export interface RestNode {
      */
     mode?: RestMode;
     /**
-     * 
+     * Date instead of TS ?
      * @type {string}
      * @memberof RestNode
      */
@@ -213,7 +213,7 @@ export interface RestNode {
      * @type {string}
      * @memberof RestNode
      */
-    path?: string;
+    path: string;
     /**
      * 
      * @type {Array<RestFilePreview>}
@@ -267,7 +267,7 @@ export interface RestNode {
      * @type {string}
      * @memberof RestNode
      */
-    uuid?: string;
+    uuid: string;
 }
 
 
@@ -276,6 +276,8 @@ export interface RestNode {
  * Check if a given object implements the RestNode interface.
  */
 export function instanceOfRestNode(value: object): value is RestNode {
+    if (!('path' in value) || value['path'] === undefined) return false;
+    if (!('uuid' in value) || value['uuid'] === undefined) return false;
     return true;
 }
 
@@ -304,7 +306,7 @@ export function RestNodeFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'metadata': json['Metadata'] == null ? undefined : ((json['Metadata'] as Array<any>).map(RestJsonMetaFromJSON)),
         'mode': json['Mode'] == null ? undefined : RestModeFromJSON(json['Mode']),
         'modified': json['Modified'] == null ? undefined : json['Modified'],
-        'path': json['Path'] == null ? undefined : json['Path'],
+        'path': json['Path'],
         'previews': json['Previews'] == null ? undefined : ((json['Previews'] as Array<any>).map(RestFilePreviewFromJSON)),
         'revisionMeta': json['RevisionMeta'] == null ? undefined : RestRevisionMetaFromJSON(json['RevisionMeta']),
         'shares': json['Shares'] == null ? undefined : ((json['Shares'] as Array<any>).map(RestShareLinkFromJSON)),
@@ -313,7 +315,7 @@ export function RestNodeFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'subscriptions': json['Subscriptions'] == null ? undefined : ((json['Subscriptions'] as Array<any>).map(ActivitySubscriptionFromJSON)),
         'type': json['Type'] == null ? undefined : TreeNodeTypeFromJSON(json['Type']),
         'userMetadata': json['UserMetadata'] == null ? undefined : ((json['UserMetadata'] as Array<any>).map(RestUserMetaFromJSON)),
-        'uuid': json['Uuid'] == null ? undefined : json['Uuid'],
+        'uuid': json['Uuid'],
     };
 }
 

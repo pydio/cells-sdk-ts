@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 interface props {
     api: NodeServiceApi
     n: RestNode,
-    loadCurrent: any
+    loadCurrent: () => void
 }
 
 const Preview = (props:props) => {
@@ -20,13 +20,13 @@ const Preview = (props:props) => {
     }
 
     const loadByUuid = () => {
-        api.getByUuid(n.Uuid!).then(res=>{
+        api.getByUuid(n.Uuid).then(res=>{
             setByUuid(res.data)
         })
     }
 
     const bookmark = () => {
-        api.patchNode(n.Uuid!,{Bookmark:{Value:!n.IsBookmarked}}).then(()=>{
+        api.patchNode(n.Uuid,{Bookmark:{Value:!n.IsBookmarked}}).then(()=>{
             loadCurrent()
         })
     }
@@ -37,7 +37,7 @@ const Preview = (props:props) => {
                 loadCurrent()
             })
         } else {
-            api.createPublicLink(n.Uuid!, {
+            api.createPublicLink(n.Uuid, {
                 Link:{
                     Label:getBase(n),
                     Permissions:["Preview", "Download"]
@@ -50,7 +50,7 @@ const Preview = (props:props) => {
     }
 
     const rename = (wait=false) => {
-        const pp = n.Path!.split('/')
+        const pp = n.Path.split('/')
         const base = pp.pop()||''
         const newName = window.prompt("New name:", base)
         if(!newName) {
@@ -69,7 +69,10 @@ const Preview = (props:props) => {
         api.performAction("move", req).then((res)=>{
             if(wait) {
                 const data:RestPerformActionResponse = res.data
-                const jobUuid = data.Tasks![0].JobUuid || ''
+                let jobUuid = ''
+                if(data.BackgroundActions && data.BackgroundActions.length) {
+                    jobUuid = data.BackgroundActions[0].JobUuid
+                }
                 if(jobUuid) {
                     const intID = setInterval(()=>{
                         api.backgroundActionInfo("move", jobUuid).then((info)=>{

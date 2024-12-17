@@ -22,7 +22,7 @@ import {
 } from './IdmWorkspaceScope';
 
 /**
- * 
+ * Current workspace information, maybe published on the root node of a workspace
  * @export
  * @interface RestContextWorkspace
  */
@@ -86,7 +86,7 @@ export interface RestContextWorkspace {
      * @type {string}
      * @memberof RestContextWorkspace
      */
-    slug?: string;
+    slug: string;
     /**
      * 
      * @type {boolean}
@@ -98,7 +98,7 @@ export interface RestContextWorkspace {
      * @type {string}
      * @memberof RestContextWorkspace
      */
-    uuid?: string;
+    uuid: string;
 }
 
 
@@ -107,6 +107,8 @@ export interface RestContextWorkspace {
  * Check if a given object implements the RestContextWorkspace interface.
  */
 export function instanceOfRestContextWorkspace(value: object): value is RestContextWorkspace {
+    if (!('slug' in value) || value['slug'] === undefined) return false;
+    if (!('uuid' in value) || value['uuid'] === undefined) return false;
     return true;
 }
 
@@ -129,9 +131,9 @@ export function RestContextWorkspaceFromJSONTyped(json: any, ignoreDiscriminator
         'quotaUsage': json['QuotaUsage'] == null ? undefined : json['QuotaUsage'],
         'scope': json['Scope'] == null ? undefined : IdmWorkspaceScopeFromJSON(json['Scope']),
         'skipRecycle': json['SkipRecycle'] == null ? undefined : json['SkipRecycle'],
-        'slug': json['Slug'] == null ? undefined : json['Slug'],
+        'slug': json['Slug'],
         'syncable': json['Syncable'] == null ? undefined : json['Syncable'],
-        'uuid': json['Uuid'] == null ? undefined : json['Uuid'],
+        'uuid': json['Uuid'],
     };
 }
 

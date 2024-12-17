@@ -24,19 +24,21 @@ export interface RestCountMeta {
      * @type {string}
      * @memberof RestCountMeta
      */
-    namespace?: string;
+    namespace: string;
     /**
      * 
      * @type {number}
      * @memberof RestCountMeta
      */
-    value?: number;
+    value: number;
 }
 
 /**
  * Check if a given object implements the RestCountMeta interface.
  */
 export function instanceOfRestCountMeta(value: object): value is RestCountMeta {
+    if (!('namespace' in value) || value['namespace'] === undefined) return false;
+    if (!('value' in value) || value['value'] === undefined) return false;
     return true;
 }
 
@@ -50,8 +52,8 @@ export function RestCountMetaFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'namespace': json['Namespace'] == null ? undefined : json['Namespace'],
-        'value': json['Value'] == null ? undefined : json['Value'],
+        'namespace': json['Namespace'],
+        'value': json['Value'],
     };
 }
 

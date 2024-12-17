@@ -30,13 +30,14 @@ export interface RestRevisionMeta {
      * @type {string}
      * @memberof RestRevisionMeta
      */
-    uuid?: string;
+    uuid: string;
 }
 
 /**
  * Check if a given object implements the RestRevisionMeta interface.
  */
 export function instanceOfRestRevisionMeta(value: object): value is RestRevisionMeta {
+    if (!('uuid' in value) || value['uuid'] === undefined) return false;
     return true;
 }
 
@@ -51,7 +52,7 @@ export function RestRevisionMetaFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'description': json['Description'] == null ? undefined : json['Description'],
-        'uuid': json['Uuid'] == null ? undefined : json['Uuid'],
+        'uuid': json['Uuid'],
     };
 }
 

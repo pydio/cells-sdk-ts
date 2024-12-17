@@ -38,7 +38,7 @@ export interface RestPublicLinkRequest {
      * @type {RestShareLink}
      * @memberof RestPublicLinkRequest
      */
-    link?: RestShareLink;
+    link: RestShareLink;
     /**
      * 
      * @type {boolean}
@@ -63,6 +63,7 @@ export interface RestPublicLinkRequest {
  * Check if a given object implements the RestPublicLinkRequest interface.
  */
 export function instanceOfRestPublicLinkRequest(value: object): value is RestPublicLinkRequest {
+    if (!('link' in value) || value['link'] === undefined) return false;
     return true;
 }
 
@@ -77,7 +78,7 @@ export function RestPublicLinkRequestFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'createPassword': json['CreatePassword'] == null ? undefined : json['CreatePassword'],
-        'link': json['Link'] == null ? undefined : RestShareLinkFromJSON(json['Link']),
+        'link': RestShareLinkFromJSON(json['Link']),
         'passwordEnabled': json['PasswordEnabled'] == null ? undefined : json['PasswordEnabled'],
         'updateCustomHash': json['UpdateCustomHash'] == null ? undefined : json['UpdateCustomHash'],
         'updatePassword': json['UpdatePassword'] == null ? undefined : json['UpdatePassword'],

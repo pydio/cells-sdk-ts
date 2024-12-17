@@ -56,7 +56,7 @@ export interface RestBackgroundAction {
      * @type {string}
      * @memberof RestBackgroundAction
      */
-    jobUuid?: string;
+    jobUuid: string;
     /**
      * 
      * @type {string}
@@ -68,7 +68,7 @@ export interface RestBackgroundAction {
      * @type {string}
      * @memberof RestBackgroundAction
      */
-    name?: string;
+    name: string;
     /**
      * 
      * @type {number}
@@ -101,6 +101,8 @@ export interface RestBackgroundAction {
  * Check if a given object implements the RestBackgroundAction interface.
  */
 export function instanceOfRestBackgroundAction(value: object): value is RestBackgroundAction {
+    if (!('jobUuid' in value) || value['jobUuid'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -118,9 +120,9 @@ export function RestBackgroundActionFromJSONTyped(json: any, ignoreDiscriminator
         'canStop': json['CanStop'] == null ? undefined : json['CanStop'],
         'endTime': json['EndTime'] == null ? undefined : json['EndTime'],
         'hasProgress': json['HasProgress'] == null ? undefined : json['HasProgress'],
-        'jobUuid': json['JobUuid'] == null ? undefined : json['JobUuid'],
+        'jobUuid': json['JobUuid'],
         'label': json['Label'] == null ? undefined : json['Label'],
-        'name': json['Name'] == null ? undefined : json['Name'],
+        'name': json['Name'],
         'progress': json['Progress'] == null ? undefined : json['Progress'],
         'startTime': json['StartTime'] == null ? undefined : json['StartTime'],
         'status': json['Status'] == null ? undefined : JobsTaskStatusFromJSON(json['Status']),

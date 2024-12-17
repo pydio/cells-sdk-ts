@@ -3,8 +3,8 @@ import {getBase} from "./tools.tsx";
 
 interface props {
     n:RestNode,
-    setCurrent:any,
-    setSelection: any,
+    setCurrent: (n:RestNode) => void,
+    setSelection: (s:string) => void,
     selected: boolean,
     api: NodeServiceApi
 }

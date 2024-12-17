@@ -45,7 +45,7 @@ export interface RestIncomingNode {
      * @type {RestNodeLocator}
      * @memberof RestIncomingNode
      */
-    locator?: RestNodeLocator;
+    locator: RestNodeLocator;
     /**
      * 
      * @type {string}
@@ -57,7 +57,7 @@ export interface RestIncomingNode {
      * @type {TreeNodeType}
      * @memberof RestIncomingNode
      */
-    type?: TreeNodeType;
+    type: TreeNodeType;
 }
 
 
@@ -66,6 +66,8 @@ export interface RestIncomingNode {
  * Check if a given object implements the RestIncomingNode interface.
  */
 export function instanceOfRestIncomingNode(value: object): value is RestIncomingNode {
+    if (!('locator' in value) || value['locator'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
     return true;
 }
 
@@ -80,9 +82,9 @@ export function RestIncomingNodeFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'contentType': json['ContentType'] == null ? undefined : json['ContentType'],
-        'locator': json['Locator'] == null ? undefined : RestNodeLocatorFromJSON(json['Locator']),
+        'locator': RestNodeLocatorFromJSON(json['Locator']),
         'templateUuid': json['TemplateUuid'] == null ? undefined : json['TemplateUuid'],
-        'type': json['Type'] == null ? undefined : TreeNodeTypeFromJSON(json['Type']),
+        'type': TreeNodeTypeFromJSON(json['Type']),
     };
 }
 

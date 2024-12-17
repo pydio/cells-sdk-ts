@@ -30,13 +30,13 @@ export interface RestUserMeta {
      * @type {string}
      * @memberof RestUserMeta
      */
-    jsonValue?: string;
+    jsonValue: string;
     /**
      * 
      * @type {string}
      * @memberof RestUserMeta
      */
-    namespace?: string;
+    namespace: string;
     /**
      * 
      * @type {string}
@@ -49,6 +49,8 @@ export interface RestUserMeta {
  * Check if a given object implements the RestUserMeta interface.
  */
 export function instanceOfRestUserMeta(value: object): value is RestUserMeta {
+    if (!('jsonValue' in value) || value['jsonValue'] === undefined) return false;
+    if (!('namespace' in value) || value['namespace'] === undefined) return false;
     return true;
 }
 
@@ -63,8 +65,8 @@ export function RestUserMetaFromJSONTyped(json: any, ignoreDiscriminator: boolea
     return {
         
         'editable': json['Editable'] == null ? undefined : json['Editable'],
-        'jsonValue': json['JsonValue'] == null ? undefined : json['JsonValue'],
-        'namespace': json['Namespace'] == null ? undefined : json['Namespace'],
+        'jsonValue': json['JsonValue'],
+        'namespace': json['Namespace'],
         'nodeUuid': json['NodeUuid'] == null ? undefined : json['NodeUuid'],
     };
 }

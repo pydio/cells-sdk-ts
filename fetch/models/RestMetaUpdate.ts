@@ -39,13 +39,13 @@ export interface RestMetaUpdate {
      * @type {MetaUpdateOp}
      * @memberof RestMetaUpdate
      */
-    operation?: MetaUpdateOp;
+    operation: MetaUpdateOp;
     /**
      * 
      * @type {RestUserMeta}
      * @memberof RestMetaUpdate
      */
-    userMeta?: RestUserMeta;
+    userMeta: RestUserMeta;
 }
 
 
@@ -54,6 +54,8 @@ export interface RestMetaUpdate {
  * Check if a given object implements the RestMetaUpdate interface.
  */
 export function instanceOfRestMetaUpdate(value: object): value is RestMetaUpdate {
+    if (!('operation' in value) || value['operation'] === undefined) return false;
+    if (!('userMeta' in value) || value['userMeta'] === undefined) return false;
     return true;
 }
 
@@ -67,8 +69,8 @@ export function RestMetaUpdateFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'operation': json['Operation'] == null ? undefined : MetaUpdateOpFromJSON(json['Operation']),
-        'userMeta': json['UserMeta'] == null ? undefined : RestUserMetaFromJSON(json['UserMeta']),
+        'operation': MetaUpdateOpFromJSON(json['Operation']),
+        'userMeta': RestUserMetaFromJSON(json['UserMeta']),
     };
 }
 

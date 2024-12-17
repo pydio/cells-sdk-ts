@@ -32,13 +32,14 @@ export interface RestBatchUpdateMetaList {
      * @type {Array<RestMetaUpdate>}
      * @memberof RestBatchUpdateMetaList
      */
-    updates?: Array<RestMetaUpdate>;
+    updates: Array<RestMetaUpdate>;
 }
 
 /**
  * Check if a given object implements the RestBatchUpdateMetaList interface.
  */
 export function instanceOfRestBatchUpdateMetaList(value: object): value is RestBatchUpdateMetaList {
+    if (!('updates' in value) || value['updates'] === undefined) return false;
     return true;
 }
 
@@ -52,7 +53,7 @@ export function RestBatchUpdateMetaListFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'updates': json['Updates'] == null ? undefined : ((json['Updates'] as Array<any>).map(RestMetaUpdateFromJSON)),
+        'updates': ((json['Updates'] as Array<any>).map(RestMetaUpdateFromJSON)),
     };
 }
 
@@ -67,7 +68,7 @@ export function RestBatchUpdateMetaListToJSONTyped(value?: RestBatchUpdateMetaLi
 
     return {
         
-        'Updates': value['updates'] == null ? undefined : ((value['updates'] as Array<any>).map(RestMetaUpdateToJSON)),
+        'Updates': ((value['updates'] as Array<any>).map(RestMetaUpdateToJSON)),
     };
 }
 

@@ -107,7 +107,7 @@ export interface CreatePublicLinkRequest {
 }
 
 export interface CreateSelectionRequest {
-    body: RestSelection;
+    body: Omit<RestSelection, 'Uuid'>;
 }
 
 export interface DeletePublicLinkRequest {
@@ -125,8 +125,8 @@ export interface GetPublicLinkRequest {
 
 export interface ListNamespaceValuesRequest {
     namespace: string;
-    operationOperation?: ListNamespaceValuesOperationOperationEnum;
-    operationValues?: Array<string>;
+    operationOperation: ListNamespaceValuesOperationOperationEnum;
+    operationValues: Array<string>;
 }
 
 export interface ListVersionsRequest {
@@ -198,6 +198,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
         const response = await this.request({
             path: `/n/action/{Name}/{JobUuid}`.replace(`{${"Name"}}`, encodeURIComponent(String(requestParameters['name']))).replace(`{${"JobUuid"}}`, encodeURIComponent(String(requestParameters['jobUuid']))),
             method: 'GET',
@@ -232,6 +236,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
 
         const response = await this.request({
             path: `/n/meta/batch`,
@@ -283,6 +291,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
         const response = await this.request({
             path: `/n/action/{Name}/{JobUuid}`.replace(`{${"Name"}}`, encodeURIComponent(String(requestParameters['name']))).replace(`{${"JobUuid"}}`, encodeURIComponent(String(requestParameters['jobUuid']))),
             method: 'PATCH',
@@ -318,6 +330,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
 
         const response = await this.request({
             path: `/n/nodes/create`,
@@ -362,6 +378,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
         const response = await this.request({
             path: `/n/node/{Uuid}/link`.replace(`{${"Uuid"}}`, encodeURIComponent(String(requestParameters['uuid']))),
             method: 'POST',
@@ -398,6 +418,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
         const response = await this.request({
             path: `/n/selection`,
             method: 'POST',
@@ -431,6 +455,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
 
         const response = await this.request({
             path: `/n/link/{LinkUuid}`.replace(`{${"LinkUuid"}}`, encodeURIComponent(String(requestParameters['linkUuid']))),
@@ -469,6 +497,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
         const response = await this.request({
             path: `/n/node/{Uuid}`.replace(`{${"Uuid"}}`, encodeURIComponent(String(requestParameters['uuid']))),
             method: 'GET',
@@ -502,6 +534,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
         const response = await this.request({
             path: `/n/link/{LinkUuid}`.replace(`{${"LinkUuid"}}`, encodeURIComponent(String(requestParameters['linkUuid']))),
             method: 'GET',
@@ -531,6 +567,20 @@ export class NodeServiceApi extends runtime.BaseAPI {
             );
         }
 
+        if (requestParameters['operationOperation'] == null) {
+            throw new runtime.RequiredError(
+                'operationOperation',
+                'Required parameter "operationOperation" was null or undefined when calling listNamespaceValues().'
+            );
+        }
+
+        if (requestParameters['operationValues'] == null) {
+            throw new runtime.RequiredError(
+                'operationValues',
+                'Required parameter "operationValues" was null or undefined when calling listNamespaceValues().'
+            );
+        }
+
         const queryParameters: any = {};
 
         if (requestParameters['operationOperation'] != null) {
@@ -542,6 +592,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
 
         const response = await this.request({
             path: `/n/meta/namespace/{Namespace}`.replace(`{${"Namespace"}}`, encodeURIComponent(String(requestParameters['namespace']))),
@@ -568,6 +622,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
 
         const response = await this.request({
             path: `/n/meta/namespace`,
@@ -606,6 +664,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
         const response = await this.request({
             path: `/n/node/{Uuid}/versions`.replace(`{${"Uuid"}}`, encodeURIComponent(String(requestParameters['uuid']))),
             method: 'GET',
@@ -640,6 +702,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
 
         const response = await this.request({
             path: `/n/nodes`,
@@ -683,6 +749,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
 
         const response = await this.request({
             path: `/n/node/{Uuid}`.replace(`{${"Uuid"}}`, encodeURIComponent(String(requestParameters['uuid']))),
@@ -731,6 +801,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
         const response = await this.request({
             path: `/n/action/{Name}`.replace(`{${"Name"}}`, encodeURIComponent(String(requestParameters['name']))),
             method: 'POST',
@@ -767,6 +841,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
         const response = await this.request({
             path: `/n/meta/find`,
             method: 'POST',
@@ -797,6 +875,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
 
         const response = await this.request({
             path: `/n/templates`,
@@ -839,6 +921,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
 
         const response = await this.request({
             path: `/n/meta/namespace/{Namespace}`.replace(`{${"Namespace"}}`, encodeURIComponent(String(requestParameters['namespace']))),
@@ -883,6 +969,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
         const response = await this.request({
             path: `/n/link/{LinkUuid}`.replace(`{${"LinkUuid"}}`, encodeURIComponent(String(requestParameters['linkUuid']))),
             method: 'PATCH',
@@ -913,6 +1003,10 @@ export class NodeServiceApi extends runtime.BaseAPI {
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
 
         const response = await this.request({
             path: `/n/nodes/bookmarks`,

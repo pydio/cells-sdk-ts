@@ -32,7 +32,7 @@ export interface RestCreateRequest {
      * @type {Array<RestIncomingNode>}
      * @memberof RestCreateRequest
      */
-    inputs?: Array<RestIncomingNode>;
+    inputs: Array<RestIncomingNode>;
     /**
      * 
      * @type {boolean}
@@ -45,6 +45,7 @@ export interface RestCreateRequest {
  * Check if a given object implements the RestCreateRequest interface.
  */
 export function instanceOfRestCreateRequest(value: object): value is RestCreateRequest {
+    if (!('inputs' in value) || value['inputs'] === undefined) return false;
     return true;
 }
 
@@ -58,7 +59,7 @@ export function RestCreateRequestFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'inputs': json['Inputs'] == null ? undefined : ((json['Inputs'] as Array<any>).map(RestIncomingNodeFromJSON)),
+        'inputs': ((json['Inputs'] as Array<any>).map(RestIncomingNodeFromJSON)),
         'recursive': json['Recursive'] == null ? undefined : json['Recursive'],
     };
 }
@@ -74,7 +75,7 @@ export function RestCreateRequestToJSONTyped(value?: RestCreateRequest | null, i
 
     return {
         
-        'Inputs': value['inputs'] == null ? undefined : ((value['inputs'] as Array<any>).map(RestIncomingNodeToJSON)),
+        'Inputs': ((value['inputs'] as Array<any>).map(RestIncomingNodeToJSON)),
         'Recursive': value['recursive'],
     };
 }

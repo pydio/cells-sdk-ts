@@ -32,19 +32,20 @@ export interface RestSelection {
      * @type {Array<RestNode>}
      * @memberof RestSelection
      */
-    nodes?: Array<RestNode>;
+    nodes: Array<RestNode>;
     /**
      * 
      * @type {string}
      * @memberof RestSelection
      */
-    uuid?: string;
+    readonly uuid?: string;
 }
 
 /**
  * Check if a given object implements the RestSelection interface.
  */
 export function instanceOfRestSelection(value: object): value is RestSelection {
+    if (!('nodes' in value) || value['nodes'] === undefined) return false;
     return true;
 }
 
@@ -58,7 +59,7 @@ export function RestSelectionFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'nodes': json['Nodes'] == null ? undefined : ((json['Nodes'] as Array<any>).map(RestNodeFromJSON)),
+        'nodes': ((json['Nodes'] as Array<any>).map(RestNodeFromJSON)),
         'uuid': json['Uuid'] == null ? undefined : json['Uuid'],
     };
 }
@@ -67,15 +68,14 @@ export function RestSelectionToJSON(json: any): RestSelection {
     return RestSelectionToJSONTyped(json, false);
 }
 
-export function RestSelectionToJSONTyped(value?: RestSelection | null, ignoreDiscriminator: boolean = false): any {
+export function RestSelectionToJSONTyped(value?: Omit<RestSelection, 'Uuid'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'Nodes': value['nodes'] == null ? undefined : ((value['nodes'] as Array<any>).map(RestNodeToJSON)),
-        'Uuid': value['uuid'],
+        'Nodes': ((value['nodes'] as Array<any>).map(RestNodeToJSON)),
     };
 }
 

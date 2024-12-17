@@ -52,7 +52,7 @@ export interface RestNodeCollection {
      * @type {Array<RestNode>}
      * @memberof RestNodeCollection
      */
-    nodes?: Array<RestNode>;
+    nodes: Array<RestNode>;
     /**
      * 
      * @type {RestPagination}
@@ -65,6 +65,7 @@ export interface RestNodeCollection {
  * Check if a given object implements the RestNodeCollection interface.
  */
 export function instanceOfRestNodeCollection(value: object): value is RestNodeCollection {
+    if (!('nodes' in value) || value['nodes'] === undefined) return false;
     return true;
 }
 
@@ -79,7 +80,7 @@ export function RestNodeCollectionFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'facets': json['Facets'] == null ? undefined : ((json['Facets'] as Array<any>).map(TreeSearchFacetFromJSON)),
-        'nodes': json['Nodes'] == null ? undefined : ((json['Nodes'] as Array<any>).map(RestNodeFromJSON)),
+        'nodes': ((json['Nodes'] as Array<any>).map(RestNodeFromJSON)),
         'pagination': json['Pagination'] == null ? undefined : RestPaginationFromJSON(json['Pagination']),
     };
 }
@@ -96,7 +97,7 @@ export function RestNodeCollectionToJSONTyped(value?: RestNodeCollection | null,
     return {
         
         'Facets': value['facets'] == null ? undefined : ((value['facets'] as Array<any>).map(TreeSearchFacetToJSON)),
-        'Nodes': value['nodes'] == null ? undefined : ((value['nodes'] as Array<any>).map(RestNodeToJSON)),
+        'Nodes': ((value['nodes'] as Array<any>).map(RestNodeToJSON)),
         'Pagination': RestPaginationToJSON(value['pagination']),
     };
 }

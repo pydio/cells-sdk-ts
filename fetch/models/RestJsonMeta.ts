@@ -24,19 +24,21 @@ export interface RestJsonMeta {
      * @type {string}
      * @memberof RestJsonMeta
      */
-    namespace?: string;
+    namespace: string;
     /**
      * 
      * @type {string}
      * @memberof RestJsonMeta
      */
-    value?: string;
+    value: string;
 }
 
 /**
  * Check if a given object implements the RestJsonMeta interface.
  */
 export function instanceOfRestJsonMeta(value: object): value is RestJsonMeta {
+    if (!('namespace' in value) || value['namespace'] === undefined) return false;
+    if (!('value' in value) || value['value'] === undefined) return false;
     return true;
 }
 
@@ -50,8 +52,8 @@ export function RestJsonMetaFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'namespace': json['Namespace'] == null ? undefined : json['Namespace'],
-        'value': json['Value'] == null ? undefined : json['Value'],
+        'namespace': json['Namespace'],
+        'value': json['Value'],
     };
 }
 

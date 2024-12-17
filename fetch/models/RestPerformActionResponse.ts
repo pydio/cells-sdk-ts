@@ -49,16 +49,16 @@ export interface RestPerformActionResponse {
     affectedNodes?: Array<RestNode>;
     /**
      * 
+     * @type {Array<RestBackgroundAction>}
+     * @memberof RestPerformActionResponse
+     */
+    backgroundActions?: Array<RestBackgroundAction>;
+    /**
+     * 
      * @type {RestActionStatus}
      * @memberof RestPerformActionResponse
      */
     status?: RestActionStatus;
-    /**
-     * 
-     * @type {Array<RestBackgroundAction>}
-     * @memberof RestPerformActionResponse
-     */
-    tasks?: Array<RestBackgroundAction>;
 }
 
 
@@ -81,8 +81,8 @@ export function RestPerformActionResponseFromJSONTyped(json: any, ignoreDiscrimi
     return {
         
         'affectedNodes': json['AffectedNodes'] == null ? undefined : ((json['AffectedNodes'] as Array<any>).map(RestNodeFromJSON)),
+        'backgroundActions': json['BackgroundActions'] == null ? undefined : ((json['BackgroundActions'] as Array<any>).map(RestBackgroundActionFromJSON)),
         'status': json['Status'] == null ? undefined : RestActionStatusFromJSON(json['Status']),
-        'tasks': json['Tasks'] == null ? undefined : ((json['Tasks'] as Array<any>).map(RestBackgroundActionFromJSON)),
     };
 }
 
@@ -98,8 +98,8 @@ export function RestPerformActionResponseToJSONTyped(value?: RestPerformActionRe
     return {
         
         'AffectedNodes': value['affectedNodes'] == null ? undefined : ((value['affectedNodes'] as Array<any>).map(RestNodeToJSON)),
+        'BackgroundActions': value['backgroundActions'] == null ? undefined : ((value['backgroundActions'] as Array<any>).map(RestBackgroundActionToJSON)),
         'Status': RestActionStatusToJSON(value['status']),
-        'Tasks': value['tasks'] == null ? undefined : ((value['tasks'] as Array<any>).map(RestBackgroundActionToJSON)),
     };
 }
 

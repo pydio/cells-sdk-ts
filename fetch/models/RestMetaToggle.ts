@@ -24,13 +24,14 @@ export interface RestMetaToggle {
      * @type {boolean}
      * @memberof RestMetaToggle
      */
-    value?: boolean;
+    value: boolean;
 }
 
 /**
  * Check if a given object implements the RestMetaToggle interface.
  */
 export function instanceOfRestMetaToggle(value: object): value is RestMetaToggle {
+    if (!('value' in value) || value['value'] === undefined) return false;
     return true;
 }
 
@@ -44,7 +45,7 @@ export function RestMetaToggleFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'value': json['Value'] == null ? undefined : json['Value'],
+        'value': json['Value'],
     };
 }
 
