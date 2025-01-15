@@ -24,8 +24,11 @@ models/rest-action-parameters.ts
 models/rest-action-status.ts
 models/rest-background-action.ts
 models/rest-batch-update-meta-list.ts
+models/rest-check-result.ts
 models/rest-context-workspace.ts
 models/rest-count-meta.ts
+models/rest-create-check-request.ts
+models/rest-create-check-response.ts
 models/rest-create-request.ts
 models/rest-data-source-features.ts
 models/rest-error.ts

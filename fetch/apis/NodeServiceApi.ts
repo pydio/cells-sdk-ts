@@ -20,6 +20,8 @@ import type {
   RestActionParameters,
   RestBackgroundAction,
   RestBatchUpdateMetaList,
+  RestCreateCheckRequest,
+  RestCreateCheckResponse,
   RestCreateRequest,
   RestError,
   RestListTemplatesResponse,
@@ -48,6 +50,10 @@ import {
     RestBackgroundActionToJSON,
     RestBatchUpdateMetaListFromJSON,
     RestBatchUpdateMetaListToJSON,
+    RestCreateCheckRequestFromJSON,
+    RestCreateCheckRequestToJSON,
+    RestCreateCheckResponseFromJSON,
+    RestCreateCheckResponseToJSON,
     RestCreateRequestFromJSON,
     RestCreateRequestToJSON,
     RestErrorFromJSON,
@@ -99,6 +105,10 @@ export interface ControlBackgroundActionRequest {
 
 export interface CreateRequest {
     body: RestCreateRequest;
+}
+
+export interface CreateCheckRequest {
+    body: RestCreateCheckRequest;
 }
 
 export interface CreatePublicLinkRequest {
@@ -351,6 +361,46 @@ export class NodeServiceApi extends runtime.BaseAPI {
      */
     async create(requestParameters: CreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RestNodeCollection> {
         const response = await this.createRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Apply some pre-validation checks on node name before sending an upload
+     */
+    async createCheckRaw(requestParameters: CreateCheckRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RestCreateCheckResponse>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling createCheck().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
+        const response = await this.request({
+            path: `/n/nodes/create/precheck`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: RestCreateCheckRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RestCreateCheckResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Apply some pre-validation checks on node name before sending an upload
+     */
+    async createCheck(requestParameters: CreateCheckRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RestCreateCheckResponse> {
+        const response = await this.createCheckRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -42,6 +42,12 @@ export interface RestIncomingNode {
     contentType?: string;
     /**
      * 
+     * @type {string}
+     * @memberof RestIncomingNode
+     */
+    knownSize?: string;
+    /**
+     * 
      * @type {RestNodeLocator}
      * @memberof RestIncomingNode
      */
@@ -82,6 +88,7 @@ export function RestIncomingNodeFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'contentType': json['ContentType'] == null ? undefined : json['ContentType'],
+        'knownSize': json['KnownSize'] == null ? undefined : json['KnownSize'],
         'locator': RestNodeLocatorFromJSON(json['Locator']),
         'templateUuid': json['TemplateUuid'] == null ? undefined : json['TemplateUuid'],
         'type': TreeNodeTypeFromJSON(json['Type']),
@@ -100,6 +107,7 @@ export function RestIncomingNodeToJSONTyped(value?: RestIncomingNode | null, ign
     return {
         
         'ContentType': value['contentType'],
+        'KnownSize': value['knownSize'],
         'Locator': RestNodeLocatorToJSON(value['locator']),
         'TemplateUuid': value['templateUuid'],
         'Type': TreeNodeTypeToJSON(value['type']),

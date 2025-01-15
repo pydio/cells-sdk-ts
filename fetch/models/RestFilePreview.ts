@@ -24,6 +24,12 @@ export interface RestFilePreview {
      * @type {string}
      * @memberof RestFilePreview
      */
+    bucket?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestFilePreview
+     */
     contentType?: string;
     /**
      * 
@@ -31,6 +37,12 @@ export interface RestFilePreview {
      * @memberof RestFilePreview
      */
     dimension?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestFilePreview
+     */
+    key?: string;
     /**
      * 
      * @type {boolean}
@@ -62,8 +74,10 @@ export function RestFilePreviewFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
+        'bucket': json['Bucket'] == null ? undefined : json['Bucket'],
         'contentType': json['ContentType'] == null ? undefined : json['ContentType'],
         'dimension': json['Dimension'] == null ? undefined : json['Dimension'],
+        'key': json['Key'] == null ? undefined : json['Key'],
         'processing': json['Processing'] == null ? undefined : json['Processing'],
         'url': json['Url'] == null ? undefined : json['Url'],
     };
@@ -80,8 +94,10 @@ export function RestFilePreviewToJSONTyped(value?: RestFilePreview | null, ignor
 
     return {
         
+        'Bucket': value['bucket'],
         'ContentType': value['contentType'],
         'Dimension': value['dimension'],
+        'Key': value['key'],
         'Processing': value['processing'],
         'Url': value['url'],
     };

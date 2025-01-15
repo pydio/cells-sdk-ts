@@ -1,9 +1,13 @@
 import {NodeServiceApi, RestActionParameters, RestNode, RestPerformActionResponse, RestShareLink} from "../../axios";
 import {getBase} from "./tools.tsx";
 import {useEffect, useState} from "react";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import {getSignedUrl} from '@aws-sdk/s3-request-presigner'
+
 
 interface props {
     api: NodeServiceApi
+    client: S3Client
     n: RestNode,
     loadCurrent: () => void
 }
@@ -12,7 +16,25 @@ const Preview = (props:props) => {
     const [link, setLink] = useState<RestShareLink|null>(null)
     const [versions, setVersions] = useState<RestNode[]>([])
     const [byUuid, setByUuid] = useState<RestNode|null>(null)
-    const {api,n, loadCurrent} = props;
+    const {api,n, client, loadCurrent} = props;
+    const [previewURL, setPreviewURL] = useState('')
+
+    useEffect(() => {
+        if(n.Previews && n.Previews.length > 0 && n.Previews[0].Key) {
+            const command = new GetObjectCommand({
+                Bucket: n.Previews[0].Bucket,
+                Key: n.Previews[0].Key
+            });
+            getSignedUrl(client, command, { expiresIn: 3600 }).then((url) => {
+                setPreviewURL(url)
+            }).catch(()=>{
+                setPreviewURL('')
+            })
+        } else {
+            setPreviewURL('')
+        }
+    }, [n]);
+
     const del = () => {
         api.performAction('delete', {Nodes:[{Path:n.Path}]}).then(()=>{
             setTimeout(loadCurrent, 1500)
@@ -125,6 +147,7 @@ const Preview = (props:props) => {
         setByUuid(null);
     }, [n]);
 
+
     return (
         <div style={{
             backgroundColor:'rgba(255,255,255,0.2)',
@@ -145,6 +168,7 @@ const Preview = (props:props) => {
                 <button onClick={()=> publicLink()}>Public Link</button>
                 <button onClick={()=> loadByUuid()}>By UUID</button>
             </div>
+            {previewURL && <img src={previewURL} />}
             <pre>{JSON.stringify(props.n, null, '  ')}</pre>
             {link &&
                 <>

@@ -17,8 +17,11 @@ models/RestActionParameters.ts
 models/RestActionStatus.ts
 models/RestBackgroundAction.ts
 models/RestBatchUpdateMetaList.ts
+models/RestCheckResult.ts
 models/RestContextWorkspace.ts
 models/RestCountMeta.ts
+models/RestCreateCheckRequest.ts
+models/RestCreateCheckResponse.ts
 models/RestCreateRequest.ts
 models/RestDataSourceFeatures.ts
 models/RestError.ts

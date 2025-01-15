@@ -25,6 +25,12 @@ export interface RestFilePreview {
      * @type {string}
      * @memberof RestFilePreview
      */
+    'Bucket'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestFilePreview
+     */
     'ContentType'?: string;
     /**
      * 
@@ -32,6 +38,12 @@ export interface RestFilePreview {
      * @memberof RestFilePreview
      */
     'Dimension'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestFilePreview
+     */
+    'Key'?: string;
     /**
      * 
      * @type {boolean}

@@ -15,48 +15,40 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { RestNodeLocator } from './rest-node-locator';
+import type { RestNode } from './rest-node';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { TreeNodeType } from './tree-node-type';
+import type { RestNodeLocator } from './rest-node-locator';
 
 /**
  * 
  * @export
- * @interface RestIncomingNode
+ * @interface RestCheckResult
  */
-export interface RestIncomingNode {
+export interface RestCheckResult {
     /**
      * 
-     * @type {string}
-     * @memberof RestIncomingNode
+     * @type {boolean}
+     * @memberof RestCheckResult
      */
-    'ContentType'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof RestIncomingNode
-     */
-    'KnownSize'?: string;
+    'Exists'?: boolean;
     /**
      * 
      * @type {RestNodeLocator}
-     * @memberof RestIncomingNode
+     * @memberof RestCheckResult
      */
-    'Locator': RestNodeLocator;
+    'InputLocator'?: RestNodeLocator;
     /**
      * 
      * @type {string}
-     * @memberof RestIncomingNode
+     * @memberof RestCheckResult
      */
-    'TemplateUuid'?: string;
+    'NextPath'?: string;
     /**
      * 
-     * @type {TreeNodeType}
-     * @memberof RestIncomingNode
+     * @type {RestNode}
+     * @memberof RestCheckResult
      */
-    'Type': TreeNodeType;
+    'Node'?: RestNode;
 }
-
-
 

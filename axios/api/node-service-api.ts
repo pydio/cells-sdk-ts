@@ -32,6 +32,10 @@ import type { RestBackgroundAction } from '../models';
 // @ts-ignore
 import type { RestBatchUpdateMetaList } from '../models';
 // @ts-ignore
+import type { RestCreateCheckRequest } from '../models';
+// @ts-ignore
+import type { RestCreateCheckResponse } from '../models';
+// @ts-ignore
 import type { RestCreateRequest } from '../models';
 // @ts-ignore
 import type { RestError } from '../models';
@@ -207,6 +211,45 @@ export const NodeServiceApiAxiosParamCreator = function (configuration?: Configu
             // verify required parameter 'body' is not null or undefined
             assertParamExists('create', 'body', body)
             const localVarPath = `/n/nodes/create`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Apply some pre-validation checks on node name before sending an upload
+         * @param {RestCreateCheckRequest} body Request for pre-checking nodes before uploading or creating them.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createCheck: async (body: RestCreateCheckRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('createCheck', 'body', body)
+            const localVarPath = `/n/nodes/create/precheck`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -957,6 +1000,19 @@ export const NodeServiceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Apply some pre-validation checks on node name before sending an upload
+         * @param {RestCreateCheckRequest} body Request for pre-checking nodes before uploading or creating them.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createCheck(body: RestCreateCheckRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestCreateCheckResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createCheck(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['NodeServiceApi.createCheck']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Create a public link on a given node
          * @param {string} uuid 
          * @param {RestPublicLinkRequest} publicLinkRequest 
@@ -1227,6 +1283,16 @@ export const NodeServiceApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
+         * @summary Apply some pre-validation checks on node name before sending an upload
+         * @param {RestCreateCheckRequest} body Request for pre-checking nodes before uploading or creating them.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createCheck(body: RestCreateCheckRequest, options?: RawAxiosRequestConfig): AxiosPromise<RestCreateCheckResponse> {
+            return localVarFp.createCheck(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Create a public link on a given node
          * @param {string} uuid 
          * @param {RestPublicLinkRequest} publicLinkRequest 
@@ -1445,6 +1511,16 @@ export interface NodeServiceApiInterface {
      * @memberof NodeServiceApiInterface
      */
     create(body: RestCreateRequest, options?: RawAxiosRequestConfig): AxiosPromise<RestNodeCollection>;
+
+    /**
+     * 
+     * @summary Apply some pre-validation checks on node name before sending an upload
+     * @param {RestCreateCheckRequest} body Request for pre-checking nodes before uploading or creating them.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NodeServiceApiInterface
+     */
+    createCheck(body: RestCreateCheckRequest, options?: RawAxiosRequestConfig): AxiosPromise<RestCreateCheckResponse>;
 
     /**
      * 
@@ -1673,6 +1749,18 @@ export class NodeServiceApi extends BaseAPI implements NodeServiceApiInterface {
      */
     public create(body: RestCreateRequest, options?: RawAxiosRequestConfig) {
         return NodeServiceApiFp(this.configuration).create(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Apply some pre-validation checks on node name before sending an upload
+     * @param {RestCreateCheckRequest} body Request for pre-checking nodes before uploading or creating them.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NodeServiceApi
+     */
+    public createCheck(body: RestCreateCheckRequest, options?: RawAxiosRequestConfig) {
+        return NodeServiceApiFp(this.configuration).createCheck(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
