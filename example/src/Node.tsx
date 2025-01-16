@@ -1,4 +1,4 @@
-import {NodeServiceApi, RestNode} from "../../axios";
+import {NodeServiceApi, RestNode} from "cells-sdk-ts";
 import {getBase} from "./tools.tsx";
 
 interface props {

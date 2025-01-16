@@ -6,7 +6,7 @@ import {useDropzone} from 'react-dropzone'
 import { S3ServiceException, S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { AwsCredentialIdentity } from "@smithy/types";
 
-import {RestNode, RestNodeCollection, NodeServiceApi} from "../../axios";
+import {RestNode, RestNodeCollection, NodeServiceApi} from "cells-sdk-ts";
 import Preview from "./Preview.tsx";
 
 const putObject = async (client: S3Client, filePath:string, file: File) => {

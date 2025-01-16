@@ -1,4 +1,4 @@
-import {NodeServiceApi, RestActionParameters, RestNode, RestPerformActionResponse, RestShareLink} from "../../axios";
+import {NodeServiceApi, RestActionParameters, RestNode, RestPerformActionResponse, RestShareLink} from "cells-sdk-ts";
 import {getBase} from "./tools.tsx";
 import {useEffect, useState} from "react";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
