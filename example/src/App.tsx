@@ -59,7 +59,7 @@ function App() {
     const getClients = useCallback(() => {
         const instance = axios.create({
             baseURL: basePath,
-            timeout: 1000,
+            timeout: 10000,
             headers: {'Authorization': 'Bearer ' + apiKey}
         });
         const api= new NodeServiceApi(undefined, undefined, instance)
