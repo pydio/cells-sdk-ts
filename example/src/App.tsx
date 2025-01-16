@@ -90,7 +90,7 @@ function App() {
         if(!name) {
             return
         }
-        api.create({Inputs:[{Type:type=='folder'?'COLLECTION':'LEAF', Locator:{Path:current.Path+'/'+name}}]}).then(()=>{
+        api.create({Inputs:[{Type:type=='folder'?'COLLECTION':'LEAF', Locator:{Path:current.Path+'/'+name.normalize('NFC')}}]}).then(()=>{
             loadCurrent()
         }).catch((e) => {window.alert(e.message)})
     }
@@ -99,6 +99,7 @@ function App() {
         acceptedFiles.forEach((file) => {
 
             let fPath = current.Path+'/'+file.name
+            fPath = fPath.normalize('NFC')
             api.createCheck({
                 Inputs: [{Type:'LEAF', Locator:{Path:fPath}}],
                 FindAvailablePath: true
