@@ -9,21 +9,26 @@ interface props {
     api: NodeServiceApi
     client: S3Client
     n: RestNode,
-    loadCurrent: () => void
+    loadCurrent: () => void,
+    setSelection: (s:string) => void,
+    loading: boolean,
+    setLoading: (s: boolean) => void
 }
 
 const Preview = (props:props) => {
     const [link, setLink] = useState<RestShareLink|null>(null)
     const [versions, setVersions] = useState<RestNode[]>([])
     const [byUuid, setByUuid] = useState<RestNode|null>(null)
-    const {api,n, client, loadCurrent} = props;
     const [previewURL, setPreviewURL] = useState('')
+
+    const {api, n, client, loadCurrent, setSelection, setLoading} = props;
 
     useEffect(() => {
         if(n.Previews && n.Previews.length > 0 && n.Previews[0].Key) {
+            const prev = n.Previews.find(p => p.Dimension == 300) || n.Previews[0]
             const command = new GetObjectCommand({
-                Bucket: n.Previews[0].Bucket,
-                Key: n.Previews[0].Key
+                Bucket: prev.Bucket,
+                Key: prev.Key
             });
             getSignedUrl(client, command, { expiresIn: 3600 }).then((url) => {
                 setPreviewURL(url)
@@ -36,27 +41,41 @@ const Preview = (props:props) => {
     }, [n]);
 
     const del = () => {
+        setLoading(true)
         api.performAction('delete', {Nodes:[{Path:n.Path}]}).then(()=>{
             setTimeout(loadCurrent, 1500)
+            setLoading(false)
+        }).catch(() => {
+            setLoading(false)
         })
     }
 
     const loadByUuid = () => {
+        setLoading(true)
         api.getByUuid(n.Uuid).then(res=>{
             setByUuid(res.data)
+            setLoading(false)
+        }).catch(() => {
+            setLoading(false)
         })
     }
 
     const bookmark = () => {
+        setLoading(true)
         api.patchNode(n.Uuid,{Bookmark:{Value:!n.IsBookmarked}}).then(()=>{
             loadCurrent()
+        }).catch(() => {
+            setLoading(false)
         })
     }
 
     const publicLink = ()=> {
+        setLoading(true)
         if(n.Shares && n.Shares.length>0) {
             api.deletePublicLink(n.Shares[0].Uuid!).then(()=>{
                 loadCurrent()
+            }).catch(() => {
+                setLoading(false)
             })
         } else {
             api.createPublicLink(n.Uuid, {
@@ -67,6 +86,8 @@ const Preview = (props:props) => {
             }).then((link) => {
                 console.log(link)
                 loadCurrent()
+            }).catch(() => {
+                setLoading(false)
             })
         }
     }
@@ -88,6 +109,7 @@ const Preview = (props:props) => {
             req.AwaitStatus= 'Running'
             req.AwaitTimeout = '2500ms'
         }
+        setLoading(true)
         api.performAction("move", req).then((res)=>{
             if(wait) {
                 const data:RestPerformActionResponse = res.data
@@ -105,13 +127,18 @@ const Preview = (props:props) => {
                         })
                     }, 500)
                 }
+                setLoading(false)
             } else {
                 setTimeout(loadCurrent, 500)
+                setLoading(false)
             }
+        }).catch(() => {
+            setLoading(false)
         })
     }
 
     const tagUntag = () => {
+        setLoading(true)
         const isTagged = n.UserMetadata && n.UserMetadata.find((m) => m.Namespace === 'usermeta-tags');
         api.patchNode(n.Uuid!, {
             MetaUpdates:[
@@ -120,7 +147,10 @@ const Preview = (props:props) => {
                     UserMeta:{Namespace:'usermeta-tags', JsonValue:JSON.stringify("zetag")}
                 }
             ]}).then(()=>{
+            setLoading(false)
             loadCurrent()
+        }).catch(() => {
+            setLoading(false)
         });
     }
 
@@ -147,6 +177,7 @@ const Preview = (props:props) => {
         setByUuid(null);
     }, [n]);
 
+    const buttonStyle = {style:{marginBottom:'10px'}};
 
     return (
         <div style={{
@@ -155,20 +186,23 @@ const Preview = (props:props) => {
             borderRadius:5,
             marginLeft:5
         }}>
-            <div>
-                {n.Path!.split('/').length > 1 &&
-                    <>
-                    <button onClick={() => rename()}>Rename (async)</button>
-                    <button onClick={() => rename(true)}>Rename (sync)</button>
-                    </>
-                }
-                <button onClick={() => del()}>Delete</button>
-                <button onClick={()=> bookmark()}>Bookmark</button>
-                <button onClick={()=> tagUntag()}>Toggle Tag</button>
-                <button onClick={()=> publicLink()}>Public Link</button>
-                <button onClick={()=> loadByUuid()}>By UUID</button>
+            <div style={{display: 'flex'}}>
+                <div style={{flex: 1, display: 'flex', flexWrap: 'wrap'}}>
+                    {n.Path!.split('/').length > 1 &&
+                        <>
+                            <button onClick={() => rename()} {...buttonStyle}>Rename (async)</button>
+                            <button onClick={() => rename(true)} {...buttonStyle}>Rename (sync)</button>
+                        </>
+                    }
+                    <button onClick={() => del()} {...buttonStyle}>Delete</button>
+                    <button onClick={() => bookmark()} {...buttonStyle}>Bookmark</button>
+                    <button onClick={() => tagUntag()} {...buttonStyle}>Toggle Tag</button>
+                    <button onClick={() => publicLink()} {...buttonStyle}>Public Link</button>
+                    <button onClick={() => loadByUuid()} {...buttonStyle}>By UUID</button>
+                </div>
+                <div style={{width: 20, cursor:'pointer'}} onClick={() => setSelection('')}>❌</div>
             </div>
-            {previewURL && <img src={previewURL} />}
+            {previewURL && <img src={previewURL}/>}
             <pre>{JSON.stringify(props.n, null, '  ')}</pre>
             {link &&
                 <>
