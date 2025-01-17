@@ -44,9 +44,11 @@ function App() {
     const [current, setCurrent] = useState<RestNode>({Uuid:'', Path:'/', Type:'COLLECTION'})
     const [coll, setColl] = useState<RestNodeCollection|null>(null)
     const [selection, setSelection] = useState<string|''>('')
-    const [showSettings, setShowSettings] = useState<boolean>(true)
     const [renameExisting, setRenameExisting] = useState<boolean>(true)
+    const [loading, setLoading] = useState<boolean>(false)
 
+    const localSettings = localStorage.getItem('showSettings')
+    const [showSettings, setShowSettings] = useState<boolean>(localSettings ? (localSettings === 'true') :  true)
     const [basePath, setBasePath] = useState<string>(localStorage.getItem('basePath')||'')
     const [apiKey, setApiKey] = useState<string>(localStorage.getItem('apiKey')||'')
 
@@ -54,11 +56,11 @@ function App() {
         const pp = n.Path!.split('/')
         pp.pop()
         const parentPath = pp.join('/')
-        return {Uuid: '', Path: '/' + parentPath, Type:'COLLECTION'}
+        return {Uuid: '', Path: parentPath, Type:'COLLECTION'}
     }
     const getClients = useCallback(() => {
         const instance = axios.create({
-            baseURL: basePath,
+            baseURL: basePath+'/a',
             timeout: 10000,
             headers: {'Authorization': 'Bearer ' + apiKey}
         });
@@ -70,7 +72,7 @@ function App() {
             }
         }
         const client = new S3Client({
-            endpoint:basePath.replace('/a', ''),
+            endpoint:basePath,
             forcePathStyle: true,
             region:'us-east',
             credentials: provider,
@@ -80,9 +82,11 @@ function App() {
 
     const {api, client} = getClients()
     const loadCurrent = ():void => {
+        setLoading(true)
         api.lookup({Locators:{Many:[{Path:current.Path+'/*'}]}}).then(res => {
             setColl(res.data)
-        })
+            setLoading(false)
+        }).catch(err => {console.log(err); setLoading(false) })
     }
 
     const createNode = (type:string) => {
@@ -90,9 +94,11 @@ function App() {
         if(!name) {
             return
         }
+        setLoading(true)
         api.create({Inputs:[{Type:type=='folder'?'COLLECTION':'LEAF', Locator:{Path:current.Path+'/'+name.normalize('NFC')}}]}).then(()=>{
             loadCurrent()
-        }).catch((e) => {window.alert(e.message)})
+            setLoading(false)
+        }).catch((e) => {window.alert(e.message); setLoading(false) })
     }
 
     const onDrop = useCallback((acceptedFiles:File[]) => {
@@ -100,6 +106,7 @@ function App() {
 
             let fPath = current.Path+'/'+file.name
             fPath = fPath.normalize('NFC')
+            setLoading(true)
             api.createCheck({
                 Inputs: [{Type:'LEAF', Locator:{Path:fPath}}],
                 FindAvailablePath: true
@@ -110,9 +117,13 @@ function App() {
                 putObject(client, fPath, file).then(()=>{
                     console.log('uploaded', fPath)
                     loadCurrent()
+                    setLoading(false)
                 }).catch((e) => {
                     console.error(e)
+                    setLoading(false)
                 })
+            }).catch(() => {
+                setLoading(false)
             })
         })
 
@@ -124,7 +135,8 @@ function App() {
     useEffect(() => {
         localStorage.setItem('apiKey', apiKey)
         localStorage.setItem('basePath', basePath)
-    }, [apiKey, basePath])
+        localStorage.setItem('showSettings', showSettings ? 'true' : 'false')
+    }, [apiKey, basePath, showSettings])
 
     const children = (coll && coll.Nodes) || []
     children.sort((a,b) => {
@@ -142,34 +154,55 @@ function App() {
     if(selection) {
         file = children.find((child) => child.Path === selection)
     }
+    const insideWorkspace = current.Path.length > 1
 
     return (
         <>
-            <h2>Api Settings <a onClick={() => setShowSettings(!showSettings)}>+</a></h2>
-            <div style={{display: showSettings ? 'block' : 'none'}}>
-                <div>
-                    <input style={{width: 300}} type={"text"} placeholder={"enter full URL with base (must allow CORS)"}
-                           value={basePath}
-                           onChange={(e) => setBasePath(e.target.value)}/>
-                </div>
-                <div>
-                    <input style={{width: 300}} type={"text"} placeholder={"enter api key"} value={apiKey}
-                           onChange={(e) => setApiKey(e.target.value)}/>
+            <div>
+                <h4 onClick={() => setShowSettings(!showSettings)} style={{marginBottom:0, cursor:'pointer'}}>Api Settings&nbsp;<a>{showSettings?'-':'+'}</a>
+                </h4>
+                <div style={{display: showSettings ? 'block' : 'none'}}>
+                    <div>
+                        <input style={{width: 300}} type={"text"} placeholder={"Full URL without trailing slash"}
+                               value={basePath}
+                               onChange={(e) => setBasePath(e.target.value)}/>
+                    </div>
+                    <div>
+                        <input style={{width: 300}} type={"text"} placeholder={"Api Key"} value={apiKey}
+                               onChange={(e) => setApiKey(e.target.value)}/>
+                    </div>
                 </div>
             </div>
-            <h2>Folder {current.Path}</h2>
             <div style={{display: 'flex', alignItems: 'center'}}>
-                <button onClick={() => createNode('folder')}>Create Folder</button>
-                <button onClick={() => createNode('file')}>Create File</button>
-                <input type={"checkbox"} id={"rename"} checked={renameExisting} onChange={()=>setRenameExisting(!renameExisting)} />
-                <label style={{cursor:'pointer'}} htmlFor={"rename"}>Auto-rename</label>
-                <div style={{flex: 1}}/>
+                <h2 style={{flex: 1}}>{insideWorkspace?'Folder '+current.Path:'Workspaces'} {loading && '⏳'}</h2>
                 <button onClick={() => loadCurrent()}>Reload</button>
             </div>
+            {insideWorkspace &&
+                <>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <button onClick={() => createNode('folder')}>Create Folder</button>
+                        <button onClick={() => createNode('file')}>Create File</button>
+                    </div>
+                    <div {...getRootProps()} style={{
+                        marginTop: 10,
+                        border: '2px dashed grey',
+                        padding: 20,
+                        borderRadius: 20,
+                        backgroundColor: (isDragActive ? 'rgba(90,157,75,0.2)' : 'transparent')
+                    }}>
+                        <input {...getInputProps()} />
+                        <div style={{display:'flex'}}>
+                            <div style={{flex: 1}}>Drag 'n' drop some files here, or <a>click to select files</a></div>
+                            <input type={"checkbox"} id={"rename"} checked={renameExisting} onChange={() => setRenameExisting(!renameExisting)} onClick={(e)=> {e.stopPropagation()}}/>
+                            <label style={{cursor: 'pointer'}} htmlFor={"rename"} onClick={(e)=> {e.stopPropagation()}}>Auto-rename existing files</label>
+                        </div>
+                    </div>
+                </>
+            }
             <div className="card" style={{display: 'flex', alignItems: 'start'}}>
                 <div style={{flex: 1}}>
                     <div style={{overflowX: 'auto'}}>
-                        <div onClick={() => setCurrent(getParent(current))}>📂..</div>
+                        {insideWorkspace && <div onClick={() => setCurrent(getParent(current))} style={{cursor:'pointer'}}>⬆️ ..</div>}
                         {children.map((n) =>
                             <Node key={n.Path} n={n} api={api} setCurrent={setCurrent}
                                   selected={selection === n.Path}
@@ -178,20 +211,17 @@ function App() {
                     </div>
                 </div>
                 <div style={{flex: 2}}>
-                    {file && <Preview api={api} client={client} n={file} loadCurrent={loadCurrent}/>}
+                    {file && <Preview
+                        api={api}
+                        client={client}
+                        n={file}
+                        loadCurrent={loadCurrent}
+                        setSelection={setSelection}
+                        loading={loading}
+                        setLoading={setLoading}
+                    />}
                 </div>
             </div>
-            {current.Path.length > 1 &&
-                <div {...getRootProps()} style={{
-                    border: '2px dashed grey',
-                    padding: '10px 20px',
-                    borderRadius: 20,
-                    backgroundColor: (isDragActive ? 'rgba(255,255,255,0.2)' : 'transparent')
-                }}>
-                    <input {...getInputProps()} />
-                    <p>Drag 'n' drop some files here, or click to select files</p>
-                </div>
-            }
             <p className="read-the-docs">
                 Wicked ! Made by Charles with love
             </p>

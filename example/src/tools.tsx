@@ -1,4 +1,4 @@
-import {RestNode} from "../../axios";
+import {RestNode} from "cells-sdk-ts";
 
 const getBase = (n:RestNode):string => {
     if(n.IsRecycleBin) {
