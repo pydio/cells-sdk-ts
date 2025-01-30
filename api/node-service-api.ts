@@ -38,6 +38,8 @@ import type { RestCreateCheckResponse } from '../models';
 // @ts-ignore
 import type { RestCreateRequest } from '../models';
 // @ts-ignore
+import type { RestDeleteVersionResponse } from '../models';
+// @ts-ignore
 import type { RestError } from '../models';
 // @ts-ignore
 import type { RestListTemplatesResponse } from '../models';
@@ -54,11 +56,21 @@ import type { RestNodeCollection } from '../models';
 // @ts-ignore
 import type { RestNodeUpdates } from '../models';
 // @ts-ignore
+import type { RestNodeVersionsFilter } from '../models';
+// @ts-ignore
 import type { RestPerformActionResponse } from '../models';
+// @ts-ignore
+import type { RestPromoteParameters } from '../models';
+// @ts-ignore
+import type { RestPromoteVersionResponse } from '../models';
 // @ts-ignore
 import type { RestPublicLinkDeleteSuccess } from '../models';
 // @ts-ignore
 import type { RestPublicLinkRequest } from '../models';
+// @ts-ignore
+import type { RestPublishNodeParameters } from '../models';
+// @ts-ignore
+import type { RestPublishNodeResponse } from '../models';
 // @ts-ignore
 import type { RestSelection } from '../models';
 // @ts-ignore
@@ -67,6 +79,8 @@ import type { RestShareLink } from '../models';
 import type { RestUserMetaList } from '../models';
 // @ts-ignore
 import type { RestUserMetaNamespaceCollection } from '../models';
+// @ts-ignore
+import type { RestVersionCollection } from '../models';
 /**
  * NodeServiceApi - axios parameter creator
  * @export
@@ -399,6 +413,47 @@ export const NodeServiceApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary Delete a version by its ID
+         * @param {string} uuid 
+         * @param {string} versionId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteVersion: async (uuid: string, versionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uuid' is not null or undefined
+            assertParamExists('deleteVersion', 'uuid', uuid)
+            // verify required parameter 'versionId' is not null or undefined
+            assertParamExists('deleteVersion', 'versionId', versionId)
+            const localVarPath = `/n/node/{Uuid}/versions/{VersionId}`
+                .replace(`{${"Uuid"}}`, encodeURIComponent(String(uuid)))
+                .replace(`{${"VersionId"}}`, encodeURIComponent(String(versionId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Load a node by its Uuid
          * @param {string} uuid 
          * @param {string} [path] 
@@ -562,48 +617,6 @@ export const NodeServiceApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary List all known versions of a node
-         * @param {string} uuid 
-         * @param {string} [path] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        listVersions: async (uuid: string, path?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'uuid' is not null or undefined
-            assertParamExists('listVersions', 'uuid', uuid)
-            const localVarPath = `/n/node/{Uuid}/versions`
-                .replace(`{${"Uuid"}}`, encodeURIComponent(String(uuid)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Bearer required
-            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
-
-            if (path !== undefined) {
-                localVarQueryParameter['Path'] = path;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @summary Generic request to either list (using Locators) or search (using Query) for nodes
          * @param {RestLookupRequest} body 
          * @param {*} [options] Override http request option.
@@ -643,7 +656,50 @@ export const NodeServiceApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary PatchNode is used to update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
+         * @summary List all known versions of a node
+         * @param {string} uuid The node Uuid
+         * @param {RestNodeVersionsFilter} query Additional parameters for filtering/sorting
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        nodeVersions: async (uuid: string, query: RestNodeVersionsFilter, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uuid' is not null or undefined
+            assertParamExists('nodeVersions', 'uuid', uuid)
+            // verify required parameter 'query' is not null or undefined
+            assertParamExists('nodeVersions', 'query', query)
+            const localVarPath = `/n/node/{Uuid}/versions`
+                .replace(`{${"Uuid"}}`, encodeURIComponent(String(uuid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(query, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
          * @param {string} uuid 
          * @param {RestNodeUpdates} nodeUpdates 
          * @param {*} [options] Override http request option.
@@ -717,6 +773,96 @@ export const NodeServiceApiAxiosParamCreator = function (configuration?: Configu
             if (jobUuid !== undefined) {
                 localVarQueryParameter['JobUuid'] = jobUuid;
             }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(parameters, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Promotes a version by ID to be the publicly available content of the node - files only
+         * @param {string} uuid 
+         * @param {string} versionId 
+         * @param {RestPromoteParameters} parameters 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        promoteVersion: async (uuid: string, versionId: string, parameters: RestPromoteParameters, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uuid' is not null or undefined
+            assertParamExists('promoteVersion', 'uuid', uuid)
+            // verify required parameter 'versionId' is not null or undefined
+            assertParamExists('promoteVersion', 'versionId', versionId)
+            // verify required parameter 'parameters' is not null or undefined
+            assertParamExists('promoteVersion', 'parameters', parameters)
+            const localVarPath = `/n/node/{Uuid}/versions/{VersionId}/promote`
+                .replace(`{${"Uuid"}}`, encodeURIComponent(String(uuid)))
+                .replace(`{${"VersionId"}}`, encodeURIComponent(String(versionId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(parameters, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Unset draft status of a resource, typically to publish a folder in draft mode
+         * @param {string} uuid 
+         * @param {RestPublishNodeParameters} parameters 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        publishNode: async (uuid: string, parameters: RestPublishNodeParameters, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uuid' is not null or undefined
+            assertParamExists('publishNode', 'uuid', uuid)
+            // verify required parameter 'parameters' is not null or undefined
+            assertParamExists('publishNode', 'parameters', parameters)
+            const localVarPath = `/n/node/{Uuid}/publish`
+                .replace(`{${"Uuid"}}`, encodeURIComponent(String(uuid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
 
 
     
@@ -1053,6 +1199,20 @@ export const NodeServiceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Delete a version by its ID
+         * @param {string} uuid 
+         * @param {string} versionId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteVersion(uuid: string, versionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestDeleteVersionResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteVersion(uuid, versionId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['NodeServiceApi.deleteVersion']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Load a node by its Uuid
          * @param {string} uuid 
          * @param {string} [path] 
@@ -1107,20 +1267,6 @@ export const NodeServiceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary List all known versions of a node
-         * @param {string} uuid 
-         * @param {string} [path] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async listVersions(uuid: string, path?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestNodeCollection>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.listVersions(uuid, path, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['NodeServiceApi.listVersions']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @summary Generic request to either list (using Locators) or search (using Query) for nodes
          * @param {RestLookupRequest} body 
          * @param {*} [options] Override http request option.
@@ -1134,7 +1280,21 @@ export const NodeServiceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary PatchNode is used to update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
+         * @summary List all known versions of a node
+         * @param {string} uuid The node Uuid
+         * @param {RestNodeVersionsFilter} query Additional parameters for filtering/sorting
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async nodeVersions(uuid: string, query: RestNodeVersionsFilter, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestVersionCollection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.nodeVersions(uuid, query, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['NodeServiceApi.nodeVersions']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
          * @param {string} uuid 
          * @param {RestNodeUpdates} nodeUpdates 
          * @param {*} [options] Override http request option.
@@ -1159,6 +1319,35 @@ export const NodeServiceApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.performAction(name, parameters, jobUuid, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['NodeServiceApi.performAction']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Promotes a version by ID to be the publicly available content of the node - files only
+         * @param {string} uuid 
+         * @param {string} versionId 
+         * @param {RestPromoteParameters} parameters 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async promoteVersion(uuid: string, versionId: string, parameters: RestPromoteParameters, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestPromoteVersionResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.promoteVersion(uuid, versionId, parameters, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['NodeServiceApi.promoteVersion']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Unset draft status of a resource, typically to publish a folder in draft mode
+         * @param {string} uuid 
+         * @param {RestPublishNodeParameters} parameters 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async publishNode(uuid: string, parameters: RestPublishNodeParameters, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestPublishNodeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.publishNode(uuid, parameters, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['NodeServiceApi.publishNode']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1324,6 +1513,17 @@ export const NodeServiceApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
+         * @summary Delete a version by its ID
+         * @param {string} uuid 
+         * @param {string} versionId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteVersion(uuid: string, versionId: string, options?: RawAxiosRequestConfig): AxiosPromise<RestDeleteVersionResponse> {
+            return localVarFp.deleteVersion(uuid, versionId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Load a node by its Uuid
          * @param {string} uuid 
          * @param {string} [path] 
@@ -1366,17 +1566,6 @@ export const NodeServiceApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary List all known versions of a node
-         * @param {string} uuid 
-         * @param {string} [path] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        listVersions(uuid: string, path?: string, options?: RawAxiosRequestConfig): AxiosPromise<RestNodeCollection> {
-            return localVarFp.listVersions(uuid, path, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @summary Generic request to either list (using Locators) or search (using Query) for nodes
          * @param {RestLookupRequest} body 
          * @param {*} [options] Override http request option.
@@ -1387,7 +1576,18 @@ export const NodeServiceApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary PatchNode is used to update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
+         * @summary List all known versions of a node
+         * @param {string} uuid The node Uuid
+         * @param {RestNodeVersionsFilter} query Additional parameters for filtering/sorting
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        nodeVersions(uuid: string, query: RestNodeVersionsFilter, options?: RawAxiosRequestConfig): AxiosPromise<RestVersionCollection> {
+            return localVarFp.nodeVersions(uuid, query, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
          * @param {string} uuid 
          * @param {RestNodeUpdates} nodeUpdates 
          * @param {*} [options] Override http request option.
@@ -1407,6 +1607,29 @@ export const NodeServiceApiFactory = function (configuration?: Configuration, ba
          */
         performAction(name: PerformActionNameEnum, parameters: RestActionParameters, jobUuid?: string, options?: RawAxiosRequestConfig): AxiosPromise<RestPerformActionResponse> {
             return localVarFp.performAction(name, parameters, jobUuid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Promotes a version by ID to be the publicly available content of the node - files only
+         * @param {string} uuid 
+         * @param {string} versionId 
+         * @param {RestPromoteParameters} parameters 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        promoteVersion(uuid: string, versionId: string, parameters: RestPromoteParameters, options?: RawAxiosRequestConfig): AxiosPromise<RestPromoteVersionResponse> {
+            return localVarFp.promoteVersion(uuid, versionId, parameters, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Unset draft status of a resource, typically to publish a folder in draft mode
+         * @param {string} uuid 
+         * @param {RestPublishNodeParameters} parameters 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        publishNode(uuid: string, parameters: RestPublishNodeParameters, options?: RawAxiosRequestConfig): AxiosPromise<RestPublishNodeResponse> {
+            return localVarFp.publishNode(uuid, parameters, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1555,6 +1778,17 @@ export interface NodeServiceApiInterface {
 
     /**
      * 
+     * @summary Delete a version by its ID
+     * @param {string} uuid 
+     * @param {string} versionId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NodeServiceApiInterface
+     */
+    deleteVersion(uuid: string, versionId: string, options?: RawAxiosRequestConfig): AxiosPromise<RestDeleteVersionResponse>;
+
+    /**
+     * 
      * @summary Load a node by its Uuid
      * @param {string} uuid 
      * @param {string} [path] 
@@ -1597,17 +1831,6 @@ export interface NodeServiceApiInterface {
 
     /**
      * 
-     * @summary List all known versions of a node
-     * @param {string} uuid 
-     * @param {string} [path] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NodeServiceApiInterface
-     */
-    listVersions(uuid: string, path?: string, options?: RawAxiosRequestConfig): AxiosPromise<RestNodeCollection>;
-
-    /**
-     * 
      * @summary Generic request to either list (using Locators) or search (using Query) for nodes
      * @param {RestLookupRequest} body 
      * @param {*} [options] Override http request option.
@@ -1618,7 +1841,18 @@ export interface NodeServiceApiInterface {
 
     /**
      * 
-     * @summary PatchNode is used to update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
+     * @summary List all known versions of a node
+     * @param {string} uuid The node Uuid
+     * @param {RestNodeVersionsFilter} query Additional parameters for filtering/sorting
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NodeServiceApiInterface
+     */
+    nodeVersions(uuid: string, query: RestNodeVersionsFilter, options?: RawAxiosRequestConfig): AxiosPromise<RestVersionCollection>;
+
+    /**
+     * 
+     * @summary Update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
      * @param {string} uuid 
      * @param {RestNodeUpdates} nodeUpdates 
      * @param {*} [options] Override http request option.
@@ -1638,6 +1872,29 @@ export interface NodeServiceApiInterface {
      * @memberof NodeServiceApiInterface
      */
     performAction(name: PerformActionNameEnum, parameters: RestActionParameters, jobUuid?: string, options?: RawAxiosRequestConfig): AxiosPromise<RestPerformActionResponse>;
+
+    /**
+     * 
+     * @summary Promotes a version by ID to be the publicly available content of the node - files only
+     * @param {string} uuid 
+     * @param {string} versionId 
+     * @param {RestPromoteParameters} parameters 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NodeServiceApiInterface
+     */
+    promoteVersion(uuid: string, versionId: string, parameters: RestPromoteParameters, options?: RawAxiosRequestConfig): AxiosPromise<RestPromoteVersionResponse>;
+
+    /**
+     * 
+     * @summary Unset draft status of a resource, typically to publish a folder in draft mode
+     * @param {string} uuid 
+     * @param {RestPublishNodeParameters} parameters 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NodeServiceApiInterface
+     */
+    publishNode(uuid: string, parameters: RestPublishNodeParameters, options?: RawAxiosRequestConfig): AxiosPromise<RestPublishNodeResponse>;
 
     /**
      * 
@@ -1802,6 +2059,19 @@ export class NodeServiceApi extends BaseAPI implements NodeServiceApiInterface {
 
     /**
      * 
+     * @summary Delete a version by its ID
+     * @param {string} uuid 
+     * @param {string} versionId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NodeServiceApi
+     */
+    public deleteVersion(uuid: string, versionId: string, options?: RawAxiosRequestConfig) {
+        return NodeServiceApiFp(this.configuration).deleteVersion(uuid, versionId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Load a node by its Uuid
      * @param {string} uuid 
      * @param {string} [path] 
@@ -1852,19 +2122,6 @@ export class NodeServiceApi extends BaseAPI implements NodeServiceApiInterface {
 
     /**
      * 
-     * @summary List all known versions of a node
-     * @param {string} uuid 
-     * @param {string} [path] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NodeServiceApi
-     */
-    public listVersions(uuid: string, path?: string, options?: RawAxiosRequestConfig) {
-        return NodeServiceApiFp(this.configuration).listVersions(uuid, path, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @summary Generic request to either list (using Locators) or search (using Query) for nodes
      * @param {RestLookupRequest} body 
      * @param {*} [options] Override http request option.
@@ -1877,7 +2134,20 @@ export class NodeServiceApi extends BaseAPI implements NodeServiceApiInterface {
 
     /**
      * 
-     * @summary PatchNode is used to update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
+     * @summary List all known versions of a node
+     * @param {string} uuid The node Uuid
+     * @param {RestNodeVersionsFilter} query Additional parameters for filtering/sorting
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NodeServiceApi
+     */
+    public nodeVersions(uuid: string, query: RestNodeVersionsFilter, options?: RawAxiosRequestConfig) {
+        return NodeServiceApiFp(this.configuration).nodeVersions(uuid, query, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
      * @param {string} uuid 
      * @param {RestNodeUpdates} nodeUpdates 
      * @param {*} [options] Override http request option.
@@ -1900,6 +2170,33 @@ export class NodeServiceApi extends BaseAPI implements NodeServiceApiInterface {
      */
     public performAction(name: PerformActionNameEnum, parameters: RestActionParameters, jobUuid?: string, options?: RawAxiosRequestConfig) {
         return NodeServiceApiFp(this.configuration).performAction(name, parameters, jobUuid, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Promotes a version by ID to be the publicly available content of the node - files only
+     * @param {string} uuid 
+     * @param {string} versionId 
+     * @param {RestPromoteParameters} parameters 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NodeServiceApi
+     */
+    public promoteVersion(uuid: string, versionId: string, parameters: RestPromoteParameters, options?: RawAxiosRequestConfig) {
+        return NodeServiceApiFp(this.configuration).promoteVersion(uuid, versionId, parameters, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Unset draft status of a resource, typically to publish a folder in draft mode
+     * @param {string} uuid 
+     * @param {RestPublishNodeParameters} parameters 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NodeServiceApi
+     */
+    public publishNode(uuid: string, parameters: RestPublishNodeParameters, options?: RawAxiosRequestConfig) {
+        return NodeServiceApiFp(this.configuration).publishNode(uuid, parameters, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

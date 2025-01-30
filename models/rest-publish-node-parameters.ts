@@ -13,21 +13,24 @@
  */
 
 
-// May contain unused imports in some cases
-// @ts-ignore
-import type { RestCheckResult } from './rest-check-result';
 
 /**
  * 
  * @export
- * @interface RestCreateCheckResponse
+ * @interface RestPublishNodeParameters
  */
-export interface RestCreateCheckResponse {
+export interface RestPublishNodeParameters {
     /**
      * 
-     * @type {Array<RestCheckResult>}
-     * @memberof RestCreateCheckResponse
+     * @type {boolean}
+     * @memberof RestPublishNodeParameters
      */
-    'Results'?: Array<RestCheckResult>;
+    'Cascade'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RestPublishNodeParameters
+     */
+    'PromoteLatest'?: boolean;
 }
 

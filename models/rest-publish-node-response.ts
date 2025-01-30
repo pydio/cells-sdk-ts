@@ -18,34 +18,25 @@
 import type { RestNode } from './rest-node';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { RestPagination } from './rest-pagination';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { TreeSearchFacet } from './tree-search-facet';
+import type { RestPublishCascadeResult } from './rest-publish-cascade-result';
 
 /**
  * 
  * @export
- * @interface RestNodeCollection
+ * @interface RestPublishNodeResponse
  */
-export interface RestNodeCollection {
+export interface RestPublishNodeResponse {
     /**
      * 
-     * @type {Array<TreeSearchFacet>}
-     * @memberof RestNodeCollection
+     * @type {Array<RestPublishCascadeResult>}
+     * @memberof RestPublishNodeResponse
      */
-    'Facets'?: Array<TreeSearchFacet>;
+    'CascadeResults'?: Array<RestPublishCascadeResult>;
     /**
      * 
-     * @type {Array<RestNode>}
-     * @memberof RestNodeCollection
+     * @type {RestNode}
+     * @memberof RestPublishNodeResponse
      */
-    'Nodes'?: Array<RestNode>;
-    /**
-     * 
-     * @type {RestPagination}
-     * @memberof RestNodeCollection
-     */
-    'Pagination'?: RestPagination;
+    'Node'?: RestNode;
 }
 

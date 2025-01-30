@@ -18,6 +18,9 @@
 import type { RestNodeLocator } from './rest-node-locator';
 // May contain unused imports in some cases
 // @ts-ignore
+import type { RestUserMeta } from './rest-user-meta';
+// May contain unused imports in some cases
+// @ts-ignore
 import type { TreeNodeType } from './tree-node-type';
 
 /**
@@ -34,6 +37,12 @@ export interface RestIncomingNode {
     'ContentType'?: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof RestIncomingNode
+     */
+    'DraftMode'?: boolean;
+    /**
+     * 
      * @type {string}
      * @memberof RestIncomingNode
      */
@@ -46,6 +55,18 @@ export interface RestIncomingNode {
     'Locator': RestNodeLocator;
     /**
      * 
+     * @type {Array<RestUserMeta>}
+     * @memberof RestIncomingNode
+     */
+    'Metadata'?: Array<RestUserMeta>;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestIncomingNode
+     */
+    'ResourceUuid'?: string;
+    /**
+     * 
      * @type {string}
      * @memberof RestIncomingNode
      */
@@ -56,6 +77,12 @@ export interface RestIncomingNode {
      * @memberof RestIncomingNode
      */
     'Type': TreeNodeType;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestIncomingNode
+     */
+    'VersionId'?: string;
 }
 
 

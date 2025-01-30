@@ -9,14 +9,24 @@ import { AwsCredentialIdentity } from "@smithy/types";
 import {RestNode, RestNodeCollection, NodeServiceApi} from "cells-sdk-ts";
 import Preview from "./Preview.tsx";
 
+import { v4 as uuidv4 } from 'uuid';
+
 const putObject = async (client: S3Client, filePath:string, file: File) => {
     const bucketName = 'io'
+    const nodeId = uuidv4()
+    const versionId = uuidv4()
+    console.log("Sending", nodeId, versionId)
     const command = new PutObjectCommand({
         Bucket:"io",
         Body: file,
         Key: filePath,
         ContentType: file.type,
         ContentLength: file.size,
+        Metadata:{
+            "Draft-Mode": "true",
+            "Create-Resource-Uuid": nodeId,
+            "Create-Version-Id": versionId
+        }
     })
     try {
         await client.send(command);
@@ -61,7 +71,7 @@ function App() {
     const getClients = useCallback(() => {
         const instance = axios.create({
             baseURL: basePath+'/a',
-            timeout: 10000,
+            timeout: 60000,
             headers: {'Authorization': 'Bearer ' + apiKey}
         });
         const api= new NodeServiceApi(undefined, undefined, instance)
@@ -95,7 +105,14 @@ function App() {
             return
         }
         setLoading(true)
-        api.create({Inputs:[{Type:type=='folder'?'COLLECTION':'LEAF', Locator:{Path:current.Path+'/'+name.normalize('NFC')}}]}).then(()=>{
+        api.create({
+            Inputs:[{
+                Type:type=='folder'?'COLLECTION':'LEAF',
+                Locator:{Path:current.Path+'/'+name.normalize('NFC')},
+                DraftMode: true,
+                ResourceUuid: uuidv4(),
+                VersionId:type !== 'folder'?uuidv4():''
+            }]}).then(()=>{
             loadCurrent()
             setLoading(false)
         }).catch((e) => {window.alert(e.message); setLoading(false) })

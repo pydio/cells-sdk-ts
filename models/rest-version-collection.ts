@@ -15,19 +15,19 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { RestCheckResult } from './rest-check-result';
+import type { RestVersion } from './rest-version';
 
 /**
  * 
  * @export
- * @interface RestCreateCheckResponse
+ * @interface RestVersionCollection
  */
-export interface RestCreateCheckResponse {
+export interface RestVersionCollection {
     /**
      * 
-     * @type {Array<RestCheckResult>}
-     * @memberof RestCreateCheckResponse
+     * @type {Array<RestVersion>}
+     * @memberof RestVersionCollection
      */
-    'Results'?: Array<RestCheckResult>;
+    'Versions'?: Array<RestVersion>;
 }
 
