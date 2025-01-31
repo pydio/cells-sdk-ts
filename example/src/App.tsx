@@ -4,6 +4,7 @@ import Node from './Node'
 import axios from "axios";
 import {useDropzone} from 'react-dropzone'
 import { S3ServiceException, S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 import { AwsCredentialIdentity } from "@smithy/types";
 
 import {RestNode, RestNodeCollection, NodeServiceApi} from "cells-sdk-ts";
@@ -26,7 +27,7 @@ const putObject = async (client: S3Client, filePath:string, file: File) => {
             "Draft-Mode": "true",
             "Create-Resource-Uuid": nodeId,
             "Create-Version-Id": versionId
-        }
+        },
     })
     try {
         await client.send(command);
@@ -50,11 +51,48 @@ or the multipart upload API (5TB max).`,
     }
 }
 
+const putObjectMultipart = async (client: S3Client, filePath:string, file: File) => {
+    const nodeId = uuidv4()
+    const versionId = uuidv4()
+    console.log("MULTIPART Sending", nodeId, versionId)
+    try{
+        const upload = new Upload({
+            client: client,
+            partSize: 10 * 1024 * 1024,
+            queueSize: 1,
+            leavePartsOnError: true,
+            params: {
+                Bucket: 'io',
+                Key: filePath,
+                Body: file,
+                ContentType: file.type,
+                ContentLength: file.size,
+                Metadata:{
+                    "Draft-Mode": "true",
+                    "Create-Resource-Uuid": nodeId,
+                    "Create-Version-Id": versionId
+                },
+            },
+        });
+        upload.on("httpUploadProgress", ({ loaded, total }) => {
+            console.log(loaded, total);
+        });
+        await upload.done();
+    } catch (caught) {
+        if (caught instanceof Error && caught.name === "AbortError") {
+            console.error(`Multipart upload was aborted. ${caught.message}`);
+        } else {
+            throw caught;
+        }
+    }
+}
+
 function App() {
     const [current, setCurrent] = useState<RestNode>({Uuid:'', Path:'/', Type:'COLLECTION'})
     const [coll, setColl] = useState<RestNodeCollection|null>(null)
     const [selection, setSelection] = useState<string|''>('')
     const [renameExisting, setRenameExisting] = useState<boolean>(true)
+    const [useMultipart, setUseMultipart] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
 
     const localSettings = localStorage.getItem('showSettings')
@@ -86,6 +124,7 @@ function App() {
             forcePathStyle: true,
             region:'us-east',
             credentials: provider,
+            requestChecksumCalculation: 'WHEN_REQUIRED'
         })
         return {api, client}
     }, [basePath, apiKey])
@@ -131,7 +170,8 @@ function App() {
                 if(renameExisting && data.Results.length && data.Results[0].Exists){
                     fPath = data.Results[0].NextPath
                 }
-                putObject(client, fPath, file).then(()=>{
+                const callback = useMultipart ? putObjectMultipart : putObject
+                callback(client, fPath, file).then(()=>{
                     console.log('uploaded', fPath)
                     loadCurrent()
                     setLoading(false)
@@ -144,7 +184,7 @@ function App() {
             })
         })
 
-    }, [basePath, apiKey, current, renameExisting])
+    }, [basePath, apiKey, current, renameExisting, useMultipart])
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
 
@@ -208,16 +248,28 @@ function App() {
                         backgroundColor: (isDragActive ? 'rgba(90,157,75,0.2)' : 'transparent')
                     }}>
                         <input {...getInputProps()} />
-                        <div style={{display:'flex'}}>
+                        <div style={{display: 'flex'}}>
                             <div style={{flex: 1}}>Drag 'n' drop some files here, or <a>click to select files</a></div>
-                            <input type={"checkbox"} id={"rename"} checked={renameExisting} onChange={() => setRenameExisting(!renameExisting)} onClick={(e)=> {e.stopPropagation()}}/>
-                            <label style={{cursor: 'pointer'}} htmlFor={"rename"} onClick={(e)=> {e.stopPropagation()}}>Auto-rename existing files</label>
+                            <input type={"checkbox"} id={"multipart"} checked={useMultipart}
+                                   onChange={() => setUseMultipart(!useMultipart)} onClick={(e) => {
+                                e.stopPropagation()
+                            }}/>
+                            <label style={{cursor: 'pointer'}} htmlFor={"multipart"} onClick={(e) => {
+                                e.stopPropagation()
+                            }}>Use Multipart</label>
+                            <input type={"checkbox"} id={"rename"} checked={renameExisting}
+                                   onChange={() => setRenameExisting(!renameExisting)} onClick={(e) => {
+                                e.stopPropagation()
+                            }}/>
+                            <label style={{cursor: 'pointer'}} htmlFor={"rename"} onClick={(e) => {
+                                e.stopPropagation()
+                            }}>Auto-rename existing files</label>
                         </div>
                     </div>
                 </>
             }
             <div className="card" style={{display: 'flex', alignItems: 'start'}}>
-                <div style={{flex: 1}}>
+            <div style={{flex: 1}}>
                     <div style={{overflowX: 'auto'}}>
                         {insideWorkspace && <div onClick={() => setCurrent(getParent(current))} style={{cursor:'pointer'}}>⬆️ ..</div>}
                         {children.map((n) =>
