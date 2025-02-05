@@ -25,6 +25,12 @@ export interface RestVersion {
      * @type {string}
      * @memberof RestVersion
      */
+    'ContentHash'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestVersion
+     */
     'Description'?: string;
     /**
      * 

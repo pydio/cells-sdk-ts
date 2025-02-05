@@ -154,7 +154,6 @@ const Preview = (props:props) => {
         });
     }
 
-    const isDraft = n.UserMetadata && n.UserMetadata.find((m) => m.Namespace === 'usermeta-draft');
     const publish= () => {
         setLoading(true)
         api.publishNode(n.Uuid!, {}).then(()=>{
@@ -241,7 +240,7 @@ const Preview = (props:props) => {
                     <button onClick={() => tagUntag()} {...buttonStyle}>Toggle Tag</button>
                     <button onClick={() => publicLink()} {...buttonStyle}>Public Link</button>
                     <button onClick={() => loadByUuid()} {...buttonStyle}>By UUID</button>
-                    {n.Type === 'COLLECTION' && isDraft && <button onClick={() => publish()} {...buttonStyle}>Publish</button>}
+                    {n.Type === 'COLLECTION' && n.IsDraft && <button onClick={() => publish()} {...buttonStyle}>Publish</button>}
                     {n.Type === 'LEAF' && versionsHasDraft && <button onClick={() => promote()} {...buttonStyle}>Promote Draft</button>}
                     {n.Type === 'LEAF' && versionsHasDraft && <button onClick={() => deleteDraft()} {...buttonStyle}>Cancel Draft</button>}
                 </div>

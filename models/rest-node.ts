@@ -70,6 +70,12 @@ export interface RestNode {
     'Activities'?: Array<ActivityObject>;
     /**
      * 
+     * @type {string}
+     * @memberof RestNode
+     */
+    'ContentHash'?: string;
+    /**
+     * 
      * @type {RestLockInfo}
      * @memberof RestNode
      */
@@ -80,12 +86,6 @@ export interface RestNode {
      * @memberof RestNode
      */
     'ContentType'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof RestNode
-     */
-    'ContentsHash'?: string;
     /**
      * 
      * @type {RestContextWorkspace}
