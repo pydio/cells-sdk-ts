@@ -156,7 +156,7 @@ const Preview = (props:props) => {
 
     const publish= () => {
         setLoading(true)
-        api.publishNode(n.Uuid!, {}).then(()=>{
+        api.publishNode(n.Uuid!, {Cascade: true}).then(()=>{
             setLoading(false)
             loadCurrent()
         }).catch(() => {

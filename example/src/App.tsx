@@ -12,8 +12,7 @@ import Preview from "./Preview.tsx";
 
 import { v4 as uuidv4 } from 'uuid';
 
-const putObject = async (client: S3Client, filePath:string, file: File) => {
-    const bucketName = 'io'
+const putObject = async (client: S3Client, bucketName: string, filePath:string, file: File) => {
     const nodeId = uuidv4()
     const versionId = uuidv4()
     console.log("Sending", nodeId, versionId)
@@ -51,7 +50,7 @@ or the multipart upload API (5TB max).`,
     }
 }
 
-const putObjectMultipart = async (client: S3Client, filePath:string, file: File) => {
+const putObjectMultipart = async (client: S3Client, bucketName:string, filePath:string, file: File) => {
     const nodeId = uuidv4()
     const versionId = uuidv4()
     console.log("MULTIPART Sending", nodeId, versionId)
@@ -62,7 +61,7 @@ const putObjectMultipart = async (client: S3Client, filePath:string, file: File)
             queueSize: 1,
             leavePartsOnError: true,
             params: {
-                Bucket: 'io',
+                Bucket: bucketName,
                 Key: filePath,
                 Body: file,
                 ContentType: file.type,
@@ -98,6 +97,9 @@ function App() {
     const localSettings = localStorage.getItem('showSettings')
     const [showSettings, setShowSettings] = useState<boolean>(localSettings ? (localSettings === 'true') :  true)
     const [basePath, setBasePath] = useState<string>(localStorage.getItem('basePath')||'')
+    const [restSegment, setRestSegment] = useState<string>(localStorage.getItem('restSegment')||'/a')
+    const [s3URL, setS3URL] = useState<string>(localStorage.getItem('s3URL')||'')
+    const [s3Bucket, setS3Bucket] = useState<string>(localStorage.getItem('s3Bucket')||'io')
     const [apiKey, setApiKey] = useState<string>(localStorage.getItem('apiKey')||'')
 
     const getParent   = (n:RestNode):RestNode => {
@@ -108,7 +110,7 @@ function App() {
     }
     const getClients = useCallback(() => {
         const instance = axios.create({
-            baseURL: basePath+'/a',
+            baseURL: basePath+restSegment,
             timeout: 60000,
             headers: {'Authorization': 'Bearer ' + apiKey}
         });
@@ -120,14 +122,14 @@ function App() {
             }
         }
         const client = new S3Client({
-            endpoint:basePath,
+            endpoint:s3URL || basePath,
             forcePathStyle: true,
             region:'us-east',
             credentials: provider,
             requestChecksumCalculation: 'WHEN_REQUIRED'
         })
         return {api, client}
-    }, [basePath, apiKey])
+    }, [basePath, apiKey, restSegment, s3URL])
 
     const {api, client} = getClients()
     const loadCurrent = ():void => {
@@ -171,7 +173,7 @@ function App() {
                     fPath = data.Results[0].NextPath
                 }
                 const callback = useMultipart ? putObjectMultipart : putObject
-                callback(client, fPath, file).then(()=>{
+                callback(client, s3Bucket, fPath, file).then(()=>{
                     console.log('uploaded', fPath)
                     loadCurrent()
                     setLoading(false)
@@ -184,16 +186,19 @@ function App() {
             })
         })
 
-    }, [basePath, apiKey, current, renameExisting, useMultipart])
+    }, [client, renameExisting, useMultipart])
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
 
-    useEffect(() => { setSelection(''); loadCurrent()}, [current, apiKey, basePath])
+    useEffect(() => { setSelection(''); loadCurrent()}, [current, apiKey, basePath, restSegment])
     useEffect(() => {
         localStorage.setItem('apiKey', apiKey)
         localStorage.setItem('basePath', basePath)
+        localStorage.setItem('restSegment', restSegment)
+        localStorage.setItem('s3URL', s3URL)
+        localStorage.setItem('s3Bucket', s3Bucket)
         localStorage.setItem('showSettings', showSettings ? 'true' : 'false')
-    }, [apiKey, basePath, showSettings])
+    }, [apiKey, basePath, showSettings, restSegment, s3URL, s3Bucket])
 
     const children = (coll && coll.Nodes) || []
     children.sort((a,b) => {
@@ -219,13 +224,28 @@ function App() {
                 <h4 onClick={() => setShowSettings(!showSettings)} style={{marginBottom:0, cursor:'pointer'}}>Api Settings&nbsp;<a>{showSettings?'-':'+'}</a>
                 </h4>
                 <div style={{display: showSettings ? 'block' : 'none'}}>
-                    <div>
-                        <input style={{width: 300}} type={"text"} placeholder={"Full URL without trailing slash"}
+                    <div style={{height:26, display:'flex', alignItems: 'center'}}>
+                        <label style={{width:100, fontSize:12,margin: '0 10px'}} htmlFor={"input-rest"}>REST Endpoint</label>
+                        <input id={"input-rest"} style={{width: 300}} type={"text"} placeholder={"Full URL without trailing slash"}
                                value={basePath}
                                onChange={(e) => setBasePath(e.target.value)}/>
+                        <input style={{width: 100}} type={"text"} placeholder={"REST API main endpoint"}
+                               value={restSegment}
+                               onChange={(e) => setRestSegment(e.target.value)}/>
                     </div>
-                    <div>
-                        <input style={{width: 300}} type={"text"} placeholder={"Api Key"} value={apiKey}
+                    <div style={{height:26, display:'flex', alignItems: 'center'}}>
+                        <label style={{width:100, fontSize:12,margin: '0 10px'}} htmlFor={"input-s3"}>S3 Endpoint</label>
+                        <input id={"input-s3"} style={{width: 300}} type={"text"}
+                               placeholder={"Leave empty to use " + basePath}
+                               value={s3URL}
+                               onChange={(e) => setS3URL(e.target.value)}/>
+                        <input style={{width: 100}} type={"text"} placeholder={"S3 Bucket"}
+                               value={s3Bucket}
+                               onChange={(e) => setS3Bucket(e.target.value)}/>
+                    </div>
+                    <div style={{height:26, display:'flex', alignItems: 'center'}}>
+                        <label style={{width:100, fontSize: 12, margin: '0 10px'}} htmlFor={"input-token"}>Auth Token</label>
+                        <input id={"input-token"} style={{width: 408}} type={"text"} placeholder={"Api Key"} value={apiKey}
                                onChange={(e) => setApiKey(e.target.value)}/>
                     </div>
                 </div>
@@ -292,7 +312,7 @@ function App() {
                 </div>
             </div>
             <p className="read-the-docs">
-                Wicked ! Made by Charles with love
+                Wicked ! Made by Charles with love - [Hint] Right-click on folders to show their info
             </p>
         </>
     )
