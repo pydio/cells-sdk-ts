@@ -24,6 +24,7 @@ export * from './rest-data-source-features';
 export * from './rest-delete-version-response';
 export * from './rest-error';
 export * from './rest-file-preview';
+export * from './rest-flag';
 export * from './rest-image-meta';
 export * from './rest-incoming-node';
 export * from './rest-json-meta';

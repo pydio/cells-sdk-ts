@@ -33,6 +33,7 @@ models/rest-data-source-features.ts
 models/rest-delete-version-response.ts
 models/rest-error.ts
 models/rest-file-preview.ts
+models/rest-flag.ts
 models/rest-image-meta.ts
 models/rest-incoming-node.ts
 models/rest-json-meta.ts

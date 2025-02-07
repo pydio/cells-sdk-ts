@@ -134,7 +134,10 @@ function App() {
     const {api, client} = getClients()
     const loadCurrent = ():void => {
         setLoading(true)
-        api.lookup({Locators:{Many:[{Path:current.Path+'/*'}]}}).then(res => {
+        api.lookup({
+            Locators:{Many:[{Path:current.Path+'/*'}]},
+            Flags:["WithVersionsAll"]
+        }).then(res => {
             setColl(res.data)
             setLoading(false)
         }).catch(err => {console.log(err); setLoading(false) })

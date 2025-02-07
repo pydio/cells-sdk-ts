@@ -20,13 +20,16 @@
  * @enum {string}
  */
 
-export const RestVersionsTypes = {
-    VersionsAll: 'VersionsAll',
-    VersionsDraft: 'VersionsDraft',
-    VersionsPublished: 'VersionsPublished'
+export const RestFlag = {
+    WithMetaDefaults: 'WithMetaDefaults',
+    WithMetaCoreOnly: 'WithMetaCoreOnly',
+    WithMetaNone: 'WithMetaNone',
+    WithVersionsAll: 'WithVersionsAll',
+    WithVersionsDraft: 'WithVersionsDraft',
+    WithVersionsPublished: 'WithVersionsPublished'
 } as const;
 
-export type RestVersionsTypes = typeof RestVersionsTypes[keyof typeof RestVersionsTypes];
+export type RestFlag = typeof RestFlag[keyof typeof RestFlag];
 
 
 

@@ -51,6 +51,9 @@ import type { RestShareLink } from './rest-share-link';
 import type { RestUserMeta } from './rest-user-meta';
 // May contain unused imports in some cases
 // @ts-ignore
+import type { RestVersion } from './rest-version';
+// May contain unused imports in some cases
+// @ts-ignore
 import type { RestVersionMeta } from './rest-version-meta';
 // May contain unused imports in some cases
 // @ts-ignore
@@ -218,6 +221,12 @@ export interface RestNode {
      * @memberof RestNode
      */
     'VersionMeta'?: RestVersionMeta;
+    /**
+     * 
+     * @type {Array<RestVersion>}
+     * @memberof RestNode
+     */
+    'Versions'?: Array<RestVersion>;
 }
 
 
