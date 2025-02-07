@@ -15,19 +15,31 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { RestCheckResult } from './rest-check-result';
+import type { RestNode } from './rest-node';
 
 /**
  * 
  * @export
- * @interface RestCreateCheckResponse
+ * @interface RestPromoteVersionResponse
  */
-export interface RestCreateCheckResponse {
+export interface RestPromoteVersionResponse {
     /**
      * 
-     * @type {Array<RestCheckResult>}
-     * @memberof RestCreateCheckResponse
+     * @type {RestNode}
+     * @memberof RestPromoteVersionResponse
      */
-    'Results'?: Array<RestCheckResult>;
+    'Node'?: RestNode;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RestPromoteVersionResponse
+     */
+    'Published'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RestPromoteVersionResponse
+     */
+    'Success'?: boolean;
 }
 

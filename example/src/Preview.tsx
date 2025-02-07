@@ -1,4 +1,4 @@
-import {NodeServiceApi, RestActionParameters, RestNode, RestPerformActionResponse, RestShareLink} from "cells-sdk-ts";
+import {NodeServiceApi, RestActionParameters, RestNode, RestVersion, RestPerformActionResponse, RestShareLink} from "cells-sdk-ts";
 import {getBase} from "./tools.tsx";
 import {useEffect, useState} from "react";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
@@ -17,7 +17,7 @@ interface props {
 
 const Preview = (props:props) => {
     const [link, setLink] = useState<RestShareLink|null>(null)
-    const [versions, setVersions] = useState<RestNode[]>([])
+    const [versions, setVersions] = useState<RestVersion[]>([])
     const [byUuid, setByUuid] = useState<RestNode|null>(null)
     const [previewURL, setPreviewURL] = useState('')
 
@@ -154,6 +154,46 @@ const Preview = (props:props) => {
         });
     }
 
+    const publish= () => {
+        setLoading(true)
+        api.publishNode(n.Uuid!, {Cascade: true}).then(()=>{
+            setLoading(false)
+            loadCurrent()
+        }).catch(() => {
+            setLoading(false)
+        })
+    }
+
+    const promote = () => {
+        setLoading(true)
+        const draft = versions.find((v) => v.Draft)
+        if (!draft) {
+            return
+        }
+        api.promoteVersion(n.Uuid, draft.VersionId, {Publish:true}).then(()=>{
+            setLoading(false)
+            loadCurrent()
+        }).catch(() => {
+            setLoading(false)
+        })
+    }
+
+    const deleteDraft = () => {
+        setLoading(true)
+        const draft = versions.find((v) => v.Draft)
+        if (!draft) {
+            return
+        }
+        api.deleteVersion(n.Uuid, draft.VersionId).then(()=>{
+            setLoading(false)
+            loadCurrent()
+        }).catch(() => {
+            setLoading(false)
+        })
+
+    }
+
+
     useEffect(() => {
         if (n.Shares && n.Shares.length >0 ) {
             api.getPublicLink(n.Shares[0].Uuid!).then(res => {
@@ -166,9 +206,9 @@ const Preview = (props:props) => {
 
     useEffect(() => {
         setVersions([])
-        if(n.DataSourceFeatures && n.DataSourceFeatures.Versioned) {
-            api.listVersions(n.Uuid!).then(res => {
-                setVersions(res.data.Nodes||[])
+        if(n.Type === 'LEAF' && n.DataSourceFeatures && n.DataSourceFeatures.Versioned) {
+            api.nodeVersions(n.Uuid!, {FilterBy:"VersionsAll"}).then(res => {
+                setVersions(res.data.Versions||[])
             })
         }
     }, [n]);
@@ -178,6 +218,7 @@ const Preview = (props:props) => {
     }, [n]);
 
     const buttonStyle = {style:{marginBottom:'10px'}};
+    const versionsHasDraft = versions.find((v) => v.Draft);
 
     return (
         <div style={{
@@ -199,6 +240,9 @@ const Preview = (props:props) => {
                     <button onClick={() => tagUntag()} {...buttonStyle}>Toggle Tag</button>
                     <button onClick={() => publicLink()} {...buttonStyle}>Public Link</button>
                     <button onClick={() => loadByUuid()} {...buttonStyle}>By UUID</button>
+                    {n.Type === 'COLLECTION' && n.IsDraft && <button onClick={() => publish()} {...buttonStyle}>Publish</button>}
+                    {n.Type === 'LEAF' && versionsHasDraft && <button onClick={() => promote()} {...buttonStyle}>Promote Draft</button>}
+                    {n.Type === 'LEAF' && versionsHasDraft && <button onClick={() => deleteDraft()} {...buttonStyle}>Cancel Draft</button>}
                 </div>
                 <div style={{width: 20, cursor:'pointer'}} onClick={() => setSelection('')}>❌</div>
             </div>
@@ -213,7 +257,7 @@ const Preview = (props:props) => {
             {versions && versions.length > 0 &&
                 <>
                     <h3>Versions</h3>
-                    <pre>{JSON.stringify(versions.map(v => v.RevisionMeta), null, '  ')}</pre>
+                    <pre>{JSON.stringify(versions, null, '  ')}</pre>
                 </>
             }
             {byUuid &&

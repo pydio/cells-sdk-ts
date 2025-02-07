@@ -13,21 +13,23 @@
  */
 
 
-// May contain unused imports in some cases
-// @ts-ignore
-import type { RestCheckResult } from './rest-check-result';
 
 /**
  * 
  * @export
- * @interface RestCreateCheckResponse
+ * @enum {string}
  */
-export interface RestCreateCheckResponse {
-    /**
-     * 
-     * @type {Array<RestCheckResult>}
-     * @memberof RestCreateCheckResponse
-     */
-    'Results'?: Array<RestCheckResult>;
-}
+
+export const RestFlag = {
+    WithMetaDefaults: 'WithMetaDefaults',
+    WithMetaCoreOnly: 'WithMetaCoreOnly',
+    WithMetaNone: 'WithMetaNone',
+    WithVersionsAll: 'WithVersionsAll',
+    WithVersionsDraft: 'WithVersionsDraft',
+    WithVersionsPublished: 'WithVersionsPublished'
+} as const;
+
+export type RestFlag = typeof RestFlag[keyof typeof RestFlag];
+
+
 

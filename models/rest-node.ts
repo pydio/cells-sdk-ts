@@ -45,13 +45,16 @@ import type { RestLockInfo } from './rest-lock-info';
 import type { RestMode } from './rest-mode';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { RestRevisionMeta } from './rest-revision-meta';
-// May contain unused imports in some cases
-// @ts-ignore
 import type { RestShareLink } from './rest-share-link';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { RestUserMeta } from './rest-user-meta';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { RestVersion } from './rest-version';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { RestVersionMeta } from './rest-version-meta';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { TreeNodeType } from './tree-node-type';
@@ -70,6 +73,12 @@ export interface RestNode {
     'Activities'?: Array<ActivityObject>;
     /**
      * 
+     * @type {string}
+     * @memberof RestNode
+     */
+    'ContentHash'?: string;
+    /**
+     * 
      * @type {RestLockInfo}
      * @memberof RestNode
      */
@@ -80,12 +89,6 @@ export interface RestNode {
      * @memberof RestNode
      */
     'ContentType'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof RestNode
-     */
-    'ContentsHash'?: string;
     /**
      * 
      * @type {RestContextWorkspace}
@@ -122,6 +125,12 @@ export interface RestNode {
      * @memberof RestNode
      */
     'IsBookmarked'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RestNode
+     */
+    'IsDraft'?: boolean;
     /**
      * 
      * @type {boolean}
@@ -166,12 +175,6 @@ export interface RestNode {
     'Previews'?: Array<RestFilePreview>;
     /**
      * 
-     * @type {RestRevisionMeta}
-     * @memberof RestNode
-     */
-    'RevisionMeta'?: RestRevisionMeta;
-    /**
-     * 
      * @type {Array<RestShareLink>}
      * @memberof RestNode
      */
@@ -212,6 +215,18 @@ export interface RestNode {
      * @memberof RestNode
      */
     'Uuid': string;
+    /**
+     * 
+     * @type {RestVersionMeta}
+     * @memberof RestNode
+     */
+    'VersionMeta'?: RestVersionMeta;
+    /**
+     * 
+     * @type {Array<RestVersion>}
+     * @memberof RestNode
+     */
+    'Versions'?: Array<RestVersion>;
 }
 
 

@@ -15,6 +15,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
+import type { RestFlag } from './rest-flag';
+// May contain unused imports in some cases
+// @ts-ignore
 import type { RestNodeLocators } from './rest-node-locators';
 // May contain unused imports in some cases
 // @ts-ignore
@@ -26,6 +29,12 @@ import type { TreeQuery } from './tree-query';
  * @interface RestLookupRequest
  */
 export interface RestLookupRequest {
+    /**
+     * 
+     * @type {Array<RestFlag>}
+     * @memberof RestLookupRequest
+     */
+    'Flags'?: Array<RestFlag>;
     /**
      * 
      * @type {string}
@@ -62,11 +71,5 @@ export interface RestLookupRequest {
      * @memberof RestLookupRequest
      */
     'SortField'?: string;
-    /**
-     * 
-     * @type {Array<number>}
-     * @memberof RestLookupRequest
-     */
-    'StatFlags'?: Array<number>;
 }
 

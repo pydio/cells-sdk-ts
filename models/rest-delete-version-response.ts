@@ -13,21 +13,24 @@
  */
 
 
-// May contain unused imports in some cases
-// @ts-ignore
-import type { RestCheckResult } from './rest-check-result';
 
 /**
  * 
  * @export
- * @interface RestCreateCheckResponse
+ * @interface RestDeleteVersionResponse
  */
-export interface RestCreateCheckResponse {
+export interface RestDeleteVersionResponse {
     /**
      * 
-     * @type {Array<RestCheckResult>}
-     * @memberof RestCreateCheckResponse
+     * @type {boolean}
+     * @memberof RestDeleteVersionResponse
      */
-    'Results'?: Array<RestCheckResult>;
+    'EmptyNodeDeleted'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RestDeleteVersionResponse
+     */
+    'Success'?: boolean;
 }
 

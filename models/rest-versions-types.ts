@@ -13,21 +13,20 @@
  */
 
 
-// May contain unused imports in some cases
-// @ts-ignore
-import type { RestCheckResult } from './rest-check-result';
 
 /**
  * 
  * @export
- * @interface RestCreateCheckResponse
+ * @enum {string}
  */
-export interface RestCreateCheckResponse {
-    /**
-     * 
-     * @type {Array<RestCheckResult>}
-     * @memberof RestCreateCheckResponse
-     */
-    'Results'?: Array<RestCheckResult>;
-}
+
+export const RestVersionsTypes = {
+    VersionsAll: 'VersionsAll',
+    VersionsDraft: 'VersionsDraft',
+    VersionsPublished: 'VersionsPublished'
+} as const;
+
+export type RestVersionsTypes = typeof RestVersionsTypes[keyof typeof RestVersionsTypes];
+
+
 
