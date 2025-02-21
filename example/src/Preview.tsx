@@ -25,16 +25,19 @@ const Preview = (props:props) => {
 
     useEffect(() => {
         if(n.Previews && n.Previews.length > 0 && n.Previews[0].Key) {
-            const prev = n.Previews.find(p => p.Dimension == 300) || n.Previews[0]
-            const command = new GetObjectCommand({
-                Bucket: prev.Bucket,
-                Key: prev.Key
-            });
-            getSignedUrl(client, command, { expiresIn: 3600 }).then((url) => {
-                setPreviewURL(url)
-            }).catch(()=>{
-                setPreviewURL('')
-            })
+            const previews = n.Previews.filter(p => p.ContentType !== 'application/pdf')
+            if(previews.length) {
+                const prev = previews.find(p => p.Dimension == 300) || previews[0]
+                const command = new GetObjectCommand({
+                    Bucket: prev.Bucket,
+                    Key: prev.Key
+                });
+                getSignedUrl(client, command, { expiresIn: 3600 }).then((url) => {
+                    setPreviewURL(url)
+                }).catch(()=>{
+                    setPreviewURL('')
+                })
+            }
         } else {
             setPreviewURL('')
         }
@@ -54,6 +57,26 @@ const Preview = (props:props) => {
         setLoading(true)
         api.getByUuid(n.Uuid).then(res=>{
             setByUuid(res.data)
+            setLoading(false)
+        }).catch(() => {
+            setLoading(false)
+        })
+    }
+
+    const lookupByUuid = () => {
+        setLoading(true)
+        api.lookup({Locators:{Many:[{Uuid:n.Uuid}]}}).then(res=>{
+            setByUuid(res.data.Nodes[0])
+            setLoading(false)
+        }).catch(() => {
+            setLoading(false)
+        })
+    }
+
+    const lookupByPath = () => {
+        setLoading(true)
+        api.lookup({Locators:{Many:[{Path:n.Path}]}}).then(res=>{
+            setByUuid(res.data.Nodes[0])
             setLoading(false)
         }).catch(() => {
             setLoading(false)
@@ -102,8 +125,8 @@ const Preview = (props:props) => {
         pp.push(newName)
         const req:RestActionParameters = {
             Nodes:[{Path:n.Path}],
-            TargetNode:{Path:pp.join('/')},
-            JsonParameters:'{"targetParent":false}'
+            JsonParameters:'{"targetParent":false}',
+            CopyMoveOptions:{TargetPath:pp.join('/')}
         }
         if (wait) {
             req.AwaitStatus= 'Running'
@@ -239,14 +262,16 @@ const Preview = (props:props) => {
                     <button onClick={() => bookmark()} {...buttonStyle}>Bookmark</button>
                     <button onClick={() => tagUntag()} {...buttonStyle}>Toggle Tag</button>
                     <button onClick={() => publicLink()} {...buttonStyle}>Public Link</button>
-                    <button onClick={() => loadByUuid()} {...buttonStyle}>By UUID</button>
+                    <button onClick={() => loadByUuid()} {...buttonStyle}>Get By UUID</button>
+                    <button onClick={() => lookupByUuid()} {...buttonStyle}>Lookup By UUID</button>
+                    <button onClick={() => lookupByPath()} {...buttonStyle}>Lookup By Path</button>
                     {n.Type === 'COLLECTION' && n.IsDraft && <button onClick={() => publish()} {...buttonStyle}>Publish</button>}
                     {n.Type === 'LEAF' && versionsHasDraft && <button onClick={() => promote()} {...buttonStyle}>Promote Draft</button>}
                     {n.Type === 'LEAF' && versionsHasDraft && <button onClick={() => deleteDraft()} {...buttonStyle}>Cancel Draft</button>}
                 </div>
                 <div style={{width: 20, cursor:'pointer'}} onClick={() => setSelection('')}>❌</div>
             </div>
-            {previewURL && <img src={previewURL}/>}
+            {previewURL && <img style={{maxWidth:300}} src={previewURL}/>}
             <pre>{JSON.stringify(props.n, null, '  ')}</pre>
             {link &&
                 <>

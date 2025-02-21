@@ -19,6 +19,9 @@ models/jobs-ctrl-command.ts
 models/jobs-task-status.ts
 models/meta-update-op.ts
 models/protobuf-any.ts
+models/rest-action-options-copy-move.ts
+models/rest-action-options-delete.ts
+models/rest-action-options-extract-compress.ts
 models/rest-action-parameters.ts
 models/rest-action-status.ts
 models/rest-background-action.ts

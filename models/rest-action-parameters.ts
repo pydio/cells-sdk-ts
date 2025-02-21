@@ -18,6 +18,15 @@
 import type { JobsTaskStatus } from './jobs-task-status';
 // May contain unused imports in some cases
 // @ts-ignore
+import type { RestActionOptionsCopyMove } from './rest-action-options-copy-move';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { RestActionOptionsDelete } from './rest-action-options-delete';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { RestActionOptionsExtractCompress } from './rest-action-options-extract-compress';
+// May contain unused imports in some cases
+// @ts-ignore
 import type { RestNodeLocator } from './rest-node-locator';
 
 /**
@@ -40,6 +49,24 @@ export interface RestActionParameters {
     'AwaitTimeout'?: string;
     /**
      * 
+     * @type {RestActionOptionsCopyMove}
+     * @memberof RestActionParameters
+     */
+    'CopyMoveOptions'?: RestActionOptionsCopyMove;
+    /**
+     * 
+     * @type {RestActionOptionsDelete}
+     * @memberof RestActionParameters
+     */
+    'DeleteOptions'?: RestActionOptionsDelete;
+    /**
+     * 
+     * @type {RestActionOptionsExtractCompress}
+     * @memberof RestActionParameters
+     */
+    'ExtractCompressOptions'?: RestActionOptionsExtractCompress;
+    /**
+     * 
      * @type {string}
      * @memberof RestActionParameters
      */
@@ -56,12 +83,6 @@ export interface RestActionParameters {
      * @memberof RestActionParameters
      */
     'SelectionUuid'?: string;
-    /**
-     * 
-     * @type {RestNodeLocator}
-     * @memberof RestActionParameters
-     */
-    'TargetNode'?: RestNodeLocator;
 }
 
 

@@ -124,7 +124,7 @@ function App() {
         const client = new S3Client({
             endpoint:s3URL || basePath,
             forcePathStyle: true,
-            region:'us-east',
+            region:'us-east-1',
             credentials: provider,
             requestChecksumCalculation: 'WHEN_REQUIRED'
         })
