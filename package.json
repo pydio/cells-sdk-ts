@@ -2,8 +2,14 @@
   "name": "cells-sdk-ts",
   "version": "0.1.0",
   "description": "Typescript SDK for Cells V2 Rest API",
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -11,5 +17,12 @@
     "url": "https://github.com/pydio/cells-sdk-ts"
   },
   "author": "Abstrium SAS",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
 }

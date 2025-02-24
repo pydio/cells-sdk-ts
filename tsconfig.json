@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "lib": ["es2017", "dom", "esnext.asynciterable"],
+    "moduleResolution": "node"
+  },
+  "include": ["*.ts", "api/**/*.ts"],
+  "exclude": ["node_modules", "example"]
+}
