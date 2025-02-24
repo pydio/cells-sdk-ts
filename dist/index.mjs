@@ -1,12 +1,7 @@
-"use strict";
-var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
-var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -22,68 +17,15 @@ var __spreadValues = (a, b) => {
   return a;
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-// index.ts
-var index_exports = {};
-__export(index_exports, {
-  ActivityObjectType: () => ActivityObjectType,
-  ActivityOwnerType: () => ActivityOwnerType,
-  BackgroundActionInfoNameEnum: () => BackgroundActionInfoNameEnum,
-  Configuration: () => Configuration,
-  ControlBackgroundActionNameEnum: () => ControlBackgroundActionNameEnum,
-  IdmWorkspaceScope: () => IdmWorkspaceScope,
-  JobsCommand: () => JobsCommand,
-  JobsTaskStatus: () => JobsTaskStatus,
-  ListNamespaceValuesOperationOperationEnum: () => ListNamespaceValuesOperationOperationEnum,
-  MetaUpdateOp: () => MetaUpdateOp,
-  NodeServiceApi: () => NodeServiceApi,
-  NodeServiceApiAxiosParamCreator: () => NodeServiceApiAxiosParamCreator,
-  NodeServiceApiFactory: () => NodeServiceApiFactory,
-  NodeServiceApiFp: () => NodeServiceApiFp,
-  PerformActionNameEnum: () => PerformActionNameEnum,
-  RestActionStatus: () => RestActionStatus,
-  RestFlag: () => RestFlag,
-  RestMode: () => RestMode,
-  RestNsOp: () => RestNsOp,
-  RestShareLinkAccessType: () => RestShareLinkAccessType,
-  RestUserActionType: () => RestUserActionType,
-  RestVersionsTypes: () => RestVersionsTypes,
-  ServiceResourcePolicyAction: () => ServiceResourcePolicyAction,
-  ServiceResourcePolicyPolicyEffect: () => ServiceResourcePolicyPolicyEffect,
-  TreeNodeChangeEventEventType: () => TreeNodeChangeEventEventType,
-  TreeNodeType: () => TreeNodeType
-});
-module.exports = __toCommonJS(index_exports);
 
 // api/node-service-api.ts
-var import_axios2 = __toESM(require("axios"));
+import globalAxios2 from "axios";
 
 // base.ts
-var import_axios = __toESM(require("axios"));
+import globalAxios from "axios";
 var BASE_PATH = "http://localhost".replace(/\/+$/, "");
 var BaseAPI = class {
-  constructor(configuration, basePath = BASE_PATH, axios = import_axios.default) {
+  constructor(configuration, basePath = BASE_PATH, axios = globalAxios) {
     this.basePath = basePath;
     this.axios = axios;
     var _a;
@@ -899,7 +841,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.backgroundActionInfo(name, jobUuid, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.backgroundActionInfo"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -913,7 +855,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.batchUpdateMeta(body, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.batchUpdateMeta"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -929,7 +871,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.controlBackgroundAction(name, jobUuid, command, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.controlBackgroundAction"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -943,7 +885,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.create(body, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.create"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -957,7 +899,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createCheck(body, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.createCheck"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -972,7 +914,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPublicLink(uuid, publicLinkRequest, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.createPublicLink"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -986,7 +928,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createSelection(body, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.createSelection"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1000,7 +942,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deletePublicLink(linkUuid, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.deletePublicLink"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1015,7 +957,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deleteVersion(uuid, versionId, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.deleteVersion"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1030,7 +972,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getByUuid(uuid, path, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.getByUuid"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1044,7 +986,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPublicLink(linkUuid, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.getPublicLink"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1060,7 +1002,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.listNamespaceValues(namespace, operationOperation, operationValues, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.listNamespaceValues"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1073,7 +1015,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.listNamespaces(options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.listNamespaces"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1087,7 +1029,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.lookup(body, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.lookup"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1102,7 +1044,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nodeVersions(uuid, query, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.nodeVersions"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1117,7 +1059,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.patchNode(uuid, nodeUpdates, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.patchNode"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1133,7 +1075,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.performAction(name, parameters, jobUuid, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.performAction"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1149,7 +1091,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.promoteVersion(uuid, versionId, parameters, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.promoteVersion"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1164,7 +1106,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.publishNode(uuid, parameters, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.publishNode"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1178,7 +1120,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.searchMeta(body, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.searchMeta"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1192,7 +1134,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.templates(templateType, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.templates"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1207,7 +1149,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateNamespaceValues(namespace, operation, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.updateNamespaceValues"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1222,7 +1164,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updatePublicLink(linkUuid, publicLinkRequest, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.updatePublicLink"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * 
@@ -1236,7 +1178,7 @@ var NodeServiceApiFp = function(configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userBookmarks(all, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.userBookmarks"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
-      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     }
   };
 };
@@ -2036,8 +1978,7 @@ var TreeNodeType = {
   Leaf: "LEAF",
   Collection: "COLLECTION"
 };
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
+export {
   ActivityObjectType,
   ActivityOwnerType,
   BackgroundActionInfoNameEnum,
@@ -2064,5 +2005,5 @@ var TreeNodeType = {
   ServiceResourcePolicyPolicyEffect,
   TreeNodeChangeEventEventType,
   TreeNodeType
-});
-//# sourceMappingURL=index.js.map
+};
+//# sourceMappingURL=index.mjs.map

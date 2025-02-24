@@ -11,6 +11,6 @@
     "lib": ["es2017", "dom", "esnext.asynciterable"],
     "moduleResolution": "node"
   },
-  "include": ["*.ts", "api/**/*.ts"],
+  "include": ["*.ts", "api/**/*.ts", "models/**/*.ts"],
   "exclude": ["node_modules", "example"]
 }
