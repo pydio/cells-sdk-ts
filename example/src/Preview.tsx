@@ -238,6 +238,7 @@ const Preview = (props:props) => {
         }
     }, [n]);
 
+
     useEffect(() => {
         setVersions([])
         if(n.Type === 'LEAF' && n.DataSourceFeatures && n.DataSourceFeatures.Versioned) {
@@ -282,26 +283,28 @@ const Preview = (props:props) => {
                 </div>
                 <div style={{width: 20, cursor:'pointer'}} onClick={() => setSelection('')}>❌</div>
             </div>
-            {previewURL && <img style={{maxWidth:300}} src={previewURL}/>}
-            {previewURL && presignedLocal ? 'local presigned': 'server presigned'}
+            <div style={{fontSize: 10}}>
+                {previewURL && <img style={{maxWidth:300}} src={previewURL}/>}
+                {previewURL && (presignedLocal ? ' (thumb GET locally)': ' (thumb from server presigned)')}
+            </div>
 
-            <pre>{JSON.stringify(props.n, null, '  ')}</pre>
+            <pre style={{maxWidth:650, overflowX:'auto'}}>{JSON.stringify(props.n, null, '  ')}</pre>
             {link &&
                 <>
                     <h3>Public Link</h3>
-                    <pre>{JSON.stringify(link, null, '  ')}</pre>
+                    <pre style={{maxWidth:600, overflowX:'auto'}}>{JSON.stringify(link, null, '  ')}</pre>
                 </>
             }
             {versions && versions.length > 0 &&
                 <>
-                    <h3>Versions</h3>
-                    <pre>{JSON.stringify(versions, null, '  ')}</pre>
+                    <h3>NodeVersions Result</h3>
+                    <pre style={{maxWidth:650, overflowX:'auto'}}>{JSON.stringify(versions, null, '  ')}</pre>
                 </>
             }
             {byUuid &&
                 <>
                     <h3>Loaded By Uuid</h3>
-                    <pre>{JSON.stringify(byUuid, null, '  ')}</pre>
+                    <pre style={{maxWidth:650, overflowX:'auto'}}>{JSON.stringify(byUuid, null, '  ')}</pre>
                 </>
             }
         </div>
