@@ -20,6 +20,7 @@ const Preview = (props:props) => {
     const [versions, setVersions] = useState<RestVersion[]>([])
     const [byUuid, setByUuid] = useState<RestNode|null>(null)
     const [previewURL, setPreviewURL] = useState('')
+    const [presignedLocal, setPresignedLocal] = useState(false)
 
     const {api, n, client, loadCurrent, setSelection, setLoading} = props;
 
@@ -28,12 +29,18 @@ const Preview = (props:props) => {
             const previews = n.Previews.filter(p => p.ContentType !== 'application/pdf')
             if(previews.length) {
                 const prev = previews.find(p => p.Dimension == 300) || previews[0]
+                if ( prev.Url && prev.Url.startsWith("http") ) {
+                    setPreviewURL(prev.Url)
+                    setPresignedLocal(false)
+                    return
+                }
                 const command = new GetObjectCommand({
                     Bucket: prev.Bucket,
                     Key: prev.Key
                 });
                 getSignedUrl(client, command, { expiresIn: 3600 }).then((url) => {
                     setPreviewURL(url)
+                    setPresignedLocal(true)
                 }).catch(()=>{
                     setPreviewURL('')
                 })
@@ -66,7 +73,9 @@ const Preview = (props:props) => {
     const lookupByUuid = () => {
         setLoading(true)
         api.lookup({Locators:{Many:[{Uuid:n.Uuid}]}}).then(res=>{
-            setByUuid(res.data.Nodes[0])
+            if (res.data && res.data.Nodes && res.data.Nodes.length){
+                setByUuid(res.data.Nodes[0])
+            }
             setLoading(false)
         }).catch(() => {
             setLoading(false)
@@ -76,7 +85,9 @@ const Preview = (props:props) => {
     const lookupByPath = () => {
         setLoading(true)
         api.lookup({Locators:{Many:[{Path:n.Path}]}}).then(res=>{
-            setByUuid(res.data.Nodes[0])
+            if (res.data && res.data.Nodes && res.data.Nodes.length) {
+                setByUuid(res.data.Nodes[0])
+            }
             setLoading(false)
         }).catch(() => {
             setLoading(false)
@@ -272,6 +283,8 @@ const Preview = (props:props) => {
                 <div style={{width: 20, cursor:'pointer'}} onClick={() => setSelection('')}>❌</div>
             </div>
             {previewURL && <img style={{maxWidth:300}} src={previewURL}/>}
+            {previewURL && presignedLocal ? 'local presigned': 'server presigned'}
+
             <pre>{JSON.stringify(props.n, null, '  ')}</pre>
             {link &&
                 <>

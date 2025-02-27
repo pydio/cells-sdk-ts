@@ -2964,6 +2964,7 @@ declare const RestFlag: {
     readonly WithVersionsAll: "WithVersionsAll";
     readonly WithVersionsDraft: "WithVersionsDraft";
     readonly WithVersionsPublished: "WithVersionsPublished";
+    readonly WithPreSignedUrls: "WithPreSignedURLs";
 };
 type RestFlag = typeof RestFlag[keyof typeof RestFlag];
 

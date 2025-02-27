@@ -136,7 +136,7 @@ function App() {
         setLoading(true)
         api.lookup({
             Locators:{Many:[{Path:current.Path+'/*'}]},
-            Flags:["WithVersionsAll"]
+            Flags:["WithVersionsAll", "WithPreSignedURLs"]
         }).then(res => {
             setColl(res.data)
             setLoading(false)
@@ -172,8 +172,8 @@ function App() {
                 Inputs: [{Type:'LEAF', Locator:{Path:fPath}}],
                 FindAvailablePath: true
             }).then(({data})=>{
-                if(renameExisting && data.Results.length && data.Results[0].Exists){
-                    fPath = data.Results[0].NextPath
+                if(renameExisting && data.Results && data.Results.length && data.Results[0].Exists){
+                    fPath = data.Results[0].NextPath!
                 }
                 const callback = useMultipart ? putObjectMultipart : putObject
                 callback(client, s3Bucket, fPath, file).then(()=>{

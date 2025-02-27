@@ -26,7 +26,8 @@ export const RestFlag = {
     WithMetaNone: 'WithMetaNone',
     WithVersionsAll: 'WithVersionsAll',
     WithVersionsDraft: 'WithVersionsDraft',
-    WithVersionsPublished: 'WithVersionsPublished'
+    WithVersionsPublished: 'WithVersionsPublished',
+    WithPreSignedUrls: 'WithPreSignedURLs'
 } as const;
 
 export type RestFlag = typeof RestFlag[keyof typeof RestFlag];

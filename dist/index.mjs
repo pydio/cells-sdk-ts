@@ -1904,7 +1904,8 @@ var RestFlag = {
   WithMetaNone: "WithMetaNone",
   WithVersionsAll: "WithVersionsAll",
   WithVersionsDraft: "WithVersionsDraft",
-  WithVersionsPublished: "WithVersionsPublished"
+  WithVersionsPublished: "WithVersionsPublished",
+  WithPreSignedUrls: "WithPreSignedURLs"
 };
 
 // models/rest-mode.ts
