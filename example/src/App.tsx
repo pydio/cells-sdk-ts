@@ -114,7 +114,6 @@ function App() {
         if (set) {
             setLookupFlags([...lookupFlags, flag])
         } else {
-            console.log('here')
             setLookupFlags([...lookupFlags.filter(f => f !== flag)])
         }
     }, [current, lookupFlags])
@@ -338,6 +337,7 @@ function App() {
                         setSelection={setSelection}
                         loading={loading}
                         setLoading={setLoading}
+                        lookupFlags={lookupFlags}
                     />}
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import {NodeServiceApi, RestActionParameters, RestNode, RestVersion, RestPerformActionResponse, RestShareLink} from "cells-sdk-ts";
+import {NodeServiceApi, RestActionParameters, RestNode, RestVersion, RestPerformActionResponse, RestShareLink, RestFlag} from "cells-sdk-ts";
 import {getBase} from "./tools.tsx";
 import {useEffect, useState} from "react";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
@@ -13,6 +13,7 @@ interface props {
     setSelection: (s:string) => void,
     loading: boolean,
     setLoading: (s: boolean) => void
+    lookupFlags: RestFlag[]
 }
 
 const Preview = (props:props) => {
@@ -22,7 +23,7 @@ const Preview = (props:props) => {
     const [previewURL, setPreviewURL] = useState('')
     const [presignedLocal, setPresignedLocal] = useState(false)
 
-    const {api, n, client, loadCurrent, setSelection, setLoading} = props;
+    const {api, n, client, loadCurrent, setSelection, setLoading, lookupFlags} = props;
 
     useEffect(() => {
         if(n.Previews && n.Previews.length > 0 && n.Previews[0].Key) {
@@ -72,7 +73,7 @@ const Preview = (props:props) => {
 
     const lookupByUuid = () => {
         setLoading(true)
-        api.lookup({Locators:{Many:[{Uuid:n.Uuid}]}}).then(res=>{
+        api.lookup({Locators:{Many:[{Uuid:n.Uuid}]}, Flags:lookupFlags}).then(res=>{
             if (res.data && res.data.Nodes && res.data.Nodes.length){
                 setByUuid(res.data.Nodes[0])
             }
@@ -84,7 +85,7 @@ const Preview = (props:props) => {
 
     const lookupByPath = () => {
         setLoading(true)
-        api.lookup({Locators:{Many:[{Path:n.Path}]}}).then(res=>{
+        api.lookup({Locators:{Many:[{Path:n.Path}]}, Flags:lookupFlags}).then(res=>{
             if (res.data && res.data.Nodes && res.data.Nodes.length) {
                 setByUuid(res.data.Nodes[0])
             }
