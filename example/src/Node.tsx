@@ -18,6 +18,7 @@ const Node = (props:props)=> {
 
     let isWorkspace
     let icon = n.Type == 'COLLECTION' ? '📂' : '📄'
+    let hasTag = false;
     if(n.IsRecycleBin){
         icon = '🗑️'
     } else if (n.ContextWorkspace){
@@ -25,6 +26,9 @@ const Node = (props:props)=> {
         isWorkspace = true
     }
     const metaStyle = {marginLeft:10,opacity:0.5, fontSize:'0.8em'}
+    if(n.UserMetadata) {
+        hasTag = !!n.UserMetadata.find(m => m.Namespace === 'usermeta-tags');
+    }
 
     return (
         <div
@@ -43,7 +47,8 @@ const Node = (props:props)=> {
             {n.Type === 'LEAF' && n.Size && <span style={metaStyle}>{filesize(parseInt(n.Size), {standard: "jedec"})}</span>}
             {n.IsBookmarked && ' ⭐'}
             {n.Subscriptions && ' 🔔'}
-            {n.UserMetadata && ' 🏷️'}
+            {hasTag && ' 🏷️'}
+            {n.IsDraft && ' 📝'}
             {n.ContentLock && ' 🔒'}
             {n.Shares && ' 🔗'}
         </div>

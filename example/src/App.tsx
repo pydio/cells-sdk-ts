@@ -1,4 +1,4 @@
-import {useEffect, useState, useCallback} from 'react'
+import {useEffect, useState, useCallback, Fragment} from 'react'
 import './App.css'
 import Node from './Node'
 import axios from "axios";
@@ -7,7 +7,7 @@ import { S3ServiceException, S3Client, PutObjectCommand } from "@aws-sdk/client-
 import { Upload } from "@aws-sdk/lib-storage";
 import { AwsCredentialIdentity } from "@smithy/types";
 
-import {RestNode, RestNodeCollection, NodeServiceApi} from "cells-sdk-ts";
+import {RestNode, RestNodeCollection, NodeServiceApi, RestFlag} from "cells-sdk-ts";
 import Preview from "./Preview.tsx";
 
 import { v4 as uuidv4 } from 'uuid';
@@ -102,6 +102,22 @@ function App() {
     const [s3Bucket, setS3Bucket] = useState<string>(localStorage.getItem('s3Bucket')||'io')
     const [apiKey, setApiKey] = useState<string>(localStorage.getItem('apiKey')||'')
 
+    const [lookupFlags, setLookupFlags] = useState<RestFlag[]>(["WithVersionsAll", "WithPreSignedURLs"])
+    const allFlags:RestFlag[] = [
+        "WithVersionsAll",
+        "WithPreSignedURLs",
+        "WithMetaNone"
+    ]
+
+    const toggleFlag = useCallback((flag:RestFlag) => {
+        const set = !lookupFlags.find(f => f === flag)
+        if (set) {
+            setLookupFlags([...lookupFlags, flag])
+        } else {
+            setLookupFlags([...lookupFlags.filter(f => f !== flag)])
+        }
+    }, [current, lookupFlags])
+
     const getParent   = (n:RestNode):RestNode => {
         const pp = n.Path!.split('/')
         pp.pop()
@@ -124,7 +140,7 @@ function App() {
         const client = new S3Client({
             endpoint:s3URL || basePath,
             forcePathStyle: true,
-            region:'us-east',
+            region:'us-east-1',
             credentials: provider,
             requestChecksumCalculation: 'WHEN_REQUIRED'
         })
@@ -136,7 +152,7 @@ function App() {
         setLoading(true)
         api.lookup({
             Locators:{Many:[{Path:current.Path+'/*'}]},
-            Flags:["WithVersionsAll"]
+            Flags:lookupFlags
         }).then(res => {
             setColl(res.data)
             setLoading(false)
@@ -172,8 +188,8 @@ function App() {
                 Inputs: [{Type:'LEAF', Locator:{Path:fPath}}],
                 FindAvailablePath: true
             }).then(({data})=>{
-                if(renameExisting && data.Results.length && data.Results[0].Exists){
-                    fPath = data.Results[0].NextPath
+                if(renameExisting && data.Results && data.Results.length && data.Results[0].Exists){
+                    fPath = data.Results[0].NextPath!
                 }
                 const callback = useMultipart ? putObjectMultipart : putObject
                 callback(client, s3Bucket, fPath, file).then(()=>{
@@ -194,6 +210,7 @@ function App() {
 
 
     useEffect(() => { setSelection(''); loadCurrent()}, [current, apiKey, basePath, restSegment])
+    useEffect(() => { loadCurrent() }, [lookupFlags])
     useEffect(() => {
         localStorage.setItem('apiKey', apiKey)
         localStorage.setItem('basePath', basePath)
@@ -255,6 +272,15 @@ function App() {
             </div>
             <div style={{display: 'flex', alignItems: 'center'}}>
                 <h2 style={{flex: 1}}>{insideWorkspace?'Folder '+current.Path:'Workspaces'} {loading && '⏳'}</h2>
+                <div style={{zoom:0.8}}>
+                    Lookup Flags :
+                    {allFlags.map(f =>
+                        <Fragment key={f}>
+                            <input type={"checkbox"} id={f} checked={!!lookupFlags.find(lf => lf === f)} onChange={()=>toggleFlag(f)}/>
+                            <label style={{cursor:'pointer'}} htmlFor={f}>{f.replace('With', '')}</label>
+                        </Fragment>
+                    )}
+                </div>
                 <button onClick={() => loadCurrent()}>Reload</button>
             </div>
             {insideWorkspace &&
@@ -311,6 +337,7 @@ function App() {
                         setSelection={setSelection}
                         loading={loading}
                         setLoading={setLoading}
+                        lookupFlags={lookupFlags}
                     />}
                 </div>
             </div>

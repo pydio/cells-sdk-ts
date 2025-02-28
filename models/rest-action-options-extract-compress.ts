@@ -17,20 +17,20 @@
 /**
  * 
  * @export
- * @enum {string}
+ * @interface RestActionOptionsExtractCompress
  */
-
-export const RestFlag = {
-    WithMetaDefaults: 'WithMetaDefaults',
-    WithMetaCoreOnly: 'WithMetaCoreOnly',
-    WithMetaNone: 'WithMetaNone',
-    WithVersionsAll: 'WithVersionsAll',
-    WithVersionsDraft: 'WithVersionsDraft',
-    WithVersionsPublished: 'WithVersionsPublished',
-    WithPreSignedUrls: 'WithPreSignedURLs'
-} as const;
-
-export type RestFlag = typeof RestFlag[keyof typeof RestFlag];
-
-
+export interface RestActionOptionsExtractCompress {
+    /**
+     * 
+     * @type {string}
+     * @memberof RestActionOptionsExtractCompress
+     */
+    'ArchiveFormat': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestActionOptionsExtractCompress
+     */
+    'TargetPath': string;
+}
 

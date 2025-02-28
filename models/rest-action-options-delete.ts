@@ -17,20 +17,14 @@
 /**
  * 
  * @export
- * @enum {string}
+ * @interface RestActionOptionsDelete
  */
-
-export const RestFlag = {
-    WithMetaDefaults: 'WithMetaDefaults',
-    WithMetaCoreOnly: 'WithMetaCoreOnly',
-    WithMetaNone: 'WithMetaNone',
-    WithVersionsAll: 'WithVersionsAll',
-    WithVersionsDraft: 'WithVersionsDraft',
-    WithVersionsPublished: 'WithVersionsPublished',
-    WithPreSignedUrls: 'WithPreSignedURLs'
-} as const;
-
-export type RestFlag = typeof RestFlag[keyof typeof RestFlag];
-
-
+export interface RestActionOptionsDelete {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RestActionOptionsDelete
+     */
+    'PermanentDelete'?: boolean;
+}
 

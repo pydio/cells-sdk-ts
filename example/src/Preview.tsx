@@ -1,4 +1,4 @@
-import {NodeServiceApi, RestActionParameters, RestNode, RestVersion, RestPerformActionResponse, RestShareLink} from "cells-sdk-ts";
+import {NodeServiceApi, RestActionParameters, RestNode, RestVersion, RestPerformActionResponse, RestShareLink, RestFlag} from "cells-sdk-ts";
 import {getBase} from "./tools.tsx";
 import {useEffect, useState} from "react";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
@@ -13,6 +13,7 @@ interface props {
     setSelection: (s:string) => void,
     loading: boolean,
     setLoading: (s: boolean) => void
+    lookupFlags: RestFlag[]
 }
 
 const Preview = (props:props) => {
@@ -20,21 +21,31 @@ const Preview = (props:props) => {
     const [versions, setVersions] = useState<RestVersion[]>([])
     const [byUuid, setByUuid] = useState<RestNode|null>(null)
     const [previewURL, setPreviewURL] = useState('')
+    const [presignedLocal, setPresignedLocal] = useState(false)
 
-    const {api, n, client, loadCurrent, setSelection, setLoading} = props;
+    const {api, n, client, loadCurrent, setSelection, setLoading, lookupFlags} = props;
 
     useEffect(() => {
         if(n.Previews && n.Previews.length > 0 && n.Previews[0].Key) {
-            const prev = n.Previews.find(p => p.Dimension == 300) || n.Previews[0]
-            const command = new GetObjectCommand({
-                Bucket: prev.Bucket,
-                Key: prev.Key
-            });
-            getSignedUrl(client, command, { expiresIn: 3600 }).then((url) => {
-                setPreviewURL(url)
-            }).catch(()=>{
-                setPreviewURL('')
-            })
+            const previews = n.Previews.filter(p => p.ContentType !== 'application/pdf')
+            if(previews.length) {
+                const prev = previews.find(p => p.Dimension == 300) || previews[0]
+                if ( prev.Url && prev.Url.startsWith("http") ) {
+                    setPreviewURL(prev.Url)
+                    setPresignedLocal(false)
+                    return
+                }
+                const command = new GetObjectCommand({
+                    Bucket: prev.Bucket,
+                    Key: prev.Key
+                });
+                getSignedUrl(client, command, { expiresIn: 3600 }).then((url) => {
+                    setPreviewURL(url)
+                    setPresignedLocal(true)
+                }).catch(()=>{
+                    setPreviewURL('')
+                })
+            }
         } else {
             setPreviewURL('')
         }
@@ -54,6 +65,30 @@ const Preview = (props:props) => {
         setLoading(true)
         api.getByUuid(n.Uuid).then(res=>{
             setByUuid(res.data)
+            setLoading(false)
+        }).catch(() => {
+            setLoading(false)
+        })
+    }
+
+    const lookupByUuid = () => {
+        setLoading(true)
+        api.lookup({Locators:{Many:[{Uuid:n.Uuid}]}, Flags:lookupFlags}).then(res=>{
+            if (res.data && res.data.Nodes && res.data.Nodes.length){
+                setByUuid(res.data.Nodes[0])
+            }
+            setLoading(false)
+        }).catch(() => {
+            setLoading(false)
+        })
+    }
+
+    const lookupByPath = () => {
+        setLoading(true)
+        api.lookup({Locators:{Many:[{Path:n.Path}]}, Flags:lookupFlags}).then(res=>{
+            if (res.data && res.data.Nodes && res.data.Nodes.length) {
+                setByUuid(res.data.Nodes[0])
+            }
             setLoading(false)
         }).catch(() => {
             setLoading(false)
@@ -102,8 +137,8 @@ const Preview = (props:props) => {
         pp.push(newName)
         const req:RestActionParameters = {
             Nodes:[{Path:n.Path}],
-            TargetNode:{Path:pp.join('/')},
-            JsonParameters:'{"targetParent":false}'
+            JsonParameters:'{"targetParent":false}',
+            CopyMoveOptions:{TargetPath:pp.join('/')}
         }
         if (wait) {
             req.AwaitStatus= 'Running'
@@ -204,6 +239,7 @@ const Preview = (props:props) => {
         }
     }, [n]);
 
+
     useEffect(() => {
         setVersions([])
         if(n.Type === 'LEAF' && n.DataSourceFeatures && n.DataSourceFeatures.Versioned) {
@@ -239,31 +275,37 @@ const Preview = (props:props) => {
                     <button onClick={() => bookmark()} {...buttonStyle}>Bookmark</button>
                     <button onClick={() => tagUntag()} {...buttonStyle}>Toggle Tag</button>
                     <button onClick={() => publicLink()} {...buttonStyle}>Public Link</button>
-                    <button onClick={() => loadByUuid()} {...buttonStyle}>By UUID</button>
+                    <button onClick={() => loadByUuid()} {...buttonStyle}>Get By UUID</button>
+                    <button onClick={() => lookupByUuid()} {...buttonStyle}>Lookup By UUID</button>
+                    <button onClick={() => lookupByPath()} {...buttonStyle}>Lookup By Path</button>
                     {n.Type === 'COLLECTION' && n.IsDraft && <button onClick={() => publish()} {...buttonStyle}>Publish</button>}
                     {n.Type === 'LEAF' && versionsHasDraft && <button onClick={() => promote()} {...buttonStyle}>Promote Draft</button>}
                     {n.Type === 'LEAF' && versionsHasDraft && <button onClick={() => deleteDraft()} {...buttonStyle}>Cancel Draft</button>}
                 </div>
                 <div style={{width: 20, cursor:'pointer'}} onClick={() => setSelection('')}>❌</div>
             </div>
-            {previewURL && <img src={previewURL}/>}
-            <pre>{JSON.stringify(props.n, null, '  ')}</pre>
+            <div style={{fontSize: 10}}>
+                {previewURL && <img style={{maxWidth:300}} src={previewURL}/>}
+                {previewURL && (presignedLocal ? ' (thumb GET locally)': ' (thumb from server presigned)')}
+            </div>
+
+            <pre style={{maxWidth:650, overflowX:'auto'}}>{JSON.stringify(props.n, null, '  ')}</pre>
             {link &&
                 <>
                     <h3>Public Link</h3>
-                    <pre>{JSON.stringify(link, null, '  ')}</pre>
+                    <pre style={{maxWidth:600, overflowX:'auto'}}>{JSON.stringify(link, null, '  ')}</pre>
                 </>
             }
             {versions && versions.length > 0 &&
                 <>
-                    <h3>Versions</h3>
-                    <pre>{JSON.stringify(versions, null, '  ')}</pre>
+                    <h3>NodeVersions Result</h3>
+                    <pre style={{maxWidth:650, overflowX:'auto'}}>{JSON.stringify(versions, null, '  ')}</pre>
                 </>
             }
             {byUuid &&
                 <>
                     <h3>Loaded By Uuid</h3>
-                    <pre>{JSON.stringify(byUuid, null, '  ')}</pre>
+                    <pre style={{maxWidth:650, overflowX:'auto'}}>{JSON.stringify(byUuid, null, '  ')}</pre>
                 </>
             }
         </div>

@@ -17,20 +17,20 @@
 /**
  * 
  * @export
- * @enum {string}
+ * @interface RestActionOptionsCopyMove
  */
-
-export const RestFlag = {
-    WithMetaDefaults: 'WithMetaDefaults',
-    WithMetaCoreOnly: 'WithMetaCoreOnly',
-    WithMetaNone: 'WithMetaNone',
-    WithVersionsAll: 'WithVersionsAll',
-    WithVersionsDraft: 'WithVersionsDraft',
-    WithVersionsPublished: 'WithVersionsPublished',
-    WithPreSignedUrls: 'WithPreSignedURLs'
-} as const;
-
-export type RestFlag = typeof RestFlag[keyof typeof RestFlag];
-
-
+export interface RestActionOptionsCopyMove {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RestActionOptionsCopyMove
+     */
+    'TargetIsParent'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestActionOptionsCopyMove
+     */
+    'TargetPath': string;
+}
 
