@@ -48,6 +48,7 @@ export * from './rest-node-versions-filter';
 export * from './rest-ns-op';
 export * from './rest-pagination';
 export * from './rest-perform-action-response';
+export * from './rest-pre-signed-url';
 export * from './rest-promote-parameters';
 export * from './rest-promote-version-response';
 export * from './rest-public-link-delete-success';

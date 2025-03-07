@@ -102,6 +102,8 @@ function App() {
     const [s3Bucket, setS3Bucket] = useState<string>(localStorage.getItem('s3Bucket')||'io')
     const [apiKey, setApiKey] = useState<string>(localStorage.getItem('apiKey')||'')
 
+    const [searchText, setSearchText] = useState<string>('')
+
     const [lookupFlags, setLookupFlags] = useState<RestFlag[]>(["WithVersionsAll", "WithPreSignedURLs"])
     const allFlags:RestFlag[] = [
         "WithVersionsAll",
@@ -220,6 +222,21 @@ function App() {
         localStorage.setItem('showSettings', showSettings ? 'true' : 'false')
     }, [apiKey, basePath, showSettings, restSegment, s3URL, s3Bucket])
 
+    useEffect(() => {
+        if(searchText) {
+            setLoading(true)
+            api.lookup({
+                Query:{FileName:searchText, Type:"LEAF"},
+                Flags:lookupFlags
+            }).then(res => {
+                setColl(res.data)
+                setLoading(false)
+            }).catch(err => {console.log(err); setLoading(false) })
+        } else {
+            loadCurrent()
+        }
+    }, [searchText]);
+
     const children = (coll && coll.Nodes) || []
     children.sort((a,b) => {
         if(a.IsRecycleBin) {
@@ -272,6 +289,11 @@ function App() {
             </div>
             <div style={{display: 'flex', alignItems: 'center'}}>
                 <h2 style={{flex: 1}}>{insideWorkspace?'Folder '+current.Path:'Workspaces'} {loading && '⏳'}</h2>
+                {!insideWorkspace &&
+                    <div style={{flex: 1}}>
+                        <input style={{width: '80%'}} type={"text"} placeholder={"Search files in all conversations"} value={searchText} onChange={(e) => setSearchText(e.target.value)}/>
+                    </div>
+                }
                 <div style={{zoom:0.8}}>
                     Lookup Flags :
                     {allFlags.map(f =>
@@ -324,7 +346,9 @@ function App() {
                         {children.map((n) =>
                             <Node key={n.Path} n={n} api={api} setCurrent={setCurrent}
                                   selected={selection === n.Path}
-                                  setSelection={setSelection}/>
+                                  setSelection={setSelection}
+                                  searchResult={!!searchText}
+                            />
                         )}
                     </div>
                 </div>

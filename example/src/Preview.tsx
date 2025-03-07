@@ -30,8 +30,8 @@ const Preview = (props:props) => {
             const previews = n.Previews.filter(p => p.ContentType !== 'application/pdf')
             if(previews.length) {
                 const prev = previews.find(p => p.Dimension == 300) || previews[0]
-                if ( prev.Url && prev.Url.startsWith("http") ) {
-                    setPreviewURL(prev.Url)
+                if ( prev.PreSignedGET && prev.PreSignedGET.Url && prev.PreSignedGET.Url.startsWith("http") ) {
+                    setPreviewURL(prev.PreSignedGET.Url)
                     setPresignedLocal(false)
                     return
                 }

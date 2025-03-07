@@ -45,6 +45,9 @@ import type { RestLockInfo } from './rest-lock-info';
 import type { RestMode } from './rest-mode';
 // May contain unused imports in some cases
 // @ts-ignore
+import type { RestPreSignedURL } from './rest-pre-signed-url';
+// May contain unused imports in some cases
+// @ts-ignore
 import type { RestShareLink } from './rest-share-link';
 // May contain unused imports in some cases
 // @ts-ignore
@@ -167,6 +170,12 @@ export interface RestNode {
      * @memberof RestNode
      */
     'Path': string;
+    /**
+     * 
+     * @type {RestPreSignedURL}
+     * @memberof RestNode
+     */
+    'PreSignedGET'?: RestPreSignedURL;
     /**
      * 
      * @type {Array<RestFilePreview>}

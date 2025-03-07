@@ -57,6 +57,7 @@ models/rest-node.ts
 models/rest-ns-op.ts
 models/rest-pagination.ts
 models/rest-perform-action-response.ts
+models/rest-pre-signed-url.ts
 models/rest-promote-parameters.ts
 models/rest-promote-version-response.ts
 models/rest-public-link-delete-success.ts

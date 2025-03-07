@@ -13,6 +13,9 @@
  */
 
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { RestPreSignedURL } from './rest-pre-signed-url';
 
 /**
  * 
@@ -46,15 +49,15 @@ export interface RestFilePreview {
     'Key'?: string;
     /**
      * 
+     * @type {RestPreSignedURL}
+     * @memberof RestFilePreview
+     */
+    'PreSignedGET'?: RestPreSignedURL;
+    /**
+     * 
      * @type {boolean}
      * @memberof RestFilePreview
      */
     'Processing'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof RestFilePreview
-     */
-    'Url'?: string;
 }
 
