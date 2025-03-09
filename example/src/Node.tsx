@@ -1,3 +1,4 @@
+import React from 'react'
 import {NodeServiceApi, RestNode} from "cells-sdk-ts";
 import {getBase} from "./tools.tsx";
 import dayjs from 'dayjs'
@@ -10,25 +11,32 @@ interface props {
     setCurrent: (n:RestNode) => void,
     setSelection: (s:string) => void,
     selected: boolean,
+    searchResult: boolean,
     api: NodeServiceApi
 }
 const Node = (props:props)=> {
 
-    const {n, setCurrent, selected, setSelection} = props;
+    const {n, setCurrent, selected, setSelection, searchResult} = props;
 
     let isWorkspace
     let icon = n.Type == 'COLLECTION' ? '📂' : '📄'
     let hasTag = false;
+    let ownerUUID:string = ''
     if(n.IsRecycleBin){
         icon = '🗑️'
-    } else if (n.ContextWorkspace){
+    } else if (!searchResult && n.ContextWorkspace){
         icon = '🗂️'
         isWorkspace = true
     }
-    const metaStyle = {marginLeft:10,opacity:0.5, fontSize:'0.8em'}
+    let metaStyle:React.CSSProperties = {marginLeft:10,opacity:0.5, fontSize:'0.8em'}
+    if(searchResult) {
+        metaStyle = {...metaStyle, opacity: 0.7, border: '1px solid', borderRadius: 5, padding: '2px 5px'}
+    }
     if(n.UserMetadata) {
         hasTag = !!n.UserMetadata.find(m => m.Namespace === 'usermeta-tags');
+        ownerUUID = n.UserMetadata.find(m => m.Namespace === 'usermeta-owner-uuid')?.JsonValue.replace(/"/g, '')||''
     }
+    const origConversation = searchResult && n.ContextWorkspace && n.ContextWorkspace.Label
 
     return (
         <div
@@ -41,10 +49,12 @@ const Node = (props:props)=> {
             onClick={() => (n.Type == 'COLLECTION' ? setCurrent(n) : setSelection(n.Path))}
             onContextMenu={(e) => {e.preventDefault(); setSelection(n.Path)}}
         >
-            {icon} {getBase(n)}
+            {icon} {getBase(n, searchResult)}
 
             {n.Modified && <span style={metaStyle}>{dayjs(parseInt(n.Modified)*1000).fromNow()}</span>}
             {n.Type === 'LEAF' && n.Size && <span style={metaStyle}>{filesize(parseInt(n.Size), {standard: "jedec"})}</span>}
+            {origConversation && <span style={metaStyle}>{origConversation}</span>}
+            {ownerUUID && <span style={metaStyle}>{ownerUUID}</span>}
             {n.IsBookmarked && ' ⭐'}
             {n.Subscriptions && ' 🔔'}
             {hasTag && ' 🏷️'}
