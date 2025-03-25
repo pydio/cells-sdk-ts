@@ -103,6 +103,8 @@ function App() {
     const [apiKey, setApiKey] = useState<string>(localStorage.getItem('apiKey')||'')
 
     const [searchText, setSearchText] = useState<string>('')
+    const [sortField, setSortField] = useState<string>('')
+    const [sortDesc, setSortDesc] = useState<boolean>(false)
 
     const [lookupFlags, setLookupFlags] = useState<RestFlag[]>(["WithVersionsAll", "WithPreSignedURLs"])
     const allFlags:RestFlag[] = [
@@ -119,6 +121,25 @@ function App() {
             setLookupFlags([...lookupFlags.filter(f => f !== flag)])
         }
     }, [current, lookupFlags])
+
+    const toggleSortField = useCallback((f: string) => {
+        if(f === sortField){
+            if(!sortDesc) {
+                setSortDesc(true)
+            } else {
+                setSortField('')
+                setSortDesc(false)
+            }
+        } else {
+            setSortField(f)
+            setSortDesc(false)
+        }
+    }, [sortField, sortDesc])
+
+    const allFields:string[] = [
+        "mtime",
+        "size"
+    ]
 
     const getParent   = (n:RestNode):RestNode => {
         const pp = n.Path!.split('/')
@@ -227,7 +248,10 @@ function App() {
             setLoading(true)
             api.lookup({
                 Query:{FileName:searchText, Type:"LEAF"},
-                Flags:lookupFlags
+                Flags:lookupFlags,
+                Limit:"100",
+                SortField:sortField,
+                SortDirDesc:sortDesc
             }).then(res => {
                 setColl(res.data)
                 setLoading(false)
@@ -235,19 +259,21 @@ function App() {
         } else {
             loadCurrent()
         }
-    }, [searchText]);
+    }, [searchText, sortField, sortDesc, lookupFlags]);
 
     const children = (coll && coll.Nodes) || []
-    children.sort((a,b) => {
-        if(a.IsRecycleBin) {
-            return 1
-        } else if (b.IsRecycleBin) {
-            return -1
-        }
-        const kA = a.Type+'_'+a.Path
-        const kB = b.Type+'_'+b.Path
-        return kA.localeCompare(kB)
-    })
+    if(!searchText){
+        children.sort((a,b) => {
+            if(a.IsRecycleBin) {
+                return 1
+            } else if (b.IsRecycleBin) {
+                return -1
+            }
+            const kA = a.Type+'_'+a.Path
+            const kB = b.Type+'_'+b.Path
+            return kA.localeCompare(kB)
+        })
+    }
 
     let file;
     if(selection) {
@@ -290,16 +316,27 @@ function App() {
             <div style={{display: 'flex', alignItems: 'center'}}>
                 <h2 style={{flex: 1}}>{insideWorkspace?'Folder '+current.Path:'Workspaces'} {loading && '⏳'}</h2>
                 {!insideWorkspace &&
-                    <div style={{flex: 1}}>
-                        <input style={{width: '80%'}} type={"text"} placeholder={"Search files in all conversations"} value={searchText} onChange={(e) => setSearchText(e.target.value)}/>
+                    <div style={{flex: 2, display: 'flex', alignItems: 'center', paddingRight: 30}}>
+                        <input style={{flex: 1}} type={"text"} placeholder={"Search files in all conversations"} value={searchText}
+                               onChange={(e) => setSearchText(e.target.value)}/>
+                        {searchText &&
+                        <div style={{marginLeft: 5, zoom:0.8}}>
+                            Sort: {allFields.map((field) => {
+                                const active = sortField === field
+                                return <a style={{color: "white"}} key={field} onClick={() => toggleSortField(field)}>
+                                    <span style={{cursor:'pointer', color:'inherit', textDecoration: active ? 'underline' : 'none'}}>{field}</span> {active && (sortDesc ? '↓' : '↑')} </a>
+                            })}
+                        </div>
+                        }
                     </div>
                 }
-                <div style={{zoom:0.8}}>
+                <div style={{zoom: 0.8}}>
                     Lookup Flags :
                     {allFlags.map(f =>
                         <Fragment key={f}>
-                            <input type={"checkbox"} id={f} checked={!!lookupFlags.find(lf => lf === f)} onChange={()=>toggleFlag(f)}/>
-                            <label style={{cursor:'pointer'}} htmlFor={f}>{f.replace('With', '')}</label>
+                            <input type={"checkbox"} id={f} checked={!!lookupFlags.find(lf => lf === f)}
+                                   onChange={() => toggleFlag(f)}/>
+                            <label style={{cursor: 'pointer'}} htmlFor={f}>{f.replace('With', '')}</label>
                         </Fragment>
                     )}
                 </div>
