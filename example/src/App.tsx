@@ -58,7 +58,7 @@ const putObjectMultipart = async (client: S3Client, bucketName:string, filePath:
         const upload = new Upload({
             client: client,
             partSize: 10 * 1024 * 1024,
-            queueSize: 1,
+            queueSize: 3,
             leavePartsOnError: true,
             params: {
                 Bucket: bucketName,
@@ -91,7 +91,7 @@ function App() {
     const [coll, setColl] = useState<RestNodeCollection|null>(null)
     const [selection, setSelection] = useState<string|''>('')
     const [renameExisting, setRenameExisting] = useState<boolean>(true)
-    const [useMultipart, setUseMultipart] = useState<boolean>(false)
+    const [useMultipart, setUseMultipart] = useState<boolean>(true)
     const [loading, setLoading] = useState<boolean>(false)
 
     const localSettings = localStorage.getItem('showSettings')

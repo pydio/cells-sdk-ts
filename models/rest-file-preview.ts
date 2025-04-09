@@ -43,6 +43,12 @@ export interface RestFilePreview {
     'Dimension'?: number;
     /**
      * 
+     * @type {boolean}
+     * @memberof RestFilePreview
+     */
+    'Error'?: boolean;
+    /**
+     * 
      * @type {string}
      * @memberof RestFilePreview
      */

@@ -1815,13 +1815,16 @@ var PerformActionNameEnum = {
 // configuration.ts
 var Configuration = class {
   constructor(param = {}) {
+    var _a;
     this.apiKey = param.apiKey;
     this.username = param.username;
     this.password = param.password;
     this.accessToken = param.accessToken;
     this.basePath = param.basePath;
     this.serverIndex = param.serverIndex;
-    this.baseOptions = param.baseOptions;
+    this.baseOptions = __spreadProps(__spreadValues({}, param.baseOptions), {
+      headers: __spreadValues({}, (_a = param.baseOptions) == null ? void 0 : _a.headers)
+    });
     this.formDataCtor = param.formDataCtor;
   }
   /**
