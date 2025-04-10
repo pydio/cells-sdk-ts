@@ -106,6 +106,7 @@ function App() {
     const [sortField, setSortField] = useState<string>('')
     const [sortDesc, setSortDesc] = useState<boolean>(false)
 
+    const [showPreviews, setShowPreviews] = useState(false);
     const [lookupFlags, setLookupFlags] = useState<RestFlag[]>(["WithVersionsAll", "WithPreSignedURLs"])
     const allFlags:RestFlag[] = [
         "WithVersionsAll",
@@ -339,6 +340,13 @@ function App() {
                             <label style={{cursor: 'pointer'}} htmlFor={f}>{f.replace('With', '')}</label>
                         </Fragment>
                     )}
+                    {lookupFlags.indexOf("WithPreSignedURLs") > -1 &&
+                        <Fragment>
+                            <input type={"checkbox"} id={'previews'} checked={showPreviews}
+                                   onChange={() => setShowPreviews(!showPreviews)}/>
+                            <label style={{cursor: 'pointer'}} htmlFor={'previews'}>Previews</label>
+                        </Fragment>
+                    }
                 </div>
                 <button onClick={() => loadCurrent()}>Reload</button>
             </div>
@@ -385,6 +393,7 @@ function App() {
                                   selected={selection === n.Path}
                                   setSelection={setSelection}
                                   searchResult={!!searchText}
+                                  showPreview={showPreviews}
                             />
                         )}
                     </div>
