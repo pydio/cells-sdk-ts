@@ -70,7 +70,9 @@ const Preview = (props:props) => {
 
     const lookupByUuid = () => {
         setLoading(true)
-        api.lookup({Locators:{Many:[{Uuid:n.Uuid}]}, Flags:lookupFlags}).then(res=>{
+        api.lookup({
+            Scope:{Nodes:[{Uuid: n.Uuid}]},
+            Flags:lookupFlags}).then(res=>{
             if (res.data && res.data.Nodes && res.data.Nodes.length){
                 setByUuid(res.data.Nodes[0])
             }
@@ -82,7 +84,9 @@ const Preview = (props:props) => {
 
     const lookupByPath = () => {
         setLoading(true)
-        api.lookup({Locators:{Many:[{Path:n.Path}]}, Flags:lookupFlags}).then(res=>{
+        api.lookup({
+            Scope:{Nodes:[{Path: n.Path}]},
+            Flags:lookupFlags}).then(res=>{
             if (res.data && res.data.Nodes && res.data.Nodes.length) {
                 setByUuid(res.data.Nodes[0])
             }

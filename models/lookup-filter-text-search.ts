@@ -15,29 +15,26 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { RestMetaUpdateOp } from './rest-meta-update-op';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { RestUserMeta } from './rest-user-meta';
+import type { LookupFilterTextSearchIn } from './lookup-filter-text-search-in';
 
 /**
  * 
  * @export
- * @interface RestMetaUpdate
+ * @interface LookupFilterTextSearch
  */
-export interface RestMetaUpdate {
+export interface LookupFilterTextSearch {
     /**
      * 
-     * @type {RestMetaUpdateOp}
-     * @memberof RestMetaUpdate
+     * @type {LookupFilterTextSearchIn}
+     * @memberof LookupFilterTextSearch
      */
-    'Operation': RestMetaUpdateOp;
+    'SearchIn'?: LookupFilterTextSearchIn;
     /**
      * 
-     * @type {RestUserMeta}
-     * @memberof RestMetaUpdate
+     * @type {string}
+     * @memberof LookupFilterTextSearch
      */
-    'UserMeta': RestUserMeta;
+    'Term'?: string;
 }
 
 

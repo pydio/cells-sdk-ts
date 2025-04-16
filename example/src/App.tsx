@@ -11,6 +11,8 @@ import {RestNode, RestNodeCollection, NodeServiceApi, RestFlag} from "cells-sdk-
 import Preview from "./Preview.tsx";
 
 import { v4 as uuidv4 } from 'uuid';
+import {LookupFilterMetaFilter, TreeNodeType} from "../../models";
+import {useDebounce} from '@uidotdev/usehooks'
 
 const putObject = async (client: S3Client, bucketName: string, filePath:string, file: File) => {
     const nodeId = uuidv4()
@@ -65,11 +67,12 @@ const putObjectMultipart = async (client: S3Client, bucketName:string, filePath:
                 Key: filePath,
                 Body: file,
                 ContentType: file.type,
-                ContentLength: file.size,
+                //ContentLength: file.size,
                 Metadata:{
                     "Draft-Mode": "true",
                     "Create-Resource-Uuid": nodeId,
-                    "Create-Version-Id": versionId
+                    "Create-Version-Id": versionId,
+                    "Pydio-Clear-Size": `${file.size}`
                 },
             },
         });
@@ -84,6 +87,19 @@ const putObjectMultipart = async (client: S3Client, bucketName:string, filePath:
             throw caught;
         }
     }
+}
+
+const Checkbox = ({id, checked, onChange, label=''}: {id: string, checked: boolean, onChange:()=>void, label: string}) => {
+    return (
+        <Fragment key={id}>
+            <input type={"checkbox"} id={id} checked={checked} onChange={() => onChange()} onClick={(e) => {
+                e.stopPropagation()
+            }}/>
+            <label style={{cursor: 'pointer'}} htmlFor={id} onClick={(e) => {
+                e.stopPropagation()
+            }}>{label}</label>
+        </Fragment>
+    )
 }
 
 function App() {
@@ -103,8 +119,28 @@ function App() {
     const [apiKey, setApiKey] = useState<string>(localStorage.getItem('apiKey')||'')
 
     const [searchText, setSearchText] = useState<string>('')
+    const debouncedSearchText = useDebounce(searchText, 300);
     const [sortField, setSortField] = useState<string>('')
     const [sortDesc, setSortDesc] = useState<boolean>(false)
+
+    const [recursive, setRecursive] = useState(true)
+    const [deleted, setDeleted] = useState(false)
+    const [filterType, setFilterType] = useState<TreeNodeType>(TreeNodeType.Unknown)
+    const [filterLinks, setFilterLinks] = useState(false)
+    const [filterDrafts, setFilterDrafts] = useState(false)
+    const [filterTag, setFilterTag] = useState(false)
+    const setFilterTypeTyped = (s: string) => {
+        switch (s) {
+            case 'LEAF':
+                setFilterType(TreeNodeType.Leaf)
+                break
+            case 'COLLECTION':
+                setFilterType(TreeNodeType.Collection)
+                break
+            default:
+                setFilterType(TreeNodeType.Unknown)
+        }
+    }
 
     const [showPreviews, setShowPreviews] = useState(false);
     const [lookupFlags, setLookupFlags] = useState<RestFlag[]>(["WithVersionsAll", "WithPreSignedURLs"])
@@ -139,7 +175,15 @@ function App() {
 
     const allFields:string[] = [
         "mtime",
-        "size"
+        "size",
+        "usermeta-owner-uuid",
+        "usermeta-tags"
+    ]
+    const allFieldsLabels:string[] = [
+        "Time",
+        "Size",
+        "Owner",
+        "Tag"
     ]
 
     const getParent   = (n:RestNode):RestNode => {
@@ -172,16 +216,36 @@ function App() {
     }, [basePath, apiKey, restSegment, s3URL])
 
     const {api, client} = getClients()
-    const loadCurrent = ():void => {
+    const loadCurrent = useCallback(():void => {
         setLoading(true)
+        const Metadata: LookupFilterMetaFilter[] = []
+        if(filterTag) {
+            Metadata.push({Namespace:'usermeta-tags', Term:'*', Operation: 'Must'})
+        }
         api.lookup({
-            Locators:{Many:[{Path:current.Path+'/*'}]},
-            Flags:lookupFlags
+            Scope: {
+                Root:{Path: current.Path},
+                Recursive: recursive
+            },
+            Filters: {
+                Text:{SearchIn: 'BaseName', Term:debouncedSearchText},
+                Status: {
+                    Deleted: deleted?'Only':'Not',
+                    HasPublicLink: filterLinks,
+                    IsDraft: filterDrafts
+                },
+                Metadata: Metadata,
+                Type: filterType
+            },
+            SortField:sortField,
+            SortDirDesc:sortDesc,
+            Flags:lookupFlags,
+            Limit: "50"
         }).then(res => {
             setColl(res.data)
             setLoading(false)
         }).catch(err => {console.log(err); setLoading(false) })
-    }
+    }, [current, lookupFlags, debouncedSearchText, sortField, sortDesc, setColl, setLoading, deleted, recursive, filterType, filterLinks, filterDrafts, filterTag])
 
     const createNode = (type:string) => {
         const name = window.prompt('Name?', type==='folder'?'New Folder': 'Empty File.txt')
@@ -234,7 +298,8 @@ function App() {
 
 
     useEffect(() => { setSelection(''); loadCurrent()}, [current, apiKey, basePath, restSegment])
-    useEffect(() => { loadCurrent() }, [lookupFlags])
+    useEffect(() => { loadCurrent() }, [debouncedSearchText]);
+    useEffect(() => { loadCurrent() }, [lookupFlags, sortField, sortDesc, deleted, recursive, filterType, filterLinks, filterDrafts, filterTag])
     useEffect(() => {
         localStorage.setItem('apiKey', apiKey)
         localStorage.setItem('basePath', basePath)
@@ -244,26 +309,9 @@ function App() {
         localStorage.setItem('showSettings', showSettings ? 'true' : 'false')
     }, [apiKey, basePath, showSettings, restSegment, s3URL, s3Bucket])
 
-    useEffect(() => {
-        if(searchText) {
-            setLoading(true)
-            api.lookup({
-                Query:{FileName:searchText, Type:"LEAF"},
-                Flags:lookupFlags,
-                Limit:"100",
-                SortField:sortField,
-                SortDirDesc:sortDesc
-            }).then(res => {
-                setColl(res.data)
-                setLoading(false)
-            }).catch(err => {console.log(err); setLoading(false) })
-        } else {
-            loadCurrent()
-        }
-    }, [searchText, sortField, sortDesc, lookupFlags]);
 
     const children = (coll && coll.Nodes) || []
-    if(!searchText){
+    if(!sortField){
         children.sort((a,b) => {
             if(a.IsRecycleBin) {
                 return 1
@@ -281,6 +329,12 @@ function App() {
         file = children.find((child) => child.Path === selection)
     }
     const insideWorkspace = current.Path.length > 1
+    const filterStyle = {
+        borderRadius: 10,
+        marginRight: 5,
+        padding: '2px 10px',
+        border: "2px dashed grey"
+    }
 
     return (
         <>
@@ -316,36 +370,13 @@ function App() {
             </div>
             <div style={{display: 'flex', alignItems: 'center'}}>
                 <h2 style={{flex: 1}}>{insideWorkspace?'Folder '+current.Path:'Workspaces'} {loading && '⏳'}</h2>
-                {!insideWorkspace &&
-                    <div style={{flex: 2, display: 'flex', alignItems: 'center', paddingRight: 30}}>
-                        <input style={{flex: 1}} type={"text"} placeholder={"Search files in all conversations"} value={searchText}
-                               onChange={(e) => setSearchText(e.target.value)}/>
-                        {searchText &&
-                        <div style={{marginLeft: 5, zoom:0.8}}>
-                            Sort: {allFields.map((field) => {
-                                const active = sortField === field
-                                return <a style={{color: "white"}} key={field} onClick={() => toggleSortField(field)}>
-                                    <span style={{cursor:'pointer', color:'inherit', textDecoration: active ? 'underline' : 'none'}}>{field}</span> {active && (sortDesc ? '↓' : '↑')} </a>
-                            })}
-                        </div>
-                        }
-                    </div>
-                }
                 <div style={{zoom: 0.8}}>
                     Lookup Flags :
                     {allFlags.map(f =>
-                        <Fragment key={f}>
-                            <input type={"checkbox"} id={f} checked={!!lookupFlags.find(lf => lf === f)}
-                                   onChange={() => toggleFlag(f)}/>
-                            <label style={{cursor: 'pointer'}} htmlFor={f}>{f.replace('With', '')}</label>
-                        </Fragment>
+                        <Checkbox id={f} checked={!!lookupFlags.find(lf => lf === f)} onChange={() => toggleFlag(f)} label={f.replace('With', '')}/>
                     )}
                     {lookupFlags.indexOf("WithPreSignedURLs") > -1 &&
-                        <Fragment>
-                            <input type={"checkbox"} id={'previews'} checked={showPreviews}
-                                   onChange={() => setShowPreviews(!showPreviews)}/>
-                            <label style={{cursor: 'pointer'}} htmlFor={'previews'}>Previews</label>
-                        </Fragment>
+                        <Checkbox id={'previews'} checked={showPreviews} onChange={() => setShowPreviews(!showPreviews)} label={'Previews'}/>
                     }
                 </div>
                 <button onClick={() => loadCurrent()}>Reload</button>
@@ -366,24 +397,37 @@ function App() {
                         <input {...getInputProps()} />
                         <div style={{display: 'flex'}}>
                             <div style={{flex: 1}}>Drag 'n' drop some files here, or <a>click to select files</a></div>
-                            <input type={"checkbox"} id={"multipart"} checked={useMultipart}
-                                   onChange={() => setUseMultipart(!useMultipart)} onClick={(e) => {
-                                e.stopPropagation()
-                            }}/>
-                            <label style={{cursor: 'pointer'}} htmlFor={"multipart"} onClick={(e) => {
-                                e.stopPropagation()
-                            }}>Use Multipart</label>
-                            <input type={"checkbox"} id={"rename"} checked={renameExisting}
-                                   onChange={() => setRenameExisting(!renameExisting)} onClick={(e) => {
-                                e.stopPropagation()
-                            }}/>
-                            <label style={{cursor: 'pointer'}} htmlFor={"rename"} onClick={(e) => {
-                                e.stopPropagation()
-                            }}>Auto-rename existing files</label>
+                            <Checkbox id={"multipart"} checked={useMultipart} onChange={() => setUseMultipart(!useMultipart)} label={"Use Multipart"}/>
+                            <Checkbox id={"rename"} checked={renameExisting}  onChange={() => setRenameExisting(!renameExisting)} label={"Auto-rename existing files"}/>
                         </div>
                     </div>
                 </>
             }
+            <div style={{display:'flex', alignItems:'center', paddingTop: 10}}>
+                <div style={filterStyle}>
+                <input style={{width: 256, paddingRight:30}} type={"text"} placeholder={"Search files in " + (current.Path?current.Path:'all conversations')} value={searchText}
+                           onChange={(e) => setSearchText(e.target.value)}/>
+                </div>
+                <div style={filterStyle}>
+                    Sort By: {allFields.map((field, index) => {
+                    const active = sortField === field
+                    return <a style={{color: "white"}} key={field} onClick={() => toggleSortField(field)}>
+                        <span style={{cursor:'pointer', color:'inherit', textDecoration: active ? 'underline' : 'none'}}>{allFieldsLabels[index]}</span> {active && (sortDesc ? '↓' : '↑')} </a>
+                })}
+                </div>
+                <div style={filterStyle}>
+                    <select value={filterType} onChange={(e) => setFilterTypeTyped(e.target.value)}>
+                        <option value={TreeNodeType.Unknown}>Files & Folders</option>
+                        <option value={TreeNodeType.Leaf}>Files</option>
+                        <option value={TreeNodeType.Collection}>Folders</option>
+                    </select>
+                </div>
+                <div style={filterStyle}><Checkbox id={'deleted'} checked={deleted} onChange={()=> setDeleted(!deleted)} label={'Deleted'}/></div>
+                <div style={filterStyle}><Checkbox id={'links'} checked={filterLinks} onChange={()=> setFilterLinks(!filterLinks)} label={'Links'}/></div>
+                <div style={filterStyle}><Checkbox id={'drafts'} checked={filterDrafts} onChange={()=> setFilterDrafts(!filterDrafts)} label={'Drafts'}/></div>
+                <div style={filterStyle}><Checkbox id={'tagged'} checked={filterTag} onChange={()=> setFilterTag(!filterTag)} label={'Tagged'}/></div>
+                <div style={filterStyle}><Checkbox id={'recursive'} checked={recursive} onChange={()=> setRecursive(!recursive)} label={'Search Recursive'}/></div>
+            </div>
             <div className="card" style={{display: 'flex', alignItems: 'start'}}>
             <div style={{flex: 1}}>
                     <div style={{overflowX: 'auto'}}>
@@ -392,7 +436,7 @@ function App() {
                             <Node key={n.Path} n={n} api={api} setCurrent={setCurrent}
                                   selected={selection === n.Path}
                                   setSelection={setSelection}
-                                  searchResult={!!searchText}
+                                  multiScope={!!debouncedSearchText || filterLinks || filterDrafts || filterTag || deleted}
                                   showPreview={showPreviews}
                             />
                         )}

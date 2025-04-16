@@ -11,22 +11,22 @@ interface props {
     setCurrent: (n:RestNode) => void,
     setSelection: (s:string) => void,
     selected: boolean,
-    searchResult: boolean,
+    multiScope: boolean,
     showPreview?: boolean
     api: NodeServiceApi
 }
 const Node = (props:props)=> {
 
-    const {n, setCurrent, selected, setSelection, searchResult, showPreview} = props;
+    const {n, setCurrent, selected, setSelection, multiScope, showPreview} = props;
 
     let isWorkspace
     let icon = n.Type == 'COLLECTION' ? '📂' : '📄'
     let previewImg;
-    let hasTag = false;
+    let hasTag ;
     let ownerUUID:string = ''
-    if(n.IsRecycleBin){
+    if(n.IsRecycleBin) {
         icon = '🗑️'
-    } else if (!searchResult && n.ContextWorkspace){
+    } else if (!multiScope && n.ContextWorkspace){
         icon = '🗂️'
         isWorkspace = true
     }
@@ -35,14 +35,14 @@ const Node = (props:props)=> {
         previewImg= <img style={{width:20, maxHeight:20, marginRight: 10}} src={httpURL}/>
     }
     let metaStyle:React.CSSProperties = {marginLeft:10,opacity:0.5, fontSize:'0.8em'}
-    if(searchResult) {
+    if(multiScope) {
         metaStyle = {...metaStyle, opacity: 0.7, border: '1px solid', borderRadius: 5, padding: '2px 5px'}
     }
     if(n.UserMetadata) {
-        hasTag = !!n.UserMetadata.find(m => m.Namespace === 'usermeta-tags');
+        hasTag = n.UserMetadata.find(m => m.Namespace === 'usermeta-tags');
         ownerUUID = n.UserMetadata.find(m => m.Namespace === 'usermeta-owner-uuid')?.JsonValue.replace(/"/g, '')||''
     }
-    const origConversation = searchResult && n.ContextWorkspace && n.ContextWorkspace.Label
+    const origConversation = multiScope && n.ContextWorkspace && n.ContextWorkspace.Label
 
     return (
         <div
@@ -57,7 +57,7 @@ const Node = (props:props)=> {
             onClick={() => (n.Type == 'COLLECTION' ? setCurrent(n) : setSelection(n.Path))}
             onContextMenu={(e) => {e.preventDefault(); setSelection(n.Path)}}
         >
-            {previewImg || icon} {getBase(n, searchResult)}
+            {previewImg || icon} {getBase(n, multiScope)}
 
             {n.Modified && <span style={metaStyle}>{dayjs(parseInt(n.Modified)*1000).fromNow()}</span>}
             {n.Type === 'LEAF' && n.Size && <span style={metaStyle}>{filesize(parseInt(n.Size), {standard: "jedec"})}</span>}
@@ -65,10 +65,11 @@ const Node = (props:props)=> {
             {ownerUUID && <span style={metaStyle}>{ownerUUID}</span>}
             {n.IsBookmarked && ' ⭐'}
             {n.Subscriptions && ' 🔔'}
-            {hasTag && ' 🏷️'}
+            {!!hasTag && <span title={hasTag.JsonValue}> 🏷️</span>}
             {n.IsDraft && ' 📝'}
             {n.ContentLock && ' 🔒'}
             {n.Shares && ' 🔗'}
+            {n.IsRecycled && ' 🚮'}
         </div>
     )
 

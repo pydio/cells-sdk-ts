@@ -15,30 +15,31 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { RestMetaUpdateOp } from './rest-meta-update-op';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { RestUserMeta } from './rest-user-meta';
+import type { RestNodeLocator } from './rest-node-locator';
 
 /**
  * 
  * @export
- * @interface RestMetaUpdate
+ * @interface RestLookupScope
  */
-export interface RestMetaUpdate {
+export interface RestLookupScope {
     /**
      * 
-     * @type {RestMetaUpdateOp}
-     * @memberof RestMetaUpdate
+     * @type {Array<RestNodeLocator>}
+     * @memberof RestLookupScope
      */
-    'Operation': RestMetaUpdateOp;
+    'Nodes'?: Array<RestNodeLocator>;
     /**
      * 
-     * @type {RestUserMeta}
-     * @memberof RestMetaUpdate
+     * @type {boolean}
+     * @memberof RestLookupScope
      */
-    'UserMeta': RestUserMeta;
+    'Recursive'?: boolean;
+    /**
+     * 
+     * @type {RestNodeLocator}
+     * @memberof RestLookupScope
+     */
+    'Root'?: RestNodeLocator;
 }
-
-
 

@@ -46,6 +46,12 @@ export interface TreeQuery {
     'ETag'?: string;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof TreeQuery
+     */
+    'ExcludedPathPrefix'?: Array<string>;
+    /**
+     * 
      * @type {string}
      * @memberof TreeQuery
      */
