@@ -1,5 +1,5 @@
 import {NodeServiceApi, RestActionParameters, RestNode, RestVersion, RestPerformActionResponse, RestShareLink, RestFlag} from "cells-sdk-ts";
-import {getBase} from "./tools.tsx";
+import {getBase, getPreview} from "./tools.tsx";
 import {useEffect, useState} from "react";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import {getSignedUrl} from '@aws-sdk/s3-request-presigner'
@@ -26,29 +26,26 @@ const Preview = (props:props) => {
     const {api, n, client, loadCurrent, setSelection, setLoading, lookupFlags} = props;
 
     useEffect(() => {
-        if(n.Previews && n.Previews.length > 0 && n.Previews[0].Key) {
-            const previews = n.Previews.filter(p => p.ContentType !== 'application/pdf')
-            if(previews.length) {
-                const prev = previews.find(p => p.Dimension == 300) || previews[0]
-                if ( prev.PreSignedGET && prev.PreSignedGET.Url && prev.PreSignedGET.Url.startsWith("http") ) {
-                    setPreviewURL(prev.PreSignedGET.Url)
-                    setPresignedLocal(false)
-                    return
-                }
-                const command = new GetObjectCommand({
-                    Bucket: prev.Bucket,
-                    Key: prev.Key
-                });
-                getSignedUrl(client, command, { expiresIn: 3600 }).then((url) => {
-                    setPreviewURL(url)
-                    setPresignedLocal(true)
-                }).catch(()=>{
-                    setPreviewURL('')
-                })
-            }
-        } else {
+        const {preview, httpURL} = getPreview(n)
+        if(!preview) {
             setPreviewURL('')
+            return;
         }
+        if(preview && httpURL) {
+            setPreviewURL(httpURL)
+            setPresignedLocal(false)
+            return
+        }
+        const command = new GetObjectCommand({
+            Bucket: preview.Bucket,
+            Key: preview.Key
+        });
+        getSignedUrl(client, command, { expiresIn: 3600 }).then((url) => {
+            setPreviewURL(url)
+            setPresignedLocal(true)
+        }).catch(()=>{
+            setPreviewURL('')
+        })
     }, [n]);
 
     const del = () => {
@@ -73,7 +70,9 @@ const Preview = (props:props) => {
 
     const lookupByUuid = () => {
         setLoading(true)
-        api.lookup({Locators:{Many:[{Uuid:n.Uuid}]}, Flags:lookupFlags}).then(res=>{
+        api.lookup({
+            Scope:{Nodes:[{Uuid: n.Uuid}]},
+            Flags:lookupFlags}).then(res=>{
             if (res.data && res.data.Nodes && res.data.Nodes.length){
                 setByUuid(res.data.Nodes[0])
             }
@@ -85,7 +84,9 @@ const Preview = (props:props) => {
 
     const lookupByPath = () => {
         setLoading(true)
-        api.lookup({Locators:{Many:[{Path:n.Path}]}, Flags:lookupFlags}).then(res=>{
+        api.lookup({
+            Scope:{Nodes:[{Path: n.Path}]},
+            Flags:lookupFlags}).then(res=>{
             if (res.data && res.data.Nodes && res.data.Nodes.length) {
                 setByUuid(res.data.Nodes[0])
             }

@@ -18,6 +18,12 @@
 import type { RestFlag } from './rest-flag';
 // May contain unused imports in some cases
 // @ts-ignore
+import type { RestLookupFilter } from './rest-lookup-filter';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { RestLookupScope } from './rest-lookup-scope';
+// May contain unused imports in some cases
+// @ts-ignore
 import type { RestNodeLocators } from './rest-node-locators';
 // May contain unused imports in some cases
 // @ts-ignore
@@ -29,6 +35,12 @@ import type { TreeQuery } from './tree-query';
  * @interface RestLookupRequest
  */
 export interface RestLookupRequest {
+    /**
+     * 
+     * @type {RestLookupFilter}
+     * @memberof RestLookupRequest
+     */
+    'Filters'?: RestLookupFilter;
     /**
      * 
      * @type {Array<RestFlag>}
@@ -59,6 +71,12 @@ export interface RestLookupRequest {
      * @memberof RestLookupRequest
      */
     'Query'?: TreeQuery;
+    /**
+     * 
+     * @type {RestLookupScope}
+     * @memberof RestLookupRequest
+     */
+    'Scope'?: RestLookupScope;
     /**
      * 
      * @type {boolean}

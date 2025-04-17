@@ -56,7 +56,8 @@ __export(index_exports, {
   JobsCommand: () => JobsCommand,
   JobsTaskStatus: () => JobsTaskStatus,
   ListNamespaceValuesOperationOperationEnum: () => ListNamespaceValuesOperationOperationEnum,
-  MetaUpdateOp: () => MetaUpdateOp,
+  LookupFilterMetaFilterOp: () => LookupFilterMetaFilterOp,
+  LookupFilterTextSearchIn: () => LookupFilterTextSearchIn,
   NodeServiceApi: () => NodeServiceApi,
   NodeServiceApiAxiosParamCreator: () => NodeServiceApiAxiosParamCreator,
   NodeServiceApiFactory: () => NodeServiceApiFactory,
@@ -64,6 +65,7 @@ __export(index_exports, {
   PerformActionNameEnum: () => PerformActionNameEnum,
   RestActionStatus: () => RestActionStatus,
   RestFlag: () => RestFlag,
+  RestMetaUpdateOp: () => RestMetaUpdateOp,
   RestMode: () => RestMode,
   RestNsOp: () => RestNsOp,
   RestShareLinkAccessType: () => RestShareLinkAccessType,
@@ -71,6 +73,7 @@ __export(index_exports, {
   RestVersionsTypes: () => RestVersionsTypes,
   ServiceResourcePolicyAction: () => ServiceResourcePolicyAction,
   ServiceResourcePolicyPolicyEffect: () => ServiceResourcePolicyPolicyEffect,
+  StatusFilterDeletedStatus: () => StatusFilterDeletedStatus,
   TreeNodeChangeEventEventType: () => TreeNodeChangeEventEventType,
   TreeNodeType: () => TreeNodeType
 });
@@ -1946,10 +1949,18 @@ var JobsTaskStatus = {
   Queued: "Queued"
 };
 
-// models/meta-update-op.ts
-var MetaUpdateOp = {
-  Put: "PUT",
-  Delete: "DELETE"
+// models/lookup-filter-meta-filter-op.ts
+var LookupFilterMetaFilterOp = {
+  Must: "Must",
+  Should: "Should",
+  Not: "Not"
+};
+
+// models/lookup-filter-text-search-in.ts
+var LookupFilterTextSearchIn = {
+  BaseName: "BaseName",
+  Contents: "Contents",
+  BaseOrContents: "BaseOrContents"
 };
 
 // models/rest-action-status.ts
@@ -1967,6 +1978,12 @@ var RestFlag = {
   WithVersionsDraft: "WithVersionsDraft",
   WithVersionsPublished: "WithVersionsPublished",
   WithPreSignedUrls: "WithPreSignedURLs"
+};
+
+// models/rest-meta-update-op.ts
+var RestMetaUpdateOp = {
+  Put: "PUT",
+  Delete: "DELETE"
 };
 
 // models/rest-mode.ts
@@ -2023,6 +2040,13 @@ var ServiceResourcePolicyPolicyEffect = {
   Allow: "allow"
 };
 
+// models/status-filter-deleted-status.ts
+var StatusFilterDeletedStatus = {
+  Not: "Not",
+  Only: "Only",
+  Any: "Any"
+};
+
 // models/tree-node-change-event-event-type.ts
 var TreeNodeChangeEventEventType = {
   Create: "CREATE",
@@ -2051,7 +2075,8 @@ var TreeNodeType = {
   JobsCommand,
   JobsTaskStatus,
   ListNamespaceValuesOperationOperationEnum,
-  MetaUpdateOp,
+  LookupFilterMetaFilterOp,
+  LookupFilterTextSearchIn,
   NodeServiceApi,
   NodeServiceApiAxiosParamCreator,
   NodeServiceApiFactory,
@@ -2059,6 +2084,7 @@ var TreeNodeType = {
   PerformActionNameEnum,
   RestActionStatus,
   RestFlag,
+  RestMetaUpdateOp,
   RestMode,
   RestNsOp,
   RestShareLinkAccessType,
@@ -2066,6 +2092,7 @@ var TreeNodeType = {
   RestVersionsTypes,
   ServiceResourcePolicyAction,
   ServiceResourcePolicyPolicyEffect,
+  StatusFilterDeletedStatus,
   TreeNodeChangeEventEventType,
   TreeNodeType
 });
