@@ -113,7 +113,7 @@ function App() {
     const localSettings = localStorage.getItem('showSettings')
     const [showSettings, setShowSettings] = useState<boolean>(localSettings ? (localSettings === 'true') :  true)
     const [basePath, setBasePath] = useState<string>(localStorage.getItem('basePath')||'')
-    const [restSegment, setRestSegment] = useState<string>(localStorage.getItem('restSegment')||'/a')
+    const [restSegment, setRestSegment] = useState<string>(localStorage.getItem('restSegment')||'/v2')
     const [s3URL, setS3URL] = useState<string>(localStorage.getItem('s3URL')||'')
     const [s3Bucket, setS3Bucket] = useState<string>(localStorage.getItem('s3Bucket')||'io')
     const [apiKey, setApiKey] = useState<string>(localStorage.getItem('apiKey')||'')
@@ -245,7 +245,7 @@ function App() {
             setColl(res.data)
             setLoading(false)
         }).catch(err => {console.log(err); setLoading(false) })
-    }, [current, lookupFlags, debouncedSearchText, sortField, sortDesc, setColl, setLoading, deleted, recursive, filterType, filterLinks, filterDrafts, filterTag])
+    }, [api, current, lookupFlags, debouncedSearchText, sortField, sortDesc, setColl, setLoading, deleted, recursive, filterType, filterLinks, filterDrafts, filterTag])
 
     const createNode = (type:string) => {
         const name = window.prompt('Name?', type==='folder'?'New Folder': 'Empty File.txt')
