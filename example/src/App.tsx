@@ -157,7 +157,7 @@ function App() {
         } else {
             setLookupFlags([...lookupFlags.filter(f => f !== flag)])
         }
-    }, [current, lookupFlags])
+    }, [lookupFlags])
 
     const toggleSortField = useCallback((f: string) => {
         if(f === sortField){
@@ -216,7 +216,7 @@ function App() {
     }, [basePath, apiKey, restSegment, s3URL])
 
     const {api, client} = getClients()
-    const loadCurrent = useCallback(():void => {
+    const loadCurrent = useCallback((offset=0):void => {
         setLoading(true)
         const Metadata: LookupFilterMetaFilter[] = []
         if(filterTag) {
@@ -240,7 +240,8 @@ function App() {
             SortField:sortField,
             SortDirDesc:sortDesc,
             Flags:lookupFlags,
-            Limit: "50"
+            Offset: offset>0?`${offset}`:'0',
+            Limit: "30"
         }).then(res => {
             setColl(res.data)
             setLoading(false)
@@ -293,13 +294,13 @@ function App() {
             })
         })
 
-    }, [client, renameExisting, useMultipart])
+    }, [api, client, current.Path, loadCurrent, renameExisting, s3Bucket, useMultipart])
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
 
-    useEffect(() => { setSelection(''); loadCurrent()}, [current, apiKey, basePath, restSegment])
-    useEffect(() => { loadCurrent() }, [debouncedSearchText]);
-    useEffect(() => { loadCurrent() }, [lookupFlags, sortField, sortDesc, deleted, recursive, filterType, filterLinks, filterDrafts, filterTag])
+    useEffect(() => { setSelection(''); loadCurrent()}, [current, apiKey, basePath, restSegment, loadCurrent])
+    useEffect(() => { loadCurrent() }, [debouncedSearchText, loadCurrent]);
+    useEffect(() => { loadCurrent() }, [lookupFlags, sortField, sortDesc, deleted, recursive, filterType, filterLinks, filterDrafts, filterTag, loadCurrent])
     useEffect(() => {
         localStorage.setItem('apiKey', apiKey)
         localStorage.setItem('basePath', basePath)
@@ -311,18 +312,7 @@ function App() {
 
 
     const children = (coll && coll.Nodes) || []
-    if(!sortField){
-        children.sort((a,b) => {
-            if(a.IsRecycleBin) {
-                return 1
-            } else if (b.IsRecycleBin) {
-                return -1
-            }
-            const kA = a.Type+'_'+a.Path
-            const kB = b.Type+'_'+b.Path
-            return kA.localeCompare(kB)
-        })
-    }
+    const pagination = (coll && coll.Pagination) || {}
 
     let file;
     if(selection) {
@@ -429,7 +419,7 @@ function App() {
                 <div style={filterStyle}><Checkbox id={'recursive'} checked={recursive} onChange={()=> setRecursive(!recursive)} label={'Search Recursive'}/></div>
             </div>
             <div className="card" style={{display: 'flex', alignItems: 'start'}}>
-            <div style={{flex: 1}}>
+                <div style={{flex: 1}}>
                     <div style={{overflowX: 'auto'}}>
                         {insideWorkspace && <div onClick={() => setCurrent(getParent(current))} style={{cursor:'pointer'}}>⬆️ ..</div>}
                         {children.map((n) =>
@@ -441,6 +431,13 @@ function App() {
                             />
                         )}
                     </div>
+                    {pagination && pagination.TotalPages && pagination.TotalPages > 1 && (
+                        <div style={{display:'flex', alignItems:'center', justifyContent:'center', width:'100%', marginTop: 20}}>
+                            {pagination.CurrentPage && pagination.CurrentPage > 1 && <button onClick={() => loadCurrent(pagination.PrevOffset)}>← Previous Page</button>}
+                            <div style={{margin:'0 10px'}}>Page {pagination.CurrentPage} out of {pagination.TotalPages}</div>
+                            {pagination.NextOffset && <button onClick={() => loadCurrent(pagination.NextOffset)}>Next Page →</button>}
+                        </div>
+                    )}
                 </div>
                 <div style={{flex: 2}}>
                     {file && <Preview
