@@ -91,11 +91,11 @@ const putObjectMultipart = async (client: S3Client, bucketName:string, filePath:
 
 const Checkbox = ({id, checked, onChange, label=''}: {id: string, checked: boolean, onChange:()=>void, label: string}) => {
     return (
-        <Fragment key={id}>
-            <input type={"checkbox"} id={id} checked={checked} onChange={() => onChange()} onClick={(e) => {
+        <Fragment>
+            <input key={id+'-cb'} type={"checkbox"} id={id} checked={checked} onChange={() => onChange()} onClick={(e) => {
                 e.stopPropagation()
             }}/>
-            <label style={{cursor: 'pointer'}} htmlFor={id} onClick={(e) => {
+            <label key={id+'-lb'} style={{cursor: 'pointer'}} htmlFor={id} onClick={(e) => {
                 e.stopPropagation()
             }}>{label}</label>
         </Fragment>
@@ -246,7 +246,7 @@ function App() {
             setColl(res.data)
             setLoading(false)
         }).catch(err => {console.log(err); setLoading(false) })
-    }, [api, current, lookupFlags, debouncedSearchText, sortField, sortDesc, setColl, setLoading, deleted, recursive, filterType, filterLinks, filterDrafts, filterTag])
+    }, [current, lookupFlags, debouncedSearchText, sortField, sortDesc, setColl, setLoading, deleted, recursive, filterType, filterLinks, filterDrafts, filterTag])
 
     const createNode = (type:string) => {
         const name = window.prompt('Name?', type==='folder'?'New Folder': 'Empty File.txt')
@@ -363,10 +363,10 @@ function App() {
                 <div style={{zoom: 0.8}}>
                     Lookup Flags :
                     {allFlags.map(f =>
-                        <Checkbox id={f} checked={!!lookupFlags.find(lf => lf === f)} onChange={() => toggleFlag(f)} label={f.replace('With', '')}/>
+                        <Checkbox key={f} id={f} checked={!!lookupFlags.find(lf => lf === f)} onChange={() => toggleFlag(f)} label={f.replace('With', '')}/>
                     )}
                     {lookupFlags.indexOf("WithPreSignedURLs") > -1 &&
-                        <Checkbox id={'previews'} checked={showPreviews} onChange={() => setShowPreviews(!showPreviews)} label={'Previews'}/>
+                        <Checkbox key={'previews'} id={'previews'} checked={showPreviews} onChange={() => setShowPreviews(!showPreviews)} label={'Previews'}/>
                     }
                 </div>
                 <button onClick={() => loadCurrent()}>Reload</button>

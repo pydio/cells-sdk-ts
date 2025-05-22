@@ -15,7 +15,7 @@
     "@aws-sdk/lib-storage": "^3.738.0",
     "@aws-sdk/s3-request-presigner": "^3.726.1",
     "@uidotdev/usehooks": "^2.4.1",
-    "axios": "^1.7.9",
+    "axios": "^1.9.0",
     "cells-sdk-ts": "file:../",
     "dayjs": "^1.11.13",
     "filesize": "^10.1.6",
