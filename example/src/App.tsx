@@ -1,4 +1,4 @@
-import {useEffect, useState, useCallback, Fragment} from 'react'
+import {useEffect, useState, useCallback, Fragment, useMemo} from 'react'
 import './App.css'
 import Node from './Node'
 import axios from "axios";
@@ -117,6 +117,7 @@ function App() {
     const [s3URL, setS3URL] = useState<string>(localStorage.getItem('s3URL')||'')
     const [s3Bucket, setS3Bucket] = useState<string>(localStorage.getItem('s3Bucket')||'io')
     const [apiKey, setApiKey] = useState<string>(localStorage.getItem('apiKey')||'')
+    const [zUserHeader, setZUserHeader] = useState(false)
 
     const [searchText, setSearchText] = useState<string>('')
     const debouncedSearchText = useDebounce(searchText, 300);
@@ -192,16 +193,39 @@ function App() {
         const parentPath = pp.join('/')
         return {Uuid: '', Path: parentPath, Type:'COLLECTION'}
     }
+    const userUnqualified = useMemo(() => {
+        if(zUserHeader) {
+            try{
+                return apiKey.split(':')[1].split('@')[0]
+            } catch(e) {
+                console.error(e)
+            }
+        }
+        return '';
+    }, [apiKey, zUserHeader]);
     const getClients = useCallback(() => {
+        interface headersInterface{
+            Authorization?:string
+            'Z-User'?: string
+        }
+        const headers:headersInterface = {Authorization: 'Bearer ' + apiKey}
+        if(userUnqualified) {
+            headers.Authorization = 'Bearer z-auth-secret-token'
+            try{
+                headers['Z-User'] = userUnqualified
+            } catch(e) {
+                console.error(e)
+            }
+        }
         const instance = axios.create({
             baseURL: basePath+restSegment,
             timeout: 60000,
-            headers: {'Authorization': 'Bearer ' + apiKey}
+            headers: headers
         });
         const api= new NodeServiceApi(undefined, undefined, instance)
         const provider = async ():Promise<AwsCredentialIdentity> =>{
             return {
-                accessKeyId:apiKey,
+                accessKeyId:userUnqualified?'z-auth-secret-token':apiKey,
                 secretAccessKey:'gatewaysecret',
             }
         }
@@ -210,12 +234,25 @@ function App() {
             forcePathStyle: true,
             region:'us-east-1',
             credentials: provider,
-            requestChecksumCalculation: 'WHEN_REQUIRED'
+            requestChecksumCalculation: 'WHEN_REQUIRED',
         })
+        if (userUnqualified) {
+            client.middlewareStack.add(
+                (next) => (args) => {
+                    // @ts-expect-error-ignore
+                    args.request.headers["Z-User"] = userUnqualified;
+                    return next(args);
+                },
+                {
+                    step: "build",
+                }
+            )
+        }
         return {api, client}
-    }, [basePath, apiKey, restSegment, s3URL])
+    }, [basePath, apiKey, restSegment, s3URL, userUnqualified])
 
-    const {api, client} = getClients()
+    const {api, client} = useMemo( () => getClients(), [getClients])
+
     const loadCurrent = useCallback((offset=0):void => {
         setLoading(true)
         const Metadata: LookupFilterMetaFilter[] = []
@@ -246,7 +283,7 @@ function App() {
             setColl(res.data)
             setLoading(false)
         }).catch(err => {console.log(err); setLoading(false) })
-    }, [current, lookupFlags, debouncedSearchText, sortField, sortDesc, setColl, setLoading, deleted, recursive, filterType, filterLinks, filterDrafts, filterTag])
+    }, [api, current, lookupFlags, debouncedSearchText, sortField, sortDesc, setColl, setLoading, deleted, recursive, filterType, filterLinks, filterDrafts, filterTag])
 
     const createNode = (type:string) => {
         const name = window.prompt('Name?', type==='folder'?'New Folder': 'Empty File.txt')
@@ -355,6 +392,7 @@ function App() {
                         <label style={{width:100, fontSize: 12, margin: '0 10px'}} htmlFor={"input-token"}>Auth Token</label>
                         <input id={"input-token"} style={{width: 408}} type={"text"} placeholder={"Api Key"} value={apiKey}
                                onChange={(e) => setApiKey(e.target.value)}/>
+                        <Checkbox id={"zuser"} checked={zUserHeader} onChange={()=>setZUserHeader(!zUserHeader)} label={"Use Z-User"}/>
                     </div>
                 </div>
             </div>
