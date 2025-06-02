@@ -3,6 +3,7 @@ import {getBase, getPreview} from "./tools.tsx";
 import {useEffect, useState} from "react";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import {getSignedUrl} from '@aws-sdk/s3-request-presigner'
+import {Tags} from "./Tags.tsx";
 
 
 interface props {
@@ -17,6 +18,7 @@ interface props {
 }
 
 const Preview = (props:props) => {
+    const [showTag, setShowTag] = useState(false)
     const [link, setLink] = useState<RestShareLink|null>(null)
     const [versions, setVersions] = useState<RestVersion[]>([])
     const [byUuid, setByUuid] = useState<RestNode|null>(null)
@@ -173,23 +175,6 @@ const Preview = (props:props) => {
         })
     }
 
-    const tagUntag = () => {
-        setLoading(true)
-        const isTagged = n.UserMetadata && n.UserMetadata.find((m) => m.Namespace === 'usermeta-tags');
-        api.patchNode(n.Uuid!, {
-            MetaUpdates:[
-                {
-                    Operation:isTagged?'DELETE':'PUT',
-                    UserMeta:{Namespace:'usermeta-tags', JsonValue:JSON.stringify("zetag")}
-                }
-            ]}).then(()=>{
-            setLoading(false)
-            loadCurrent()
-        }).catch(() => {
-            setLoading(false)
-        });
-    }
-
     const publish= () => {
         setLoading(true)
         api.publishNode(n.Uuid!, {Cascade: true}).then(()=>{
@@ -264,6 +249,9 @@ const Preview = (props:props) => {
             borderRadius:5,
             marginLeft:5
         }}>
+            {showTag &&
+                <Tags api={api} n={n} loadCurrent={loadCurrent} onRequestClose={() => setShowTag(false)}/>
+            }
             <div style={{display: 'flex'}}>
                 <div style={{flex: 1, display: 'flex', flexWrap: 'wrap'}}>
                     {n.Path!.split('/').length > 1 &&
@@ -274,7 +262,7 @@ const Preview = (props:props) => {
                     }
                     <button onClick={() => del()} {...buttonStyle}>Delete</button>
                     <button onClick={() => bookmark()} {...buttonStyle}>Bookmark</button>
-                    <button onClick={() => tagUntag()} {...buttonStyle}>Toggle Tag</button>
+                    <button onClick={() => setShowTag(true)} {...buttonStyle}>Tag</button>
                     <button onClick={() => publicLink()} {...buttonStyle}>Public Link</button>
                     <button onClick={() => loadByUuid()} {...buttonStyle}>Get By UUID</button>
                     <button onClick={() => lookupByUuid()} {...buttonStyle}>Lookup By UUID</button>

@@ -4740,12 +4740,10 @@ declare const NodeServiceApiAxiosParamCreator: (configuration?: Configuration) =
      *
      * @summary List values for a given namespace
      * @param {string} namespace List persisted values for this namespace
-     * @param {ListNamespaceValuesOperationOperationEnum} operationOperation
-     * @param {Array<string>} operationValues
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    listNamespaceValues: (namespace: string, operationOperation: ListNamespaceValuesOperationOperationEnum, operationValues: Array<string>, options?: RawAxiosRequestConfig) => Promise<RequestArgs>;
+    listNamespaceValues: (namespace: string, options?: RawAxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary List defined meta namespaces
@@ -4954,12 +4952,10 @@ declare const NodeServiceApiFp: (configuration?: Configuration) => {
      *
      * @summary List values for a given namespace
      * @param {string} namespace List persisted values for this namespace
-     * @param {ListNamespaceValuesOperationOperationEnum} operationOperation
-     * @param {Array<string>} operationValues
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    listNamespaceValues(namespace: string, operationOperation: ListNamespaceValuesOperationOperationEnum, operationValues: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestNamespaceValuesResponse>>;
+    listNamespaceValues(namespace: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestNamespaceValuesResponse>>;
     /**
      *
      * @summary List defined meta namespaces
@@ -5168,12 +5164,10 @@ declare const NodeServiceApiFactory: (configuration?: Configuration, basePath?: 
      *
      * @summary List values for a given namespace
      * @param {string} namespace List persisted values for this namespace
-     * @param {ListNamespaceValuesOperationOperationEnum} operationOperation
-     * @param {Array<string>} operationValues
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    listNamespaceValues(namespace: string, operationOperation: ListNamespaceValuesOperationOperationEnum, operationValues: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<RestNamespaceValuesResponse>;
+    listNamespaceValues(namespace: string, options?: RawAxiosRequestConfig): AxiosPromise<RestNamespaceValuesResponse>;
     /**
      *
      * @summary List defined meta namespaces
@@ -5394,13 +5388,11 @@ interface NodeServiceApiInterface {
      *
      * @summary List values for a given namespace
      * @param {string} namespace List persisted values for this namespace
-     * @param {ListNamespaceValuesOperationOperationEnum} operationOperation
-     * @param {Array<string>} operationValues
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NodeServiceApiInterface
      */
-    listNamespaceValues(namespace: string, operationOperation: ListNamespaceValuesOperationOperationEnum, operationValues: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<RestNamespaceValuesResponse>;
+    listNamespaceValues(namespace: string, options?: RawAxiosRequestConfig): AxiosPromise<RestNamespaceValuesResponse>;
     /**
      *
      * @summary List defined meta namespaces
@@ -5634,13 +5626,11 @@ declare class NodeServiceApi extends BaseAPI implements NodeServiceApiInterface 
      *
      * @summary List values for a given namespace
      * @param {string} namespace List persisted values for this namespace
-     * @param {ListNamespaceValuesOperationOperationEnum} operationOperation
-     * @param {Array<string>} operationValues
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NodeServiceApi
      */
-    listNamespaceValues(namespace: string, operationOperation: ListNamespaceValuesOperationOperationEnum, operationValues: Array<string>, options?: RawAxiosRequestConfig): Promise<axios.AxiosResponse<RestNamespaceValuesResponse, any>>;
+    listNamespaceValues(namespace: string, options?: RawAxiosRequestConfig): Promise<axios.AxiosResponse<RestNamespaceValuesResponse, any>>;
     /**
      *
      * @summary List defined meta namespaces
@@ -5785,14 +5775,6 @@ type ControlBackgroundActionNameEnum = typeof ControlBackgroundActionNameEnum[ke
 /**
  * @export
  */
-declare const ListNamespaceValuesOperationOperationEnum: {
-    readonly Put: "PUT";
-    readonly Delete: "DELETE";
-};
-type ListNamespaceValuesOperationOperationEnum = typeof ListNamespaceValuesOperationOperationEnum[keyof typeof ListNamespaceValuesOperationOperationEnum];
-/**
- * @export
- */
 declare const PerformActionNameEnum: {
     readonly Delete: "delete";
     readonly Restore: "restore";
@@ -5803,4 +5785,4 @@ declare const PerformActionNameEnum: {
 };
 type PerformActionNameEnum = typeof PerformActionNameEnum[keyof typeof PerformActionNameEnum];
 
-export { type ActivityObject, ActivityObjectType, ActivityOwnerType, type ActivitySubscription, BackgroundActionInfoNameEnum, Configuration, type ConfigurationParameters, ControlBackgroundActionNameEnum, type IdmSearchUserMetaRequest, type IdmUserMetaNamespace, IdmWorkspaceScope, JobsCommand, type JobsCtrlCommand, JobsTaskStatus, ListNamespaceValuesOperationOperationEnum, type LookupFilterDateRange, type LookupFilterMetaFilter, LookupFilterMetaFilterOp, type LookupFilterPathPrefix, type LookupFilterSizeRange, type LookupFilterStatusFilter, type LookupFilterTextSearch, LookupFilterTextSearchIn, NodeServiceApi, NodeServiceApiAxiosParamCreator, NodeServiceApiFactory, NodeServiceApiFp, type NodeServiceApiInterface, PerformActionNameEnum, type ProtobufAny, type RestActionOptionsCopyMove, type RestActionOptionsDelete, type RestActionOptionsExtractCompress, type RestActionParameters, RestActionStatus, type RestBackgroundAction, type RestBatchUpdateMetaList, type RestCheckResult, type RestContextWorkspace, type RestCountMeta, type RestCreateCheckRequest, type RestCreateCheckResponse, type RestCreateRequest, type RestDataSourceFeatures, type RestDeleteVersionResponse, type RestError, type RestFilePreview, RestFlag, type RestImageMeta, type RestIncomingNode, type RestJsonMeta, type RestListTemplatesResponse, type RestLockInfo, type RestLookupFilter, type RestLookupRequest, type RestLookupScope, type RestMetaToggle, type RestMetaUpdate, RestMetaUpdateOp, RestMode, type RestNamespaceValuesOperation, type RestNamespaceValuesResponse, type RestNode, type RestNodeCollection, type RestNodeLocator, type RestNodeLocators, type RestNodeUpdates, type RestNodeVersionsFilter, RestNsOp, type RestPagination, type RestPerformActionResponse, type RestPreSignedURL, type RestPromoteParameters, type RestPromoteVersionResponse, type RestPublicLinkDeleteSuccess, type RestPublicLinkRequest, type RestPublishCascadeResult, type RestPublishNodeParameters, type RestPublishNodeResponse, type RestSelection, type RestShareLink, RestShareLinkAccessType, type RestShareLinkTargetUser, type RestTemplate, type RestTemplateNode, RestUserActionType, type RestUserMeta, type RestUserMetaList, type RestUserMetaNamespaceCollection, type RestVersion, type RestVersionCollection, type RestVersionMeta, RestVersionsTypes, type ServiceResourcePolicy, ServiceResourcePolicyAction, ServiceResourcePolicyPolicyEffect, type ServiceResourcePolicyQuery, StatusFilterDeletedStatus, type TreeChangeLog, type TreeGeoPoint, type TreeGeoQuery, type TreeNode, type TreeNodeChangeEvent, TreeNodeChangeEventEventType, TreeNodeType, type TreeQuery, type TreeSearchFacet, type TreeWorkspaceRelativePath };
+export { type ActivityObject, ActivityObjectType, ActivityOwnerType, type ActivitySubscription, BackgroundActionInfoNameEnum, Configuration, type ConfigurationParameters, ControlBackgroundActionNameEnum, type IdmSearchUserMetaRequest, type IdmUserMetaNamespace, IdmWorkspaceScope, JobsCommand, type JobsCtrlCommand, JobsTaskStatus, type LookupFilterDateRange, type LookupFilterMetaFilter, LookupFilterMetaFilterOp, type LookupFilterPathPrefix, type LookupFilterSizeRange, type LookupFilterStatusFilter, type LookupFilterTextSearch, LookupFilterTextSearchIn, NodeServiceApi, NodeServiceApiAxiosParamCreator, NodeServiceApiFactory, NodeServiceApiFp, type NodeServiceApiInterface, PerformActionNameEnum, type ProtobufAny, type RestActionOptionsCopyMove, type RestActionOptionsDelete, type RestActionOptionsExtractCompress, type RestActionParameters, RestActionStatus, type RestBackgroundAction, type RestBatchUpdateMetaList, type RestCheckResult, type RestContextWorkspace, type RestCountMeta, type RestCreateCheckRequest, type RestCreateCheckResponse, type RestCreateRequest, type RestDataSourceFeatures, type RestDeleteVersionResponse, type RestError, type RestFilePreview, RestFlag, type RestImageMeta, type RestIncomingNode, type RestJsonMeta, type RestListTemplatesResponse, type RestLockInfo, type RestLookupFilter, type RestLookupRequest, type RestLookupScope, type RestMetaToggle, type RestMetaUpdate, RestMetaUpdateOp, RestMode, type RestNamespaceValuesOperation, type RestNamespaceValuesResponse, type RestNode, type RestNodeCollection, type RestNodeLocator, type RestNodeLocators, type RestNodeUpdates, type RestNodeVersionsFilter, RestNsOp, type RestPagination, type RestPerformActionResponse, type RestPreSignedURL, type RestPromoteParameters, type RestPromoteVersionResponse, type RestPublicLinkDeleteSuccess, type RestPublicLinkRequest, type RestPublishCascadeResult, type RestPublishNodeParameters, type RestPublishNodeResponse, type RestSelection, type RestShareLink, RestShareLinkAccessType, type RestShareLinkTargetUser, type RestTemplate, type RestTemplateNode, RestUserActionType, type RestUserMeta, type RestUserMetaList, type RestUserMetaNamespaceCollection, type RestVersion, type RestVersionCollection, type RestVersionMeta, RestVersionsTypes, type ServiceResourcePolicy, ServiceResourcePolicyAction, ServiceResourcePolicyPolicyEffect, type ServiceResourcePolicyQuery, StatusFilterDeletedStatus, type TreeChangeLog, type TreeGeoPoint, type TreeGeoQuery, type TreeNode, type TreeNodeChangeEvent, TreeNodeChangeEventEventType, TreeNodeType, type TreeQuery, type TreeSearchFacet, type TreeWorkspaceRelativePath };

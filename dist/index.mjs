@@ -426,15 +426,11 @@ var NodeServiceApiAxiosParamCreator = function(configuration) {
      * 
      * @summary List values for a given namespace
      * @param {string} namespace List persisted values for this namespace
-     * @param {ListNamespaceValuesOperationOperationEnum} operationOperation 
-     * @param {Array<string>} operationValues 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    listNamespaceValues: async (namespace, operationOperation, operationValues, options = {}) => {
+    listNamespaceValues: async (namespace, options = {}) => {
       assertParamExists("listNamespaceValues", "namespace", namespace);
-      assertParamExists("listNamespaceValues", "operationOperation", operationOperation);
-      assertParamExists("listNamespaceValues", "operationValues", operationValues);
       const localVarPath = `/n/meta/namespace/{Namespace}`.replace(`{${"Namespace"}}`, encodeURIComponent(String(namespace)));
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -445,12 +441,6 @@ var NodeServiceApiAxiosParamCreator = function(configuration) {
       const localVarHeaderParameter = {};
       const localVarQueryParameter = {};
       await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration);
-      if (operationOperation !== void 0) {
-        localVarQueryParameter["Operation.Operation"] = operationOperation;
-      }
-      if (operationValues) {
-        localVarQueryParameter["Operation.Values"] = operationValues;
-      }
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = __spreadValues(__spreadValues(__spreadValues({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
@@ -992,14 +982,12 @@ var NodeServiceApiFp = function(configuration) {
      * 
      * @summary List values for a given namespace
      * @param {string} namespace List persisted values for this namespace
-     * @param {ListNamespaceValuesOperationOperationEnum} operationOperation 
-     * @param {Array<string>} operationValues 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async listNamespaceValues(namespace, operationOperation, operationValues, options) {
+    async listNamespaceValues(namespace, options) {
       var _a, _b, _c;
-      const localVarAxiosArgs = await localVarAxiosParamCreator.listNamespaceValues(namespace, operationOperation, operationValues, options);
+      const localVarAxiosArgs = await localVarAxiosParamCreator.listNamespaceValues(namespace, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.listNamespaceValues"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
       return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios2, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1305,13 +1293,11 @@ var NodeServiceApiFactory = function(configuration, basePath, axios) {
      * 
      * @summary List values for a given namespace
      * @param {string} namespace List persisted values for this namespace
-     * @param {ListNamespaceValuesOperationOperationEnum} operationOperation 
-     * @param {Array<string>} operationValues 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    listNamespaceValues(namespace, operationOperation, operationValues, options) {
-      return localVarFp.listNamespaceValues(namespace, operationOperation, operationValues, options).then((request) => request(axios, basePath));
+    listNamespaceValues(namespace, options) {
+      return localVarFp.listNamespaceValues(namespace, options).then((request) => request(axios, basePath));
     },
     /**
      * 
@@ -1575,14 +1561,12 @@ var NodeServiceApi = class extends BaseAPI {
    * 
    * @summary List values for a given namespace
    * @param {string} namespace List persisted values for this namespace
-   * @param {ListNamespaceValuesOperationOperationEnum} operationOperation 
-   * @param {Array<string>} operationValues 
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NodeServiceApi
    */
-  listNamespaceValues(namespace, operationOperation, operationValues, options) {
-    return NodeServiceApiFp(this.configuration).listNamespaceValues(namespace, operationOperation, operationValues, options).then((request) => request(this.axios, this.basePath));
+  listNamespaceValues(namespace, options) {
+    return NodeServiceApiFp(this.configuration).listNamespaceValues(namespace, options).then((request) => request(this.axios, this.basePath));
   }
   /**
    * 
@@ -1740,10 +1724,6 @@ var ControlBackgroundActionNameEnum = {
   Move: "move",
   Extract: "extract",
   Compress: "compress"
-};
-var ListNamespaceValuesOperationOperationEnum = {
-  Put: "PUT",
-  Delete: "DELETE"
 };
 var PerformActionNameEnum = {
   Delete: "delete",
@@ -2012,7 +1992,6 @@ export {
   IdmWorkspaceScope,
   JobsCommand,
   JobsTaskStatus,
-  ListNamespaceValuesOperationOperationEnum,
   LookupFilterMetaFilterOp,
   LookupFilterTextSearchIn,
   NodeServiceApi,

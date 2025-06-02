@@ -535,18 +535,12 @@ export const NodeServiceApiAxiosParamCreator = function (configuration?: Configu
          * 
          * @summary List values for a given namespace
          * @param {string} namespace List persisted values for this namespace
-         * @param {ListNamespaceValuesOperationOperationEnum} operationOperation 
-         * @param {Array<string>} operationValues 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listNamespaceValues: async (namespace: string, operationOperation: ListNamespaceValuesOperationOperationEnum, operationValues: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        listNamespaceValues: async (namespace: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'namespace' is not null or undefined
             assertParamExists('listNamespaceValues', 'namespace', namespace)
-            // verify required parameter 'operationOperation' is not null or undefined
-            assertParamExists('listNamespaceValues', 'operationOperation', operationOperation)
-            // verify required parameter 'operationValues' is not null or undefined
-            assertParamExists('listNamespaceValues', 'operationValues', operationValues)
             const localVarPath = `/n/meta/namespace/{Namespace}`
                 .replace(`{${"Namespace"}}`, encodeURIComponent(String(namespace)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -562,14 +556,6 @@ export const NodeServiceApiAxiosParamCreator = function (configuration?: Configu
 
             // authentication Bearer required
             await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
-
-            if (operationOperation !== undefined) {
-                localVarQueryParameter['Operation.Operation'] = operationOperation;
-            }
-
-            if (operationValues) {
-                localVarQueryParameter['Operation.Values'] = operationValues;
-            }
 
 
     
@@ -1242,13 +1228,11 @@ export const NodeServiceApiFp = function(configuration?: Configuration) {
          * 
          * @summary List values for a given namespace
          * @param {string} namespace List persisted values for this namespace
-         * @param {ListNamespaceValuesOperationOperationEnum} operationOperation 
-         * @param {Array<string>} operationValues 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listNamespaceValues(namespace: string, operationOperation: ListNamespaceValuesOperationOperationEnum, operationValues: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestNamespaceValuesResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.listNamespaceValues(namespace, operationOperation, operationValues, options);
+        async listNamespaceValues(namespace: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestNamespaceValuesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listNamespaceValues(namespace, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['NodeServiceApi.listNamespaceValues']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1547,13 +1531,11 @@ export const NodeServiceApiFactory = function (configuration?: Configuration, ba
          * 
          * @summary List values for a given namespace
          * @param {string} namespace List persisted values for this namespace
-         * @param {ListNamespaceValuesOperationOperationEnum} operationOperation 
-         * @param {Array<string>} operationValues 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listNamespaceValues(namespace: string, operationOperation: ListNamespaceValuesOperationOperationEnum, operationValues: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<RestNamespaceValuesResponse> {
-            return localVarFp.listNamespaceValues(namespace, operationOperation, operationValues, options).then((request) => request(axios, basePath));
+        listNamespaceValues(namespace: string, options?: RawAxiosRequestConfig): AxiosPromise<RestNamespaceValuesResponse> {
+            return localVarFp.listNamespaceValues(namespace, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1812,13 +1794,11 @@ export interface NodeServiceApiInterface {
      * 
      * @summary List values for a given namespace
      * @param {string} namespace List persisted values for this namespace
-     * @param {ListNamespaceValuesOperationOperationEnum} operationOperation 
-     * @param {Array<string>} operationValues 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NodeServiceApiInterface
      */
-    listNamespaceValues(namespace: string, operationOperation: ListNamespaceValuesOperationOperationEnum, operationValues: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<RestNamespaceValuesResponse>;
+    listNamespaceValues(namespace: string, options?: RawAxiosRequestConfig): AxiosPromise<RestNamespaceValuesResponse>;
 
     /**
      * 
@@ -2099,14 +2079,12 @@ export class NodeServiceApi extends BaseAPI implements NodeServiceApiInterface {
      * 
      * @summary List values for a given namespace
      * @param {string} namespace List persisted values for this namespace
-     * @param {ListNamespaceValuesOperationOperationEnum} operationOperation 
-     * @param {Array<string>} operationValues 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NodeServiceApi
      */
-    public listNamespaceValues(namespace: string, operationOperation: ListNamespaceValuesOperationOperationEnum, operationValues: Array<string>, options?: RawAxiosRequestConfig) {
-        return NodeServiceApiFp(this.configuration).listNamespaceValues(namespace, operationOperation, operationValues, options).then((request) => request(this.axios, this.basePath));
+    public listNamespaceValues(namespace: string, options?: RawAxiosRequestConfig) {
+        return NodeServiceApiFp(this.configuration).listNamespaceValues(namespace, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2286,14 +2264,6 @@ export const ControlBackgroundActionNameEnum = {
     Compress: 'compress'
 } as const;
 export type ControlBackgroundActionNameEnum = typeof ControlBackgroundActionNameEnum[keyof typeof ControlBackgroundActionNameEnum];
-/**
- * @export
- */
-export const ListNamespaceValuesOperationOperationEnum = {
-    Put: 'PUT',
-    Delete: 'DELETE'
-} as const;
-export type ListNamespaceValuesOperationOperationEnum = typeof ListNamespaceValuesOperationOperationEnum[keyof typeof ListNamespaceValuesOperationOperationEnum];
 /**
  * @export
  */
