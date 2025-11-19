@@ -15,10 +15,6 @@ To generate the SDK locally, you can use the provided script:
 nix develop
 ./scripts/generate-sdk.sh [BRANCH_OR_TAG] [OUTPUT_DIR]
 
-# Or using traditional nix-shell
-nix-shell devshell.nix
-./scripts/generate-sdk.sh [BRANCH_OR_TAG] [OUTPUT_DIR]
-
 # Examples:
 ./scripts/generate-sdk.sh                    # Generate from v5-dev branch
 ./scripts/generate-sdk.sh v4.4.0             # Generate from v4.4.0 tag
