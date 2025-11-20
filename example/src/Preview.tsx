@@ -62,9 +62,10 @@ const Preview = (props:props) => {
 
     const loadByUuid = () => {
         setLoading(true)
-        api.getByUuid(n.Uuid).then(res=>{
+        api.getByUuid(n.Uuid, lookupFlags).then(res=>{
             setByUuid(res.data)
             setLoading(false)
+
         }).catch(() => {
             setLoading(false)
         })

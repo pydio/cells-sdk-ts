@@ -144,11 +144,12 @@ function App() {
     }
 
     const [showPreviews, setShowPreviews] = useState(false);
-    const [lookupFlags, setLookupFlags] = useState<RestFlag[]>(["WithVersionsAll", "WithPreSignedURLs"])
+    const [lookupFlags, setLookupFlags] = useState<RestFlag[]>([RestFlag.WithVersionsAll, RestFlag.WithPreSignedUrls, RestFlag.WithEditorUrls])
     const allFlags:RestFlag[] = [
-        "WithVersionsAll",
-        "WithPreSignedURLs",
-        "WithMetaNone"
+        RestFlag.WithVersionsAll,
+        RestFlag.WithPreSignedUrls,
+        RestFlag.WithEditorUrls,
+        RestFlag.WithMetaNone,
     ]
 
     const toggleFlag = useCallback((flag:RestFlag) => {
