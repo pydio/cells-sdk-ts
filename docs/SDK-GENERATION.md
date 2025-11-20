@@ -1,9 +1,4 @@
-# cells-sdk-ts
-<<<<<<< HEAD
 Typescript SDK for Cells RestAPI
-=======
-
-Typescript SDK for Cells RestAPI v2
 
 ## Generating the SDK
 
@@ -90,4 +85,3 @@ Example:
   }
 }
 ```
->>>>>>> 2035859 (ci: allow generating the sdk via CI on demand (#2))
