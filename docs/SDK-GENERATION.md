@@ -1,4 +1,3 @@
-
 Typescript SDK for Cells RestAPI v2
 
 ## Generating the SDK
