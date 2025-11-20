@@ -85,6 +85,7 @@ export * from './service-resource-policy-action';
 export * from './service-resource-policy-policy-effect';
 export * from './service-resource-policy-query';
 export * from './status-filter-deleted-status';
+export * from './status-filter-draft-status';
 export * from './tree-change-log';
 export * from './tree-geo-point';
 export * from './tree-geo-query';

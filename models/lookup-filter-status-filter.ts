@@ -16,6 +16,9 @@
 // May contain unused imports in some cases
 // @ts-ignore
 import type { StatusFilterDeletedStatus } from './status-filter-deleted-status';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { StatusFilterDraftStatus } from './status-filter-draft-status';
 
 /**
  * 
@@ -29,6 +32,12 @@ export interface LookupFilterStatusFilter {
      * @memberof LookupFilterStatusFilter
      */
     'Deleted'?: StatusFilterDeletedStatus;
+    /**
+     * 
+     * @type {StatusFilterDraftStatus}
+     * @memberof LookupFilterStatusFilter
+     */
+    'Draft'?: StatusFilterDraftStatus;
     /**
      * 
      * @type {boolean}

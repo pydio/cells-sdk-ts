@@ -94,6 +94,7 @@ models/service-resource-policy-policy-effect.ts
 models/service-resource-policy-query.ts
 models/service-resource-policy.ts
 models/status-filter-deleted-status.ts
+models/status-filter-draft-status.ts
 models/tree-change-log.ts
 models/tree-geo-point.ts
 models/tree-geo-query.ts

@@ -20,18 +20,13 @@
  * @enum {string}
  */
 
-export const RestFlag = {
-    WithMetaDefaults: 'WithMetaDefaults',
-    WithMetaCoreOnly: 'WithMetaCoreOnly',
-    WithMetaNone: 'WithMetaNone',
-    WithVersionsAll: 'WithVersionsAll',
-    WithVersionsDraft: 'WithVersionsDraft',
-    WithVersionsPublished: 'WithVersionsPublished',
-    WithPreSignedUrls: 'WithPreSignedURLs',
-    WithEditorUrls: 'WithEditorURLs'
+export const StatusFilterDraftStatus = {
+    DraftNot: 'DraftNot',
+    DraftOnly: 'DraftOnly',
+    DraftAny: 'DraftAny'
 } as const;
 
-export type RestFlag = typeof RestFlag[keyof typeof RestFlag];
+export type StatusFilterDraftStatus = typeof StatusFilterDraftStatus[keyof typeof StatusFilterDraftStatus];
 
 
 

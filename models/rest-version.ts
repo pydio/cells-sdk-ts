@@ -13,6 +13,12 @@
  */
 
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { RestFilePreview } from './rest-file-preview';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { RestPreSignedURL } from './rest-pre-signed-url';
 
 /**
  * 
@@ -46,6 +52,18 @@ export interface RestVersion {
     'ETag'?: string;
     /**
      * 
+     * @type {{ [key: string]: RestPreSignedURL; }}
+     * @memberof RestVersion
+     */
+    'EditorURLs'?: { [key: string]: RestPreSignedURL; };
+    /**
+     * 
+     * @type {Array<RestFilePreview>}
+     * @memberof RestVersion
+     */
+    'FilePreviews'?: Array<RestFilePreview>;
+    /**
+     * 
      * @type {boolean}
      * @memberof RestVersion
      */
@@ -68,6 +86,12 @@ export interface RestVersion {
      * @memberof RestVersion
      */
     'OwnerUuid'?: string;
+    /**
+     * 
+     * @type {RestPreSignedURL}
+     * @memberof RestVersion
+     */
+    'PreSignedGET'?: RestPreSignedURL;
     /**
      * 
      * @type {string}
