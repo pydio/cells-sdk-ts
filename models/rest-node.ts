@@ -106,6 +106,12 @@ export interface RestNode {
     'DataSourceFeatures'?: RestDataSourceFeatures;
     /**
      * 
+     * @type {{ [key: string]: RestPreSignedURL; }}
+     * @memberof RestNode
+     */
+    'EditorURLs'?: { [key: string]: RestPreSignedURL; };
+    /**
+     * 
      * @type {Array<RestCountMeta>}
      * @memberof RestNode
      */

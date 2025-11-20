@@ -52,6 +52,7 @@ __export(index_exports, {
   BackgroundActionInfoNameEnum: () => BackgroundActionInfoNameEnum,
   Configuration: () => Configuration,
   ControlBackgroundActionNameEnum: () => ControlBackgroundActionNameEnum,
+  GetByUuidFlagsEnum: () => GetByUuidFlagsEnum,
   IdmWorkspaceScope: () => IdmWorkspaceScope,
   JobsCommand: () => JobsCommand,
   JobsTaskStatus: () => JobsTaskStatus,
@@ -73,6 +74,7 @@ __export(index_exports, {
   ServiceResourcePolicyAction: () => ServiceResourcePolicyAction,
   ServiceResourcePolicyPolicyEffect: () => ServiceResourcePolicyPolicyEffect,
   StatusFilterDeletedStatus: () => StatusFilterDeletedStatus,
+  StatusFilterDraftStatus: () => StatusFilterDraftStatus,
   TreeNodeChangeEventEventType: () => TreeNodeChangeEventEventType,
   TreeNodeType: () => TreeNodeType
 });
@@ -428,11 +430,11 @@ var NodeServiceApiAxiosParamCreator = function(configuration) {
      * 
      * @summary Load a node by its Uuid
      * @param {string} uuid 
-     * @param {string} [path] 
+     * @param {Array<GetByUuidFlagsEnum>} [flags] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getByUuid: async (uuid, path, options = {}) => {
+    getByUuid: async (uuid, flags, options = {}) => {
       assertParamExists("getByUuid", "uuid", uuid);
       const localVarPath = `/n/node/{Uuid}`.replace(`{${"Uuid"}}`, encodeURIComponent(String(uuid)));
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -444,8 +446,8 @@ var NodeServiceApiAxiosParamCreator = function(configuration) {
       const localVarHeaderParameter = {};
       const localVarQueryParameter = {};
       await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration);
-      if (path !== void 0) {
-        localVarQueryParameter["Path"] = path;
+      if (flags) {
+        localVarQueryParameter["Flags"] = flags;
       }
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1013,13 +1015,13 @@ var NodeServiceApiFp = function(configuration) {
      * 
      * @summary Load a node by its Uuid
      * @param {string} uuid 
-     * @param {string} [path] 
+     * @param {Array<GetByUuidFlagsEnum>} [flags] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async getByUuid(uuid, path, options) {
+    async getByUuid(uuid, flags, options) {
       var _a, _b, _c;
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getByUuid(uuid, path, options);
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getByUuid(uuid, flags, options);
       const localVarOperationServerIndex = (_a = configuration == null ? void 0 : configuration.serverIndex) != null ? _a : 0;
       const localVarOperationServerBasePath = (_c = (_b = operationServerMap["NodeServiceApi.getByUuid"]) == null ? void 0 : _b[localVarOperationServerIndex]) == null ? void 0 : _c.url;
       return (axios, basePath) => createRequestFunction(localVarAxiosArgs, import_axios2.default, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1332,12 +1334,12 @@ var NodeServiceApiFactory = function(configuration, basePath, axios) {
      * 
      * @summary Load a node by its Uuid
      * @param {string} uuid 
-     * @param {string} [path] 
+     * @param {Array<GetByUuidFlagsEnum>} [flags] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getByUuid(uuid, path, options) {
-      return localVarFp.getByUuid(uuid, path, options).then((request) => request(axios, basePath));
+    getByUuid(uuid, flags, options) {
+      return localVarFp.getByUuid(uuid, flags, options).then((request) => request(axios, basePath));
     },
     /**
      * 
@@ -1598,13 +1600,13 @@ var NodeServiceApi = class extends BaseAPI {
    * 
    * @summary Load a node by its Uuid
    * @param {string} uuid 
-   * @param {string} [path] 
+   * @param {Array<GetByUuidFlagsEnum>} [flags] 
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NodeServiceApi
    */
-  getByUuid(uuid, path, options) {
-    return NodeServiceApiFp(this.configuration).getByUuid(uuid, path, options).then((request) => request(this.axios, this.basePath));
+  getByUuid(uuid, flags, options) {
+    return NodeServiceApiFp(this.configuration).getByUuid(uuid, flags, options).then((request) => request(this.axios, this.basePath));
   }
   /**
    * 
@@ -1785,6 +1787,16 @@ var ControlBackgroundActionNameEnum = {
   Extract: "extract",
   Compress: "compress"
 };
+var GetByUuidFlagsEnum = {
+  WithMetaDefaults: "WithMetaDefaults",
+  WithMetaCoreOnly: "WithMetaCoreOnly",
+  WithMetaNone: "WithMetaNone",
+  WithVersionsAll: "WithVersionsAll",
+  WithVersionsDraft: "WithVersionsDraft",
+  WithVersionsPublished: "WithVersionsPublished",
+  WithPreSignedUrls: "WithPreSignedURLs",
+  WithEditorUrls: "WithEditorURLs"
+};
 var PerformActionNameEnum = {
   Delete: "delete",
   Restore: "restore",
@@ -1956,7 +1968,8 @@ var RestFlag = {
   WithVersionsAll: "WithVersionsAll",
   WithVersionsDraft: "WithVersionsDraft",
   WithVersionsPublished: "WithVersionsPublished",
-  WithPreSignedUrls: "WithPreSignedURLs"
+  WithPreSignedUrls: "WithPreSignedURLs",
+  WithEditorUrls: "WithEditorURLs"
 };
 
 // models/rest-meta-update-op.ts
@@ -2026,6 +2039,13 @@ var StatusFilterDeletedStatus = {
   Any: "Any"
 };
 
+// models/status-filter-draft-status.ts
+var StatusFilterDraftStatus = {
+  DraftNot: "DraftNot",
+  DraftOnly: "DraftOnly",
+  DraftAny: "DraftAny"
+};
+
 // models/tree-node-change-event-event-type.ts
 var TreeNodeChangeEventEventType = {
   Create: "CREATE",
@@ -2050,6 +2070,7 @@ var TreeNodeType = {
   BackgroundActionInfoNameEnum,
   Configuration,
   ControlBackgroundActionNameEnum,
+  GetByUuidFlagsEnum,
   IdmWorkspaceScope,
   JobsCommand,
   JobsTaskStatus,
@@ -2071,6 +2092,7 @@ var TreeNodeType = {
   ServiceResourcePolicyAction,
   ServiceResourcePolicyPolicyEffect,
   StatusFilterDeletedStatus,
+  StatusFilterDraftStatus,
   TreeNodeChangeEventEventType,
   TreeNodeType
 });

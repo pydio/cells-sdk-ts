@@ -456,11 +456,11 @@ export const NodeServiceApiAxiosParamCreator = function (configuration?: Configu
          * 
          * @summary Load a node by its Uuid
          * @param {string} uuid 
-         * @param {string} [path] 
+         * @param {Array<GetByUuidFlagsEnum>} [flags] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getByUuid: async (uuid: string, path?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getByUuid: async (uuid: string, flags?: Array<GetByUuidFlagsEnum>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'uuid' is not null or undefined
             assertParamExists('getByUuid', 'uuid', uuid)
             const localVarPath = `/n/node/{Uuid}`
@@ -479,8 +479,8 @@ export const NodeServiceApiAxiosParamCreator = function (configuration?: Configu
             // authentication Bearer required
             await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
 
-            if (path !== undefined) {
-                localVarQueryParameter['Path'] = path;
+            if (flags) {
+                localVarQueryParameter['Flags'] = flags;
             }
 
 
@@ -1201,12 +1201,12 @@ export const NodeServiceApiFp = function(configuration?: Configuration) {
          * 
          * @summary Load a node by its Uuid
          * @param {string} uuid 
-         * @param {string} [path] 
+         * @param {Array<GetByUuidFlagsEnum>} [flags] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getByUuid(uuid: string, path?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestNode>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getByUuid(uuid, path, options);
+        async getByUuid(uuid: string, flags?: Array<GetByUuidFlagsEnum>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestNode>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getByUuid(uuid, flags, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['NodeServiceApi.getByUuid']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1510,12 +1510,12 @@ export const NodeServiceApiFactory = function (configuration?: Configuration, ba
          * 
          * @summary Load a node by its Uuid
          * @param {string} uuid 
-         * @param {string} [path] 
+         * @param {Array<GetByUuidFlagsEnum>} [flags] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getByUuid(uuid: string, path?: string, options?: RawAxiosRequestConfig): AxiosPromise<RestNode> {
-            return localVarFp.getByUuid(uuid, path, options).then((request) => request(axios, basePath));
+        getByUuid(uuid: string, flags?: Array<GetByUuidFlagsEnum>, options?: RawAxiosRequestConfig): AxiosPromise<RestNode> {
+            return localVarFp.getByUuid(uuid, flags, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1773,12 +1773,12 @@ export interface NodeServiceApiInterface {
      * 
      * @summary Load a node by its Uuid
      * @param {string} uuid 
-     * @param {string} [path] 
+     * @param {Array<GetByUuidFlagsEnum>} [flags] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NodeServiceApiInterface
      */
-    getByUuid(uuid: string, path?: string, options?: RawAxiosRequestConfig): AxiosPromise<RestNode>;
+    getByUuid(uuid: string, flags?: Array<GetByUuidFlagsEnum>, options?: RawAxiosRequestConfig): AxiosPromise<RestNode>;
 
     /**
      * 
@@ -2054,13 +2054,13 @@ export class NodeServiceApi extends BaseAPI implements NodeServiceApiInterface {
      * 
      * @summary Load a node by its Uuid
      * @param {string} uuid 
-     * @param {string} [path] 
+     * @param {Array<GetByUuidFlagsEnum>} [flags] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NodeServiceApi
      */
-    public getByUuid(uuid: string, path?: string, options?: RawAxiosRequestConfig) {
-        return NodeServiceApiFp(this.configuration).getByUuid(uuid, path, options).then((request) => request(this.axios, this.basePath));
+    public getByUuid(uuid: string, flags?: Array<GetByUuidFlagsEnum>, options?: RawAxiosRequestConfig) {
+        return NodeServiceApiFp(this.configuration).getByUuid(uuid, flags, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2264,6 +2264,20 @@ export const ControlBackgroundActionNameEnum = {
     Compress: 'compress'
 } as const;
 export type ControlBackgroundActionNameEnum = typeof ControlBackgroundActionNameEnum[keyof typeof ControlBackgroundActionNameEnum];
+/**
+ * @export
+ */
+export const GetByUuidFlagsEnum = {
+    WithMetaDefaults: 'WithMetaDefaults',
+    WithMetaCoreOnly: 'WithMetaCoreOnly',
+    WithMetaNone: 'WithMetaNone',
+    WithVersionsAll: 'WithVersionsAll',
+    WithVersionsDraft: 'WithVersionsDraft',
+    WithVersionsPublished: 'WithVersionsPublished',
+    WithPreSignedUrls: 'WithPreSignedURLs',
+    WithEditorUrls: 'WithEditorURLs'
+} as const;
+export type GetByUuidFlagsEnum = typeof GetByUuidFlagsEnum[keyof typeof GetByUuidFlagsEnum];
 /**
  * @export
  */
