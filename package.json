@@ -1,6 +1,6 @@
 {
   "name": "cells-sdk-ts",
-  "version": "0.1.1-alpha15",
+  "version": "0.1.1-alpha16",
   "description": "Typescript SDK for Cells V2 Rest API",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
