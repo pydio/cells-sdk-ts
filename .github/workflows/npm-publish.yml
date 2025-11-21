@@ -20,7 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        ref: 'dev'
+        with:
+          ref: 'dev'
 
       - uses: actions/setup-node@v4
         with:
