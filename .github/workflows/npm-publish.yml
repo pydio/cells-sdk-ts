@@ -1,6 +1,12 @@
 name: NPM Publish Package
 
 on:
+  workflow_dispatch:
+    # input the vtag to publish a specific version
+    inputs:
+      vtag:
+        description: 'Version tag to publish (e.g., v1.2.3)'
+        required: false
   push:
     tags:
       - 'v*'
