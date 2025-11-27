@@ -112,6 +112,12 @@ export interface RestNode {
     'EditorURLs'?: { [key: string]: RestPreSignedURL; };
     /**
      * 
+     * @type {Array<string>}
+     * @memberof RestNode
+     */
+    'EditorURLsKeys'?: Array<string>;
+    /**
+     * 
      * @type {Array<RestCountMeta>}
      * @memberof RestNode
      */
