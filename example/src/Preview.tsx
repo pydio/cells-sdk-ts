@@ -230,7 +230,10 @@ const Preview = (props:props) => {
     useEffect(() => {
         setVersions([])
         if(n.Type === 'LEAF' && n.DataSourceFeatures && n.DataSourceFeatures.Versioned) {
-            api.nodeVersions(n.Uuid!, {FilterBy:"VersionsAll"}).then(res => {
+            api.nodeVersions(n.Uuid!, {
+                FilterBy:"VersionsAll",
+                Flags:lookupFlags, 
+            }).then(res => {
                 setVersions(res.data.Versions||[])
             })
         }

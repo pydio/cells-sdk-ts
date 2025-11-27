@@ -4241,6 +4241,12 @@ interface RestNodeVersionsFilter {
     'FilterBy'?: RestVersionsTypes;
     /**
      *
+     * @type {Array<RestFlag>}
+     * @memberof RestNodeVersionsFilter
+     */
+    'Flags'?: Array<RestFlag>;
+    /**
+     *
      * @type {string}
      * @memberof RestNodeVersionsFilter
      */
