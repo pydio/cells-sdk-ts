@@ -2742,6 +2742,12 @@ interface RestVersion {
     };
     /**
      *
+     * @type {Array<string>}
+     * @memberof RestVersion
+     */
+    'EditorURLsKeys'?: Array<string>;
+    /**
+     *
      * @type {Array<RestFilePreview>}
      * @memberof RestVersion
      */
@@ -2901,6 +2907,12 @@ interface RestNode {
     'EditorURLs'?: {
         [key: string]: RestPreSignedURL;
     };
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof RestNode
+     */
+    'EditorURLsKeys'?: Array<string>;
     /**
      *
      * @type {Array<RestCountMeta>}
