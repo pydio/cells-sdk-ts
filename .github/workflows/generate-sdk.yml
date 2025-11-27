@@ -58,6 +58,17 @@ jobs:
         run: |
           nix develop --command bash scripts/generate-sdk.sh "${{ inputs.cells_branch }}" .
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Build SDK
+        run: npm run build
+
       - name: Check for changes
         id: check-changes
         run: |
