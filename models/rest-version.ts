@@ -58,6 +58,12 @@ export interface RestVersion {
     'EditorURLs'?: { [key: string]: RestPreSignedURL; };
     /**
      * 
+     * @type {Array<string>}
+     * @memberof RestVersion
+     */
+    'EditorURLsKeys'?: Array<string>;
+    /**
+     * 
      * @type {Array<RestFilePreview>}
      * @memberof RestVersion
      */
