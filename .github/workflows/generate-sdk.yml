@@ -32,6 +32,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
+      - name: Ensure dev branch
+        if: ${{ github.ref != 'refs/heads/dev' }}
+        run: |
+          echo "This workflow must be dispatched from the dev branch."
+          exit 1
+
       - name: Get default branch
         id: default-branch
         run: |
