@@ -36,5 +36,40 @@ jobs:
       # - run: npm ci
       - run: npm run build --if-present
       # - run: npm test
+      
+      # Check if version matches the tag
+      - name: Check version matches tag
+        run: |
+          # Get the tag version (either from push event or workflow input)
+          if [ "${{ github.event_name }}" == "push" ]; then
+            TAG_VERSION="${{ github.ref_name }}"
+          else
+            TAG_VERSION="${{ github.event.inputs.vtag }}"
+          fi
+          
+          # Fail if no tag provided
+          if [ -z "$TAG_VERSION" ]; then
+            echo "Error: No tag provided. Cannot verify version."
+            exit 1
+          fi
+          
+          # Remove 'v' prefix if present
+          TAG_VERSION="${TAG_VERSION#v}"
+          
+          # Get version from package.json
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          
+          echo "Tag version: $TAG_VERSION"
+          echo "Package version: $PACKAGE_VERSION"
+          
+          # Compare versions
+          if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "Error: Version mismatch!"
+            echo "Tag version ($TAG_VERSION) does not match package.json version ($PACKAGE_VERSION)"
+            exit 1
+          fi
+          
+          echo "✓ Version check passed: $PACKAGE_VERSION"
+      
       - name: Publish to NPM (alpha tag)
         run: npm publish --tag alpha --access public
