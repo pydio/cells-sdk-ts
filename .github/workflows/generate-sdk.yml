@@ -55,8 +55,10 @@ jobs:
           nix develop --command echo "Nix environment ready"
 
       - name: Generate SDK
+        env:
+          CELLS_BRANCH: ${{ inputs.cells_branch }}
         run: |
-          nix develop --command bash scripts/generate-sdk.sh "${{ inputs.cells_branch }}" .
+          nix develop --command bash scripts/generate-sdk.sh "$CELLS_BRANCH" .
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -84,11 +86,14 @@ jobs:
       - name: Set PR title
         id: pr-title
         if: steps.check-changes.outputs.has_changes == 'true'
+        env:
+          PR_TITLE: ${{ inputs.pr_title }}
+          CELLS_BRANCH: ${{ inputs.cells_branch }}
         run: |
-          if [ -n "${{ inputs.pr_title }}" ] && [ "${{ inputs.pr_title }}" != "" ]; then
-            echo "title=${{ inputs.pr_title }}" >> $GITHUB_OUTPUT
+          if [ -n "$PR_TITLE" ] && [ "$PR_TITLE" != "" ]; then
+            echo "title=$PR_TITLE" >> $GITHUB_OUTPUT
           else
-            echo "title=chore: Generate SDK from Cells ${{ inputs.cells_branch }}" >> $GITHUB_OUTPUT
+            echo "title=chore: Generate SDK from Cells $CELLS_BRANCH" >> $GITHUB_OUTPUT
           fi
 
       - name: Create Pull Request
@@ -124,5 +129,7 @@ jobs:
 
       - name: No changes detected
         if: steps.check-changes.outputs.has_changes == 'false'
+        env:
+          CELLS_BRANCH: ${{ inputs.cells_branch }}
         run: |
-          echo "No changes detected. SDK is already up to date with ${{ inputs.cells_branch }}."
+          echo "No changes detected. SDK is already up to date with $CELLS_BRANCH."
