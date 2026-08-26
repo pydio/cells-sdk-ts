@@ -22,10 +22,12 @@ nix develop
 ```
 
 **Requirements:**
+
 - Nix installed (for `nix develop` or `nix-shell`)
 - Or `openapi-generator-cli` installed directly
 
 The script will:
+
 1. Download the OpenAPI spec from the specified Pydio Cells branch/tag
 2. Run OpenAPI Generator to generate TypeScript code
 3. Preserve important files (package.json, README.md, etc.)
@@ -47,6 +49,7 @@ The SDK can be automatically generated via GitHub Actions:
    - Open a Pull Request automatically
 
 The OpenAPI specification is fetched from:
+
 ```
 https://raw.githubusercontent.com/pydio/cells/{branch}/common/proto/rest/cellsapi-rest-v2.swagger.json
 ```
@@ -55,26 +58,27 @@ https://raw.githubusercontent.com/pydio/cells/{branch}/common/proto/rest/cellsap
 
 See [example](./example) folder for sample application:
 
-```
+```sh
 cd example
 npm install
 npm run dev
 ```
+
 Enter server full URL to Cells API (e.g. https://localhost:8080/a) and Personal Access Token in the top form.
 
 **Note**: server may need to support CORS. On Cells next, start with ENV `CELLS_WEB_CORS_ALLOW_ALL=true`
 
 ## Consume the SDK in your App
 
-Dependencies: 
+Dependencies:
 
- - cells-sdk-ts : point to github on #v5-dev branch
- - axios
- - @aws-sdk/client-s3
- - @aws-sdk/credential-providers
- - @aws-sdk/s3-request-presigner
+- cells-sdk-ts : point to github on #v5-dev branch
+- axios
+- @aws-sdk/client-s3
+- @aws-sdk/credential-providers
+- @aws-sdk/s3-request-presigner
 
-Example: 
+Example:
 
 ```json
 {
